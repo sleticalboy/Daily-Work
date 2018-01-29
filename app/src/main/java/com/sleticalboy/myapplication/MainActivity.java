@@ -1,19 +1,18 @@
 package com.sleticalboy.myapplication;
 
 import android.graphics.Color;
-import android.hardware.display.VirtualDisplay;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.sleticalboy.myapplication.bean.Stock;
+import com.sleticalboy.myapplication.http.HttpUtils;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
