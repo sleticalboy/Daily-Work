@@ -37,7 +37,12 @@ public class MainActivity extends AppCompatActivity {
         HttpUtils.request(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Toast.makeText(MainActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+                new Handler(getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 e.printStackTrace();
             }
 
