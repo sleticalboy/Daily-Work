@@ -23,7 +23,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class MainActivity extends AppCompatActivity {
+public class StockActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                 new Handler(getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(MainActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StockActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
                     }
                 });
                 e.printStackTrace();
