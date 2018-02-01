@@ -1,4 +1,4 @@
-package com.sleticalboy.myapplication.encryption;
+package com.sleticalboy.dailywork.encryption;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

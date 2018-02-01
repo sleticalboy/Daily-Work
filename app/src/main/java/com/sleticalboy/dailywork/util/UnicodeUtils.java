@@ -1,4 +1,4 @@
-package com.sleticalboy.myapplication.util;
+package com.sleticalboy.dailywork.util;
 
 public class UnicodeUtils {
 

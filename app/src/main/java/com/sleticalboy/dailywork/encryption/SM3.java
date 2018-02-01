@@ -1,4 +1,4 @@
-package com.sleticalboy.myapplication.encryption;
+package com.sleticalboy.dailywork.encryption;
 
 public class SM3 {
     public static final byte[] iv = {0x73, (byte) 0x80, 0x16, 0x6f, 0x49,

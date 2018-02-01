@@ -1,7 +1,7 @@
-package com.sleticalboy.myapplication.encryption;
+package com.sleticalboy.dailywork.encryption;
 
-import com.sleticalboy.myapplication.util.OperationUtils;
-import com.sleticalboy.myapplication.util.UnicodeUtils;
+import com.sleticalboy.dailywork.util.OperationUtils;
+import com.sleticalboy.dailywork.util.UnicodeUtils;
 
 import org.bouncycastle.util.encoders.Hex;
 

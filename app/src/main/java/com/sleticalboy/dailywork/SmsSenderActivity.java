@@ -1,4 +1,4 @@
-package com.sleticalboy.myapplication;
+package com.sleticalboy.dailywork;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

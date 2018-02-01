@@ -1,4 +1,4 @@
-package com.sleticalboy.myapplication.encryption;
+package com.sleticalboy.dailywork.encryption;
 
 import android.util.Log;
 

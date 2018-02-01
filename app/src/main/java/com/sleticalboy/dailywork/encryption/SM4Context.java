@@ -1,4 +1,4 @@
-package com.sleticalboy.myapplication.encryption;
+package com.sleticalboy.dailywork.encryption;
 
 public class SM4Context {
 

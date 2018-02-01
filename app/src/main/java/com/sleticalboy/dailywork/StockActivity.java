@@ -1,9 +1,8 @@
-package com.sleticalboy.myapplication;
+package com.sleticalboy.dailywork;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -11,8 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.sleticalboy.myapplication.bean.Stock;
-import com.sleticalboy.myapplication.http.HttpUtils;
+import com.sleticalboy.dailywork.bean.Stock;
+import com.sleticalboy.dailywork.http.HttpUtils;
 
 import java.io.IOException;
 import java.text.DecimalFormat;

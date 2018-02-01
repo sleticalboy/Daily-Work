@@ -1,4 +1,4 @@
-package com.sleticalboy.myapplication.bean;
+package com.sleticalboy.dailywork.bean;
 
 import java.io.Serializable;
 import java.util.List;

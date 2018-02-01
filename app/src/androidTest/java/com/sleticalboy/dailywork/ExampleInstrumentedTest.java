@@ -1,4 +1,4 @@
-package com.sleticalboy.myapplication;
+package com.sleticalboy.dailywork;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,4 +1,4 @@
-package com.sleticalboy.myapplication.http;
+package com.sleticalboy.dailywork.http;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
