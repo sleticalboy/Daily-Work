@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork;
+package com.sleticalboy.dailywork.ui.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.sleticalboy.dailywork.R;
+import com.sleticalboy.dailywork.base.BaseActivity;
 import com.sleticalboy.dailywork.bean.Stock;
 import com.sleticalboy.dailywork.http.HttpUtils;
 

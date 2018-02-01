@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork;
+package com.sleticalboy.dailywork.base;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;

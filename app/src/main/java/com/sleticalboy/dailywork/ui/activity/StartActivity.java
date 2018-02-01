@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork;
+package com.sleticalboy.dailywork.ui.activity;
 
 import android.app.ListActivity;
 import android.content.Intent;
