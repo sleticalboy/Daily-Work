@@ -11,7 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
- * Created by AS on 18-1-29.
+ * Created on 18-1-29.
  *
  * @author sleticalboy
  * @version 1.0
@@ -21,6 +21,7 @@ public class StartActivity extends ListActivity {
 
     private final ItemHolder[] dataList = {
             new ItemHolder(MainActivity.class, "股票 View"),
+            new ItemHolder(SmsSenderActivity.class, "加密短信发送"),
     };
 
     @Override
