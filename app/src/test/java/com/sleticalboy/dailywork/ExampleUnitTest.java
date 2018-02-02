@@ -11,50 +11,8 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
 
-    private final Object lock = new Object();
-
-    private static int counter = 100;
-
     @Test
-    public void addition_isCorrect() throws Exception {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    lock1();
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    lock2();
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    public void lock1() {
-        synchronized (lock) {
-            while (counter >= 0) {
-                counter--;
-                System.out.println(Thread.currentThread().getName() + " " + counter);
-            }
-            System.out.println(this);
-        }
-    }
-
-    public void lock2() {
-        synchronized (lock) {
-            System.out.println(Thread.currentThread().getName() + " " + counter);
-            System.out.println(this);
-        }
+    public String ecbEcrypt() {
+        return null;
     }
 }

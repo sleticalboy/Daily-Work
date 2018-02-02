@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.sleticalboy.dailywork.base.BaseActivity;
+
 /**
  * Created on 18-2-1.
  *
@@ -11,7 +13,7 @@ import android.support.v7.app.AppCompatActivity;
  * @version 1.0
  * @description
  */
-public class SmsSenderActivity extends AppCompatActivity {
+public class SmsSenderActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

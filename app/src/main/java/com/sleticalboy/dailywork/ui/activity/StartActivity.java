@@ -15,13 +15,14 @@ import android.widget.TextView;
  *
  * @author sleticalboy
  * @version 1.0
- * @description
+ * @description 启动界面
  */
 public class StartActivity extends ListActivity {
 
     private final ItemHolder[] dataList = {
             new ItemHolder(StockActivity.class, "股票 View"),
             new ItemHolder(SmsSenderActivity.class, "加密短信发送"),
+            new ItemHolder(RefreshActivity.class, "下拉刷新 View")
     };
 
     @Override
