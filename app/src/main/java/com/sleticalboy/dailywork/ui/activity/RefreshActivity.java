@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
-import com.sleticalboy.dailywork.weight.PullRefreshLayout;
+import com.sleticalboy.dailywork.weight.PullRefreshView;
 
 /**
  * Created on 18-2-2.
@@ -21,8 +21,8 @@ public class RefreshActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_refresh);
-        PullRefreshLayout refreshLayout = findViewById(R.id.refresh_layout);
-        refreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+        PullRefreshView refreshLayout = findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(new PullRefreshView.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Toast.makeText(RefreshActivity.this, "on refresh is doing", Toast.LENGTH_SHORT).show();

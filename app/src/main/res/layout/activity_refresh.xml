@@ -1,33 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sleticalboy.dailywork.weight.PullRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sleticalboy.dailywork.weight.PullRefreshView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_refresh" />
-
-    <FrameLayout
-        android:id="@+id/fl_container"
+    <ListView
+        android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true" />
-
-    <LinearLayout
-        android:id="@+id/ll_footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/footer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="8dp"
-            android:text="footer footer"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-</com.sleticalboy.dailywork.weight.PullRefreshLayout>
+        android:layout_height="match_parent"/>
+</com.sleticalboy.dailywork.weight.PullRefreshView>

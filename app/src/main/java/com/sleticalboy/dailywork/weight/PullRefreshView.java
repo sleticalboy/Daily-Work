@@ -7,14 +7,16 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
@@ -25,20 +27,31 @@ import com.sleticalboy.dailywork.R;
  *
  * @author sleticalboy
  * @version 1.0
- * @description 下拉刷新 View
+ * @description 下拉/上拉刷新 View
  */
-public class PullRefreshLayout extends RelativeLayout {
+public class PullRefreshView extends LinearLayout {
 
     private static final String TAG = "PullRefreshLayout";
+
     private static final int ANIM_TIME = 180;
-    public static final int STATE_NORMAL = 0x00;
-    public static final int STATE_READY = 0x01;
-    public static final int STATE_REFRESHING = 0x02;
     private static final float SCROLL_RATIO = 0.5f;
+    public static final int STATE_NORMAL = 0x000;
+    public static final int STATE_READY = 0x001;
+    public static final int STATE_REFRESHING = 0x002;
+
+    /**
+     * pull down
+     */
+    public static final int PULL_DOWN = 0x003;
+    /**
+     * pull up
+     */
+    public static final int PULL_UP = 0x004;
 
     private Point mTouchPoint = new Point();
-    private Rect mRefreshRect = new Rect();
+    private Rect mHeaderRect = new Rect();
     private Rect mContentRect = new Rect();
+    private Rect mFooterRect = new Rect();
 
     private ImageView mArrowView;
     private ProgressBar mProgressBar;
@@ -49,14 +62,14 @@ public class PullRefreshLayout extends RelativeLayout {
     private Animation mDownAnim;
 
     private ViewGroup mHeaderView;
-    private ViewGroup mBodyView;
+    private FrameLayout mContentView;
     private ViewGroup mFooterView;
 
     private int mTouchSlop;
     private Scroller mScroller;
 
     private int mHeaderHeight;
-    private int mBodyHeight;
+    private int mContentHeight;
     private int mFooterHeight;
     private int mCurrentState = STATE_NORMAL;
 
@@ -65,24 +78,69 @@ public class PullRefreshLayout extends RelativeLayout {
 
     private OnRefreshListener mRefreshListener;
 
-    public PullRefreshLayout(Context context) {
-        super(context);
-        init(context);
+    public PullRefreshView(Context context) {
+        this(context, null);
     }
 
-    public PullRefreshLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+    public PullRefreshView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public PullRefreshLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PullRefreshView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     private void init(Context context) {
+        Log.d(TAG, "init() called with: context = [" + context + "]");
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mScroller = new Scroller(context, new DecelerateInterpolator());
+
+        initView();
+        initAnimation();
+    }
+
+    // init view
+    private void initView() {
+        if (isInEditMode()) {
+            return;
+        }
+        // 生成主 View
+        View v = inflate(getContext(), R.layout.custom_refresh_layout, this);
+
+        mHeaderView = v.findViewById(R.id.refresh_header);
+        mFooterView = v.findViewById(R.id.refresh_footer);
+        mContentView = v.findViewById(R.id.refresh_container);
+
+        initHeaderView();
+        initContentView();
+        initFooterView();
+    }
+
+    private void initHeaderView() {
+        mArrowView = mHeaderView.findViewById(R.id.default_ptr_flip);
+        mProgressBar = mHeaderView.findViewById(R.id.default_ptr_rotate);
+        mHintView = mHeaderView.findViewById(R.id.refresh_tip);
+        mRefreshTimeView = mHeaderView.findViewById(R.id.refresh_time);
+    }
+
+    private void initContentView() {
+    }
+
+    private void initFooterView() {
+    }
+
+    // init animation
+    private void initAnimation() {
+        mUpAnim = new RotateAnimation(0.0f, 180.0f, Animation.RELATIVE_TO_SELF,
+                0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        mUpAnim.setFillAfter(true);
+        mUpAnim.setDuration(ANIM_TIME);
+
+        mDownAnim = new RotateAnimation(180.0f, 360.0f, Animation.RELATIVE_TO_SELF,
+                0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        mDownAnim.setFillAfter(true);
+        mDownAnim.setDuration(ANIM_TIME);
     }
 
     @Override
@@ -99,15 +157,28 @@ public class PullRefreshLayout extends RelativeLayout {
         super.onLayout(changed, l, t, r, b);
 
         mHeaderHeight = getHeaderHeight();
-        mBodyHeight = getBodyHeight();
+        mContentHeight = getContentHeight();
+        mFooterHeight = getFooterHeight();
+        Log.d(TAG, "mHeaderHeight:" + mHeaderHeight);
+        Log.d(TAG, "mContentHeight:" + mContentHeight);
+        Log.d(TAG, "mFooterHeight:" + mFooterHeight);
 
+        // -----------header---------
+        // left--------top-------- right
+        //     |                 |
+        //     |                 |
+        //     |                 |
+        //     |                 |
+        // left------bottom------- right
+        // -----------footer--------
         mHeaderView.layout(l, -mHeaderHeight, r, 0);
-        mBodyView.layout(l, 0, r, mBodyHeight);
+        mContentView.layout(l, 0, r, mContentHeight);
+        mFooterView.layout(l, b, r, b + mFooterHeight);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d(TAG, "onDraw() called with: canvas = [" + canvas + "]");
+        Log.d(TAG, "onDraw() called");
         super.onDraw(canvas);
     }
 
@@ -115,28 +186,11 @@ public class PullRefreshLayout extends RelativeLayout {
     protected void onFinishInflate() {
         Log.d(TAG, "onFinishInflate() called");
         super.onFinishInflate();
-
-        if (getChildCount() > 3)
-            throw new RuntimeException("child view must be less than two");
-
-        mHeaderView = (ViewGroup) getChildAt(0);
-        mBodyView = (ViewGroup) getChildAt(1);
-        mFooterView = (ViewGroup) getChildAt(2);
-
-        mArrowView = mHeaderView.findViewById(R.id.default_ptr_flip);
-        mProgressBar = mHeaderView.findViewById(R.id.default_ptr_rotate);
-        mHintView = mHeaderView.findViewById(R.id.refresh_tip);
-        mRefreshTimeView = mHeaderView.findViewById(R.id.refresh_time);
-
-        mUpAnim = new RotateAnimation(0.0f, 180.0f, Animation.RELATIVE_TO_SELF,
-                0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        mUpAnim.setFillAfter(true);
-        mUpAnim.setDuration(ANIM_TIME);
-
-        mDownAnim = new RotateAnimation(180.0f, 360.0f, Animation.RELATIVE_TO_SELF,
-                0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        mDownAnim.setFillAfter(true);
-        mDownAnim.setDuration(ANIM_TIME);
+        if (getChildCount() == 0)
+            return;
+        for (int i = 0; i < getChildCount(); i++) {
+            Log.d(TAG, "getChildAt(" + i + "):" + getChildAt(i));
+        }
     }
 
     @Override
@@ -149,10 +203,10 @@ public class PullRefreshLayout extends RelativeLayout {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mTouchPoint.set(((int) ev.getX()), ((int) ev.getY()));
-                mRefreshRect.set(mHeaderView.getLeft(), mHeaderView.getTop(),
+                mHeaderRect.set(mHeaderView.getLeft(), mHeaderView.getTop(),
                         mHeaderView.getRight(), mHeaderView.getBottom());
-                mContentRect.set(mBodyView.getLeft(), mBodyView.getTop(),
-                        mBodyView.getRight(), mBodyView.getBottom());
+                mContentRect.set(mContentView.getLeft(), mContentView.getTop(),
+                        mContentView.getRight(), mContentView.getBottom());
                 break;
             case MotionEvent.ACTION_MOVE:
                 int moveY = (int) ev.getY();
@@ -173,7 +227,7 @@ public class PullRefreshLayout extends RelativeLayout {
     }
 
     private boolean is2Top() {
-        return mBodyView.getScrollY() <= 0;
+        return mContentView.getScrollY() <= 0;
     }
 
     @Override
@@ -289,8 +343,12 @@ public class PullRefreshLayout extends RelativeLayout {
         return mHeaderView.getMeasuredHeight();
     }
 
-    public int getBodyHeight() {
-        return mBodyView.getMeasuredHeight();
+    public int getContentHeight() {
+        return mContentView.getMeasuredHeight();
+    }
+
+    public int getFooterHeight() {
+        return mFooterView.getMeasuredHeight();
     }
 
     public boolean isRefreshEnable() {
