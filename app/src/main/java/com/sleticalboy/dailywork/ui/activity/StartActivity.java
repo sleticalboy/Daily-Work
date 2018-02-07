@@ -24,7 +24,8 @@ public class StartActivity extends ListActivity {
             new ItemHolder(SmsSenderActivity.class, "加密短信发送"),
             new ItemHolder(RefreshActivity.class, "下拉刷新 View"),
             new ItemHolder(PullRefreshActivity.class, "下拉刷新库测试"),
-            new ItemHolder(WheelRVActivity.class, "RecyclerView 轮播")
+            new ItemHolder(WheelRVActivity.class, "RecyclerView 轮播"),
+            new ItemHolder(DecorationActivity.class, "RecyclerView 添加 item 分割线 / 拖拽排序"),
     };
 
     @Override

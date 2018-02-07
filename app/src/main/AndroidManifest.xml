@@ -23,6 +23,9 @@
         <activity android:name="com.sleticalboy.dailywork.ui.activity.StockActivity" />
         <activity android:name="com.sleticalboy.dailywork.ui.activity.SmsSenderActivity" />
         <activity android:name=".ui.activity.RefreshActivity" />
+        <activity android:name=".ui.activity.PullRefreshActivity"/>
+        <activity android:name=".ui.activity.WheelRVActivity"/>
+        <activity android:name=".ui.activity.DecorationActivity"/>
     </application>
 
 </manifest>

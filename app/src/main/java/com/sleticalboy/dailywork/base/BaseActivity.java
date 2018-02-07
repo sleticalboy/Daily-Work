@@ -11,11 +11,24 @@ import android.support.annotation.Nullable;
  * @version 1.0
  * @description
  */
-public class BaseActivity extends PermissionCheckActivity {
+public abstract class BaseActivity extends PermissionCheckActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prepareWork();
+        setContentView(attachLayoutId());
+        initView();
+        initData();
+    }
+
+    protected abstract void initData();
+
+    protected abstract void initView();
+
+    protected abstract int attachLayoutId();
+
+    protected void prepareWork() {
     }
 
     @Override

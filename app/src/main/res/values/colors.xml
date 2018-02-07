@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="mx_light_gray">#33cccccc</color>
-    <color name="colorpicker_red">#99ff0000</color>
+    <color name="color_picker_red">#99ff0000</color>
 </resources>
