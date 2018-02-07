@@ -27,12 +27,7 @@ import okhttp3.ResponseBody;
 public class StockActivity extends BaseActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
-        setContentView(R.layout.activity_main);
-
-        // 设置 stock View
+    protected void initData() {
         String url = "https://gupiao.baidu.com/api/rails/stockbasicbatch?format=json&stock_code=hk02799";
         HttpUtils.request(url, new Callback() {
             @Override
@@ -67,6 +62,16 @@ public class StockActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void initView() {
+
+    }
+
+    @Override
+    protected int attachLayoutId() {
+        return R.layout.activity_main;
     }
 
     private void setStockView(Stock.DataEntity stock) {

@@ -16,7 +16,17 @@ import com.sleticalboy.dailywork.base.BaseActivity;
 public class SmsSenderActivity extends BaseActivity {
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void initData() {
+
+    }
+
+    @Override
+    protected void initView() {
+
+    }
+
+    @Override
+    protected int attachLayoutId() {
+        return 0;
     }
 }

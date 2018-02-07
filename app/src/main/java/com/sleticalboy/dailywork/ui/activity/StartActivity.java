@@ -22,7 +22,9 @@ public class StartActivity extends ListActivity {
     private final ItemHolder[] dataList = {
             new ItemHolder(StockActivity.class, "股票 View"),
             new ItemHolder(SmsSenderActivity.class, "加密短信发送"),
-            new ItemHolder(RefreshActivity.class, "下拉刷新 View")
+            new ItemHolder(RefreshActivity.class, "下拉刷新 View"),
+            new ItemHolder(PullRefreshActivity.class, "下拉刷新库测试"),
+            new ItemHolder(WheelRVActivity.class, "RecyclerView 轮播")
     };
 
     @Override
