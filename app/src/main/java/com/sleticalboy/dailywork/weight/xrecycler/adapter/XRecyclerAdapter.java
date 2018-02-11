@@ -34,7 +34,6 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
     private Context mContext;
     private RecyclerView mRecyclerView;
     private boolean mNotifyOnChange = false;
-    private EventDelegate mEventDelegate;
 
     public XRecyclerAdapter(Context context) {
         init(context, new ArrayList<M>());
@@ -71,7 +70,8 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
             return new PlaceHolder(view);
         }
         final XBaseHolder holder = onCreateItemHolder(parent, viewType);
-        final int position = holder.getAdapterPosition() - mHeaders.size();
+//        final int position = holder.getAdapterPosition() - mHeaders.size();
+        final int position = holder.getAdapterPosition();
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -389,13 +389,6 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
     public interface OnItemLongClickListener {
 
         boolean onItemLongClick(int position);
-    }
-
-    public EventDelegate getEventDelegate() {
-        if (mEventDelegate == null) {
-            mEventDelegate = new EventDelegateImpl(this);
-        }
-        return mEventDelegate;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {

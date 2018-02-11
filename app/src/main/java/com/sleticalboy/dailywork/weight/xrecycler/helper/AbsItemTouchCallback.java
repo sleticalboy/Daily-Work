@@ -8,7 +8,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
  *
  * @author sleticalboy
  * @version 1.0
- * @description
+ * @description Abstract ItemTouchCallback for ItemTouchHelper
  */
 public abstract class AbsItemTouchCallback extends ItemTouchHelper.Callback {
 

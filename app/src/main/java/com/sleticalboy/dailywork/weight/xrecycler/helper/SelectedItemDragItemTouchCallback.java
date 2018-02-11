@@ -20,8 +20,8 @@ public class SelectedItemDragItemTouchCallback extends AbsItemTouchCallback {
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
-        int swipeFlags = 0;
+        final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+        final int swipeFlags = 0;
         return ItemTouchHelper.Callback.makeMovementFlags(dragFlags, swipeFlags);
     }
 
@@ -34,6 +34,5 @@ public class SelectedItemDragItemTouchCallback extends AbsItemTouchCallback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
     }
 }

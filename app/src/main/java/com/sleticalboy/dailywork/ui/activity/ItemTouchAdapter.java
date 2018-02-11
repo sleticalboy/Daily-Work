@@ -36,16 +36,6 @@ public class ItemTouchAdapter extends XRecyclerAdapter<Integer> implements ItemT
         return new ViewHolder(parent, R.layout.item_wheel_layout);
     }
 
-//    @Override
-//    public int getCount() {
-//        return Integer.MAX_VALUE;
-//    }
-//
-//    @Override
-//    public Integer getItemData(int position) {
-//        return mObjects[getCount() % mObjects.length];
-//    }
-
     @Override
     public void onItemMove(int from, int to) {
         relocationItem(new ArrayList<>(Arrays.asList(mObjects)), from, to);

@@ -3,6 +3,7 @@ package com.sleticalboy.dailywork.ui.activity;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
 import com.sleticalboy.dailywork.weight.xrecycler.adapter.XRecyclerAdapter;
+import com.sleticalboy.dailywork.weight.xrecycler.helper.StartSnapHelper;
 
 /**
  * Created on 18-2-7.
@@ -64,13 +66,11 @@ public class WheelRVActivity extends BaseActivity {
 
     // 开启定时轮播
     private void startWheel() {
-        stopWheel();
         mHandler.postDelayed(mWheelTask, 0);
     }
 
     // 停止定时轮播
     private void stopWheel() {
-        mHandler.removeCallbacks(mWheelTask);
         mHandler.removeCallbacksAndMessages(null);
     }
 
@@ -100,8 +100,9 @@ public class WheelRVActivity extends BaseActivity {
         ItemAdapter adapter = new ItemAdapter(this, mImagesId);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.scrollToPosition(mCurrentPos);
-//        new LinearSnapHelper().attachToRecyclerView(recyclerView);
+//        new LinearSnapHelper().attachToRecyclerView(mRecyclerView);
         new PagerSnapHelper().attachToRecyclerView(mRecyclerView);
+//        new StartSnapHelper().attachToRecyclerView(mRecyclerView);
 
         adapter.setOnItemClickListener(new XRecyclerAdapter.OnItemClickListener() {
             @Override
@@ -109,25 +110,10 @@ public class WheelRVActivity extends BaseActivity {
                 Toast.makeText(WheelRVActivity.this, "click :" + position, Toast.LENGTH_SHORT).show();
             }
         });
-        adapter.setOnItemLongClickListener(new XRecyclerAdapter.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(int position) {
-                Toast.makeText(WheelRVActivity.this, "long click :" + position, Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
     }
 
     @Override
     protected int attachLayoutId() {
         return R.layout.activity_wheel_rv;
-    }
-
-    public void toast(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("轮播会停止么？");
-        builder.setNegativeButton("会！", null);
-        builder.setPositiveButton("不会！", null);
-        builder.create().show();
     }
 }

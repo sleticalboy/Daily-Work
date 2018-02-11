@@ -12,7 +12,6 @@
 
     <Button
         android:text="弹出 toast"
-        android:onClick="toast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
