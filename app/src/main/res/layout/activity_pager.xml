@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     app:indicator_drawable="@drawable/mx_page_indicator"
     app:indicator_size="3dp"
-    app:layout_columns="4"
-    app:layout_rows="3"/>
+    app:layout_columns="3"
+    app:layout_rows="4"/>
 
     <!--<com.sleticalboy.dailywork.weight.PagerView-->
     <!--android:id="@+id/pager_view"-->
