@@ -25,12 +25,12 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
 
     private final Object mLock = new Object();
 
-    protected List<HeaderView> mHeaders = new ArrayList<>();
-    protected List<FooterView> mFooters = new ArrayList<>();
+    private List<HeaderView> mHeaders = new ArrayList<>();
+    private List<FooterView> mFooters = new ArrayList<>();
     private OnItemClickListener mOnItemClickListener;
     private OnItemLongClickListener mOnItemLongClickListener;
 
-    protected List<M> mDataList;
+    private List<M> mDataList;
     private Context mContext;
     private RecyclerView mRecyclerView;
     private boolean mNotifyOnChange = false;
@@ -50,6 +50,10 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
     private void init(Context context, List<M> dataList) {
         mContext = context;
         mDataList = new ArrayList<>(dataList);
+    }
+
+    public Context getContext() {
+        return mContext;
     }
 
     // placeholder

@@ -113,7 +113,7 @@ public class WheelRVActivity extends BaseActivity {
     }
 
     @Override
-    protected int attachLayoutId() {
+    protected int attachLayout() {
         return R.layout.activity_wheel_rv;
     }
 }

@@ -3,6 +3,7 @@ package com.sleticalboy.dailywork.base;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 /**
  * Created on 18-2-1.
@@ -17,7 +18,7 @@ public abstract class BaseActivity extends PermissionCheckActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prepareWork();
-        setContentView(attachLayoutId());
+        setContentView(attachLayout());
         initView();
         initData();
     }
@@ -26,7 +27,9 @@ public abstract class BaseActivity extends PermissionCheckActivity {
 
     protected abstract void initView();
 
-    protected abstract int attachLayoutId();
+    protected abstract int attachLayout();
+
+//    protected abstract View attachLayout();
 
     protected void prepareWork() {
     }

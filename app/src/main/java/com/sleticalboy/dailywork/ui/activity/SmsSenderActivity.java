@@ -26,7 +26,7 @@ public class SmsSenderActivity extends BaseActivity {
     }
 
     @Override
-    protected int attachLayoutId() {
+    protected int attachLayout() {
         return 0;
     }
 }

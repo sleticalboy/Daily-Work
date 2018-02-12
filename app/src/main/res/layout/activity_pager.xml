@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sleticalboy.dailywork.weight.PagerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pager_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:indicator_drawable="@drawable/mx_page_indicator"
+    app:indicator_size="3dp"
+    app:layout_columns="4"
+    app:layout_rows="3"/>
+
+    <!--<com.sleticalboy.dailywork.weight.PagerView-->
+    <!--android:id="@+id/pager_view"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--app:indicator_drawable="@drawable/mx_page_indicator"-->
+    <!--app:indicator_size="3dp"-->
+    <!--app:layout_columns="4"-->
+    <!--app:layout_rows="3"/>-->
+<!--</com.sleticalboy.dailywork.weight.PagerView>-->

@@ -26,6 +26,7 @@ public class StartActivity extends ListActivity {
             new ItemHolder(PullRefreshActivity.class, "下拉刷新库测试"),
             new ItemHolder(WheelRVActivity.class, "RecyclerView 轮播"),
             new ItemHolder(DecorationActivity.class, "RecyclerView 添加 item 分割线 / 拖拽排序"),
+            new ItemHolder(PagerActivity.class, "RecyclerView 分页"),
     };
 
     @Override

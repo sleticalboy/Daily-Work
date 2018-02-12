@@ -70,7 +70,7 @@ public class StockActivity extends BaseActivity {
     }
 
     @Override
-    protected int attachLayoutId() {
+    protected int attachLayout() {
         return R.layout.activity_main;
     }
 

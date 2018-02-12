@@ -26,6 +26,7 @@
         <activity android:name=".ui.activity.PullRefreshActivity"/>
         <activity android:name=".ui.activity.WheelRVActivity"/>
         <activity android:name=".ui.activity.DecorationActivity"/>
+        <activity android:name=".ui.activity.PagerActivity"/>
     </application>
 
 </manifest>

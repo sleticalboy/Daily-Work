@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--XRefreshView-->
     <declare-styleable name="XRefreshView">
         <attr name="layout_empty" format="reference"/>
         <attr name="layout_error" format="reference"/>
@@ -15,5 +16,13 @@
         <attr name="civ_border_color" format="color"/>
         <attr name="civ_border_overlay" format="boolean"/>
         <attr name="civ_fill_color" format="color"/>
+    </declare-styleable>
+
+    <!--PagerView-->
+    <declare-styleable name="PagerView">
+        <attr name="layout_rows" format="integer"/>
+        <attr name="layout_columns" format="integer"/>
+        <attr name="indicator_size" format="dimension"/>
+        <attr name="indicator_drawable" format="reference"/>
     </declare-styleable>
 </resources>

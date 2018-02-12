@@ -82,7 +82,7 @@ public class PullRefreshActivity extends BaseActivity {
     }
 
     @Override
-    protected int attachLayoutId() {
+    protected int attachLayout() {
         return R.layout.activity_pull_refresh;
     }
 
