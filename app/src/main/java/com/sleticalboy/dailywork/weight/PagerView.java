@@ -2,11 +2,9 @@ package com.sleticalboy.dailywork.weight;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -122,14 +120,6 @@ public class PagerView extends FrameLayout {
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        if (getChildCount() > 0) {
-            throw new IllegalStateException("this view " + getClass().getName() + " has no child view");
-        }
-    }
-
-    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (mPageSize == 0) {
@@ -138,7 +128,6 @@ public class PagerView extends FrameLayout {
         if (mPageSize == 0) {
             return;
         }
-        Log.d(TAG, "onAttachedToWindow() called with: mPageSize = [" + mPageSize + "]");
         mIndicatorLayout.removeAllViews();
         for (int i = 0; i < mPageSize; i++) {
             View indicator = new ImageView(getContext());
@@ -236,7 +225,6 @@ public class PagerView extends FrameLayout {
 
         @Override
         public void onPageChanged(int pageIndex) {
-            Log.d(TAG, "onPageChanged() pageIndex = [" + pageIndex + "] mPageSize = [" + mPageSize + "]");
             mCurrentPage = pageIndex;
             for (int i = 0; i < mPageSize; i++) {
                 View view = mIndicatorLayout.getChildAt(i);

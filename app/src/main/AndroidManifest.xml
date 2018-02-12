@@ -13,20 +13,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name="com.sleticalboy.dailywork.ui.activity.StartActivity">
+        <activity android:name=".ui.activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.sleticalboy.dailywork.ui.activity.StockActivity" />
-        <activity android:name="com.sleticalboy.dailywork.ui.activity.SmsSenderActivity" />
+        <activity android:name=".ui.activity.StockActivity" />
+        <activity android:name=".ui.activity.SmsSenderActivity" />
         <activity android:name=".ui.activity.RefreshActivity" />
         <activity android:name=".ui.activity.PullRefreshActivity"/>
         <activity android:name=".ui.activity.WheelRVActivity"/>
         <activity android:name=".ui.activity.DecorationActivity"/>
         <activity android:name=".ui.activity.PagerActivity"/>
+        <activity android:name=".ui.activity.ClassifyActivity"/>
     </application>
 
 </manifest>
