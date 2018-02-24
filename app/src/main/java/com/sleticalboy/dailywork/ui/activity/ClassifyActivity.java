@@ -1,6 +1,7 @@
 package com.sleticalboy.dailywork.ui.activity;
 
 import android.content.Context;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
 import com.sleticalboy.dailywork.bean.AppInfo;
+import com.sleticalboy.dailywork.weight.xrecycler.decoration.DividerGridItemDecoration;
+import com.sleticalboy.dailywork.weight.xrecycler.decoration.SpaceDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,10 +120,12 @@ public class ClassifyActivity extends BaseActivity {
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
+                // title 占 3 格，普通 item 占 1 格
                 return mAdapter.getItemViewType(position) == TYPE_TITLE ? layoutManager.getSpanCount() : 1;
             }
         });
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerGridItemDecoration(this, 8));
 
         mAdapter = new AppInfoAdapter(this, mAppList);
         recyclerView.setAdapter(mAdapter);

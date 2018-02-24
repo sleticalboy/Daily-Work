@@ -2,19 +2,19 @@ package com.sleticalboy.dailywork.weight.xrecycler.helper;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created on 2016/11/9.
  *
  * @author zhuguohui
  */
-public class PageLayoutManager extends RecyclerView.LayoutManager implements
+public class PagerLayoutManager extends RecyclerView.LayoutManager implements
         PageDecorationLastJudge {
 
-    private static final String TAG = "PageLayoutManager";
+    private static final String TAG = "PagerLayoutManager";
 
     private int totalHeight = 0;
     private int totalWidth = 0;
@@ -31,8 +31,10 @@ public class PageLayoutManager extends RecyclerView.LayoutManager implements
     private int onePageSize = 0;
     private int itemWidthUsed;
     private int itemHeightUsed;
+    private int[] mMeasuredDimension = new int[2];
 
-    public PageLayoutManager(int rows, int columns) {
+
+    public PagerLayoutManager(int rows, int columns) {
         mRows = rows;
         mColumns = columns;
         this.onePageSize = rows * columns;
@@ -40,7 +42,8 @@ public class PageLayoutManager extends RecyclerView.LayoutManager implements
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
-        return null;
+        return new RecyclerView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
@@ -127,8 +130,6 @@ public class PageLayoutManager extends RecyclerView.LayoutManager implements
                     int y = r * itemHeight;
                     rect.set(x, y, width + x, height + y);
                     allItemFrames.put(index, rect);
-
-
                 }
             }
             //每一页循环以后就回收一页的View用于下一页的使用
@@ -148,7 +149,6 @@ public class PageLayoutManager extends RecyclerView.LayoutManager implements
         if (state.isPreLayout()) {
             return;
         }
-
         Rect displayRect = new Rect(getPaddingLeft() + offsetX, getPaddingTop(),
                 getWidth() - getPaddingLeft() - getPaddingRight() + offsetX,
                 getHeight() - getPaddingTop() - getPaddingBottom());

@@ -5,18 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.sleticalboy.dailywork.R;
-import com.sleticalboy.dailywork.base.BaseActivity;
-import com.sleticalboy.dailywork.util.UIUtils;
 import com.sleticalboy.dailywork.weight.PagerView;
 import com.sleticalboy.dailywork.weight.xrecycler.adapter.XBaseHolder;
 import com.sleticalboy.dailywork.weight.xrecycler.adapter.XRecyclerAdapter;
-import com.sleticalboy.dailywork.weight.xrecycler.helper.PageLayoutManager;
+import com.sleticalboy.dailywork.weight.xrecycler.helper.PagerLayoutManager;
 import com.sleticalboy.dailywork.weight.xrecycler.helper.PageScrollHelper;
 
 /**
@@ -26,8 +27,7 @@ import com.sleticalboy.dailywork.weight.xrecycler.helper.PageScrollHelper;
  * @version 1.0
  * @description 测试 RecyclerView  分页效果
  */
-public class PagerActivity extends /*BaseActivity*/ AppCompatActivity implements
-        PageScrollHelper.OnPageSelectedListener {
+public class PagerActivity extends AppCompatActivity {
 
     private static final String TAG = "PagerActivity";
 
@@ -41,14 +41,6 @@ public class PagerActivity extends /*BaseActivity*/ AppCompatActivity implements
             R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher,
     };
 
-    private int mPageSize;
-    private int mCurrentPage = 0;
-    private LinearLayout llIndicators;
-    private int indicatorWidth;
-    private PageLayoutManager mPageLayoutManager;
-    private int mRows = 3;
-    private int mColumns = 4;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +49,9 @@ public class PagerActivity extends /*BaseActivity*/ AppCompatActivity implements
     }
 
     private void setView() {
-        PagerView pagerView = new PagerView(this, mRows, mColumns);
+        int rows = 3;
+        int columns = 4;
+        PagerView pagerView = new PagerView(this, rows, columns);
         pagerView.setIndicatorSize(4);
         pagerView.setIndicatorDrawable(R.drawable.mx_page_indicator);
         pagerView.setAdapter(new PagerAdapter(this, mImagesId));
@@ -67,95 +61,12 @@ public class PagerActivity extends /*BaseActivity*/ AppCompatActivity implements
     private void setLayout() {
         setContentView(R.layout.activity_pager);
         PagerView pagerView = findViewById(R.id.pager_view);
+        pagerView.setTitle("已添加的应用");
         pagerView.setAdapter(new PagerAdapter(this, mImagesId));
         pagerView.setIndicatorDrawable(R.drawable.mx_page_indicator);
     }
 
-    //    @Override
-    protected void initData() {
-
-    }
-
-//    @Override
-    protected void initView() {
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        llIndicators = findViewById(R.id.ll_indicators);
-        mPageLayoutManager = new PageLayoutManager(mRows, mColumns);
-        recyclerView.setLayoutManager(mPageLayoutManager);
-        PagerAdapter adapter = new PagerAdapter(this, mImagesId);
-        recyclerView.setAdapter(adapter);
-
-        PageScrollHelper pageScrollHelper = new PageScrollHelper();
-        pageScrollHelper.setUpWithRecycleView(recyclerView);
-        pageScrollHelper.setOnPageSelectedListener(this);
-
-        PagerView pagerView = new PagerView(this, 3, 4);
-        pagerView.setAdapter(new PagerAdapter(this, mImagesId));
-    }
-
-//    @Override
-    protected int attachLayout() {
-        return R.layout.activity_pager;
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-//        mPageSize = getPageSize();
-//        mPageSize = mPageLayoutManager.getPageSize();
-//        llIndicators.removeAllViews();
-//        indicatorWidth = UIUtils.dp2px(this, 3);
-//        for (int i = 0; i < mPageSize; i++) {
-//            View indicator = new View(this);
-//            if (mCurrentPage == i) {
-//                indicator.setPressed(true);
-//                indicator.setSelected(true);
-//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                        2 * indicatorWidth, 2 * indicatorWidth);
-//                params.setMargins(2 * indicatorWidth, 0, 0, 0);
-//                indicator.setLayoutParams(params);
-//            } else {
-//                indicator.setPressed(false);
-//                indicator.setSelected(false);
-//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                        indicatorWidth, indicatorWidth);
-//                params.setMargins(2 * indicatorWidth, 0, 0, 0);
-//                indicator.setLayoutParams(params);
-//            }
-//            indicator.setBackgroundResource(R.drawable.mx_page_indicator);
-//            llIndicators.addView(indicator);
-//        }
-    }
-
-    private int getPageSize() {
-        final int onePageSize = mRows * mColumns;
-        final int itemCount = mPageLayoutManager.getItemCount();
-        return itemCount / onePageSize + (itemCount % onePageSize == 0 ? 0 : 1);
-    }
-
-    @Override
-    public void onPageChanged(int pageIndex) {
-        mCurrentPage = pageIndex;
-        for (int i = 0; i < mPageSize; i++) {
-            View view = llIndicators.getChildAt(i);
-            if (mCurrentPage == i) {
-                view.setSelected(true);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        2 * indicatorWidth, 2 * indicatorWidth);
-                params.setMargins(2 * indicatorWidth, 0, 0, 0);
-                view.setLayoutParams(params);
-            } else {
-                view.setSelected(false);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        indicatorWidth, indicatorWidth);
-                params.setMargins(2 * indicatorWidth, 0, 0, 0);
-                view.setLayoutParams(params);
-            }
-        }
-    }
-
     static class PagerAdapter extends XRecyclerAdapter<Integer> {
-
         Integer[] mIntegers;
 
         public PagerAdapter(Context context, Integer[] integers) {
@@ -170,28 +81,28 @@ public class PagerActivity extends /*BaseActivity*/ AppCompatActivity implements
 
         @Override
         public Integer getItemData(int position) {
-            position %= mIntegers.length;
+//            position %= mIntegers.length;
             return mIntegers[position];
         }
 
         @Override
         public int getCount() {
-            return 300;
-        }
-    }
-
-    static class ItemHolder extends XBaseHolder<Integer> {
-
-        ImageView mImageView;
-
-        public ItemHolder(ViewGroup parent, int res) {
-            super(parent, res);
-            mImageView = getView(R.id.image_view);
+            return mIntegers.length;
         }
 
-        @Override
-        protected void setData(Integer data) {
-            mImageView.setImageResource(data);
+        static class ItemHolder extends XBaseHolder<Integer> {
+            ImageView mImageView;
+
+            public ItemHolder(ViewGroup parent, int res) {
+                super(parent, res);
+                mImageView = getView(R.id.image_view);
+                mImageView.setAdjustViewBounds(true);
+            }
+
+            @Override
+            protected void setData(Integer data) {
+                mImageView.setImageResource(data);
+            }
         }
     }
 }

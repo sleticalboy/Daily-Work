@@ -20,9 +20,15 @@
 
     <!--PagerView-->
     <declare-styleable name="PagerView">
-        <attr name="layout_rows" format="integer"/>
-        <attr name="layout_columns" format="integer"/>
-        <attr name="indicator_size" format="dimension"/>
-        <attr name="indicator_drawable" format="reference"/>
+        <attr name="page_rows" format="integer"/>
+        <attr name="page_columns" format="integer"/>
+        <attr name="page_indicator_size" format="dimension"/>
+        <attr name="page_indicator_drawable" format="reference"/>
+        <!--!!!里面的value一定不要修改-->
+        <attr name="page_indicator_gravity" format="enum">
+            <enum name="start" value="8388611"/>
+            <enum name="center_horizontal" value="1"/>
+            <enum name="end" value="8388613"/>
+        </attr>
     </declare-styleable>
 </resources>

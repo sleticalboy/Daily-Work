@@ -34,27 +34,10 @@ public class DecorationActivity extends BaseActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         ItemTouchAdapter adapter = new ItemTouchAdapter(this, mImagesIds);
 
-        RecyclerView.LayoutManager layoutManager;
-//        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        layoutManager = new GridLayoutManager(this, 3);
-//        layoutManager = new StaggeredGridLayoutManager(4, LinearLayout.HORIZONTAL);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 3);
+        // layoutManager = new StaggeredGridLayoutManager(4, LinearLayout.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new XRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Toast.makeText(DecorationActivity.this, "click:" + position, Toast.LENGTH_SHORT).show();
-            }
-        });
-        adapter.setOnItemLongClickListener(new XRecyclerAdapter.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(int position) {
-                Toast.makeText(DecorationActivity.this, "long click:" + position, Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
 //        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayout.VERTICAL));
 //        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayout.HORIZONTAL));
         DividerGridItemDecoration decor = new DividerGridItemDecoration(this, 8);

@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sleticalboy.dailywork.weight.PagerView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/pager_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:indicator_drawable="@drawable/mx_page_indicator"
-    app:indicator_size="3dp"
-    app:layout_columns="3"
-    app:layout_rows="4"/>
+    android:orientation="vertical">
 
-    <!--<com.sleticalboy.dailywork.weight.PagerView-->
-    <!--android:id="@+id/pager_view"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--app:indicator_drawable="@drawable/mx_page_indicator"-->
-    <!--app:indicator_size="3dp"-->
-    <!--app:layout_columns="4"-->
-    <!--app:layout_rows="3"/>-->
-<!--</com.sleticalboy.dailywork.weight.PagerView>-->
+    <com.sleticalboy.dailywork.weight.PagerView
+        android:id="@+id/pager_view"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        app:page_columns="3"
+        app:page_indicator_drawable="@drawable/mx_page_indicator"
+        app:page_indicator_gravity="end"
+        app:page_indicator_size="3dp"
+        app:page_rows="2"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="4dp"
+        android:src="@mipmap/ic_launcher"/>
+</LinearLayout>
