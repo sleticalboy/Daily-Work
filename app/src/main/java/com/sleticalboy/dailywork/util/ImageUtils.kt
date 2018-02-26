@@ -1,11 +1,9 @@
 package com.sleticalboy.dailywork.util
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
 import android.os.Environment
 import android.util.Log
-
 import java.io.File
 import java.io.IOException
 
@@ -27,8 +25,8 @@ object ImageUtils {
     val saveImagePath: String
         get() {
             if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
-                val path = (Environment.getExternalStorageDirectory().path + "/renlei/"
-                        + System.currentTimeMillis() + ".jpg")
+                val path: String = Environment.getExternalStorageDirectory().path +
+                        "/dailywork/" + System.currentTimeMillis() + ".jpg"
                 val file = File(path)
                 if (!file.parentFile.exists()) {
                     file.parentFile.mkdirs()
@@ -45,7 +43,7 @@ object ImageUtils {
         val degrees = getExifRotateDegree(filePath)
     }
 
-    fun getExifRotateDegree(path: String): Int {
+    private fun getExifRotateDegree(path: String): Int {
         try {
             val exifInterface = ExifInterface(path)
             val orientation = exifInterface.getAttributeInt(
@@ -56,11 +54,10 @@ object ImageUtils {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
         return 0
     }
 
-    fun getExifRotateDegrees(exifOrientation: Int): Int {
+    private fun getExifRotateDegrees(exifOrientation: Int): Int {
         var degrees = 0
         when (exifOrientation) {
             ExifInterface.ORIENTATION_NORMAL -> degrees = 0

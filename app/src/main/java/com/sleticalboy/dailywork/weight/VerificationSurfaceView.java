@@ -31,20 +31,20 @@ public class VerificationSurfaceView extends SurfaceView implements SurfaceHolde
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        CameraUtils.getInstance().openCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
+        CameraUtils.Companion.getInstance().openCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        CameraUtils.getInstance().startPreview(holder);
+        CameraUtils.Companion.getInstance().startPreview(holder);
         if (mHandler != null) {
-            mHandler.sendEmptyMessageDelayed(CameraUtils.MSG_PREVIEW_STARTED, 1000);
+            mHandler.sendEmptyMessageDelayed(CameraUtils.Companion.getMSG_PREVIEW_STARTED(), 1000);
         }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        CameraUtils.getInstance().stopPreview();
+        CameraUtils.Companion.getInstance().stopPreview();
     }
 
     public void setHandler(Handler handler) {

@@ -27,35 +27,35 @@ so manually move them:
 * out/production/Camera/Camera.unaligned.apk
 * out/production/Camera/com/
 * out/production/Camera/com/example/
-* out/production/Camera/com/example/mCamera/
-* out/production/Camera/com/example/mCamera/BuildConfig.class
-* out/production/Camera/com/example/mCamera/CameraActivity$1.class
-* out/production/Camera/com/example/mCamera/CameraActivity$2.class
-* out/production/Camera/com/example/mCamera/CameraActivity$3.class
-* out/production/Camera/com/example/mCamera/CameraActivity$4$1.class
-* out/production/Camera/com/example/mCamera/CameraActivity$4.class
-* out/production/Camera/com/example/mCamera/CameraActivity$MainHandler$1.class
-* out/production/Camera/com/example/mCamera/CameraActivity$MainHandler.class
-* out/production/Camera/com/example/mCamera/CameraActivity$TakeBtnClickListener.class
-* out/production/Camera/com/example/mCamera/CameraActivity.class
-* out/production/Camera/com/example/mCamera/R$attr.class
-* out/production/Camera/com/example/mCamera/R$drawable.class
-* out/production/Camera/com/example/mCamera/R$id.class
-* out/production/Camera/com/example/mCamera/R$layout.class
-* out/production/Camera/com/example/mCamera/R$string.class
-* out/production/Camera/com/example/mCamera/R.class
-* out/production/Camera/com/example/mCamera/preview/
-* out/production/Camera/com/example/mCamera/preview/MySurfacePreview$1.class
-* out/production/Camera/com/example/mCamera/preview/MySurfacePreview.class
-* out/production/Camera/com/example/mCamera/util/
-* out/production/Camera/com/example/mCamera/util/CameraUtil$1.class
-* out/production/Camera/com/example/mCamera/util/CameraUtil$PicCallBacKImpl$1.class
-* out/production/Camera/com/example/mCamera/util/CameraUtil$PicCallBacKImpl.class
-* out/production/Camera/com/example/mCamera/util/CameraUtil$ShutCallBackImpl.class
-* out/production/Camera/com/example/mCamera/util/CameraUtil.class
-* out/production/Camera/com/example/mCamera/util/FaceView.class
-* out/production/Camera/com/example/mCamera/util/GoogleDetectListenerImpl.class
-* out/production/Camera/com/example/mCamera/util/ImageUtil.class
+* out/production/Camera/com/example/camera/
+* out/production/Camera/com/example/camera/BuildConfig.class
+* out/production/Camera/com/example/camera/CameraActivity$1.class
+* out/production/Camera/com/example/camera/CameraActivity$2.class
+* out/production/Camera/com/example/camera/CameraActivity$3.class
+* out/production/Camera/com/example/camera/CameraActivity$4$1.class
+* out/production/Camera/com/example/camera/CameraActivity$4.class
+* out/production/Camera/com/example/camera/CameraActivity$MainHandler$1.class
+* out/production/Camera/com/example/camera/CameraActivity$MainHandler.class
+* out/production/Camera/com/example/camera/CameraActivity$TakeBtnClickListener.class
+* out/production/Camera/com/example/camera/CameraActivity.class
+* out/production/Camera/com/example/camera/R$attr.class
+* out/production/Camera/com/example/camera/R$drawable.class
+* out/production/Camera/com/example/camera/R$id.class
+* out/production/Camera/com/example/camera/R$layout.class
+* out/production/Camera/com/example/camera/R$string.class
+* out/production/Camera/com/example/camera/R.class
+* out/production/Camera/com/example/camera/preview/
+* out/production/Camera/com/example/camera/preview/MySurfacePreview$1.class
+* out/production/Camera/com/example/camera/preview/MySurfacePreview.class
+* out/production/Camera/com/example/camera/util/
+* out/production/Camera/com/example/camera/util/CameraUtil$1.class
+* out/production/Camera/com/example/camera/util/CameraUtil$PicCallBacKImpl$1.class
+* out/production/Camera/com/example/camera/util/CameraUtil$PicCallBacKImpl.class
+* out/production/Camera/com/example/camera/util/CameraUtil$ShutCallBackImpl.class
+* out/production/Camera/com/example/camera/util/CameraUtil.class
+* out/production/Camera/com/example/camera/util/FaceView.class
+* out/production/Camera/com/example/camera/util/GoogleDetectListenerImpl.class
+* out/production/Camera/com/example/camera/util/ImageUtil.class
 * proguard-project.txt
 
 Moved Files:
@@ -63,10 +63,10 @@ Moved Files:
 Android Gradle projects use a different directory structure than ADT
 Eclipse projects. Here's how the projects were restructured:
 
-* AndroidManifest.xml => FaceVerification/src/main/AndroidManifest.xml
-* assets/ => FaceVerification/src/main/assets
-* res/ => FaceVerification/src/main/res/
-* src/ => FaceVerification/src/main/java/
+* AndroidManifest.xml => Camera/src/main/AndroidManifest.xml
+* assets/ => Camera/src/main/assets
+* res/ => Camera/src/main/res/
+* src/ => Camera/src/main/java/
 
 Next Steps:
 -----------

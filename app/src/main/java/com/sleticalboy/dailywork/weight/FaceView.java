@@ -37,7 +37,7 @@ public class FaceView extends AppCompatImageView {
         if (mFaces == null || mFaces.length < 1) {
             return;
         }
-        mIsNeedMirror = CameraUtils.getInstance().getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT;
+        mIsNeedMirror = CameraUtils.Companion.getInstance().getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT;
         canvas.save();
         prepareMatrix();
 
@@ -62,7 +62,7 @@ public class FaceView extends AppCompatImageView {
      * <pre>
      * Matrix matrix = new Matrix();
      * CameraInfo info = CameraHolder.instance().getCameraInfo()[cameraId];
-     * // Need mIsMirror for front camera.
+     * // Need mIsMirror for front mCamera.
      * boolean mIsMirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
      * matrix.setScale(mIsMirror ? -1 : 1, 1);
      * // This is the value for android.hardware.Camera.setDisplayOrientation.
