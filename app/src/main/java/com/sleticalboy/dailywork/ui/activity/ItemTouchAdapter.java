@@ -43,7 +43,7 @@ public class ItemTouchAdapter extends XRecyclerAdapter<Integer> implements ItemT
     }
 
     private <T> void relocationItem(List<T> source, int from, int to) {
-        ListUtils.relocation(source, from, to);
+        ListUtils.INSTANCE.relocation(source, from, to);
     }
 
     static class ViewHolder extends XBaseHolder<Integer> {

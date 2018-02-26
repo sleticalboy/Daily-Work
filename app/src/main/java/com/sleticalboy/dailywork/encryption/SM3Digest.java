@@ -149,7 +149,7 @@ public class SM3Digest {
         sm3.doFinal(md, 0);
 
         String s = new String(Hex.encode(md));
-        char c = UnicodeUtils.string2char(inputStr);
+        char c = UnicodeUtils.INSTANCE.string2char(inputStr);
         String finalStr = OperationUtils.convertKey(s, c);
 
 

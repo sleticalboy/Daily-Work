@@ -30,8 +30,7 @@ public class OperationUtils {
         for (int i = 0; i < a.length; i++) {
             a[i] = (char) (a[i] ^ c);
         }
-        String s = new String(a);
-        return s;
+        return new String(a);
     }
 
 }

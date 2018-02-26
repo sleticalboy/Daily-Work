@@ -388,11 +388,11 @@ public class XRefreshLayout extends FrameLayout {
     }
 
     public void setHeaderHeight(int headerHeight) {
-        mHeaderHeight = UIUtils.dp2px(getContext(), headerHeight);
+        mHeaderHeight = UIUtils.INSTANCE.dp2px(getContext(), headerHeight);
     }
 
     public void setFooterHeight(int footerHeight) {
-        mFooterHeight = UIUtils.dp2px(getContext(), footerHeight);
+        mFooterHeight = UIUtils.INSTANCE.dp2px(getContext(), footerHeight);
     }
 
     public boolean isCanPullDown() {

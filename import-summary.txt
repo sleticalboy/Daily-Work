@@ -7,22 +7,66 @@ The following files were *not* copied into the new Gradle project; you
 should evaluate whether these are still needed in your project and if
 so manually move them:
 
-* build.properties
+* .idea/
+* .idea/.name
+* .idea/compiler.xml
+* .idea/copyright/
+* .idea/copyright/profiles_settings.xml
+* .idea/misc.xml
+* .idea/modules.xml
+* .idea/uiDesigner.xml
+* .idea/vcs.xml
+* .idea/workspace.xml
+* Camera.iml
+* ant.properties
 * build.xml
-* proguard.cfg
-* rebuild
-* reinstall
+* out/
+* out/production/
+* out/production/Camera/
+* out/production/Camera/Camera.apk
+* out/production/Camera/Camera.unaligned.apk
+* out/production/Camera/com/
+* out/production/Camera/com/example/
+* out/production/Camera/com/example/mCamera/
+* out/production/Camera/com/example/mCamera/BuildConfig.class
+* out/production/Camera/com/example/mCamera/CameraActivity$1.class
+* out/production/Camera/com/example/mCamera/CameraActivity$2.class
+* out/production/Camera/com/example/mCamera/CameraActivity$3.class
+* out/production/Camera/com/example/mCamera/CameraActivity$4$1.class
+* out/production/Camera/com/example/mCamera/CameraActivity$4.class
+* out/production/Camera/com/example/mCamera/CameraActivity$MainHandler$1.class
+* out/production/Camera/com/example/mCamera/CameraActivity$MainHandler.class
+* out/production/Camera/com/example/mCamera/CameraActivity$TakeBtnClickListener.class
+* out/production/Camera/com/example/mCamera/CameraActivity.class
+* out/production/Camera/com/example/mCamera/R$attr.class
+* out/production/Camera/com/example/mCamera/R$drawable.class
+* out/production/Camera/com/example/mCamera/R$id.class
+* out/production/Camera/com/example/mCamera/R$layout.class
+* out/production/Camera/com/example/mCamera/R$string.class
+* out/production/Camera/com/example/mCamera/R.class
+* out/production/Camera/com/example/mCamera/preview/
+* out/production/Camera/com/example/mCamera/preview/MySurfacePreview$1.class
+* out/production/Camera/com/example/mCamera/preview/MySurfacePreview.class
+* out/production/Camera/com/example/mCamera/util/
+* out/production/Camera/com/example/mCamera/util/CameraUtil$1.class
+* out/production/Camera/com/example/mCamera/util/CameraUtil$PicCallBacKImpl$1.class
+* out/production/Camera/com/example/mCamera/util/CameraUtil$PicCallBacKImpl.class
+* out/production/Camera/com/example/mCamera/util/CameraUtil$ShutCallBackImpl.class
+* out/production/Camera/com/example/mCamera/util/CameraUtil.class
+* out/production/Camera/com/example/mCamera/util/FaceView.class
+* out/production/Camera/com/example/mCamera/util/GoogleDetectListenerImpl.class
+* out/production/Camera/com/example/mCamera/util/ImageUtil.class
+* proguard-project.txt
 
 Moved Files:
 ------------
 Android Gradle projects use a different directory structure than ADT
 Eclipse projects. Here's how the projects were restructured:
 
-* AndroidManifest.xml => sSLClientDemo/src/main/AndroidManifest.xml
-* assets/ => sSLClientDemo/src/main/assets
-* res/ => sSLClientDemo/src/main/res/
-* src/ => sSLClientDemo/src/main/java/
-* src/koal/ssl/IAutoService.aidl => sSLClientDemo/src/main/aidl/koal/ssl/IAutoService.aidl
+* AndroidManifest.xml => FaceVerification/src/main/AndroidManifest.xml
+* assets/ => FaceVerification/src/main/assets
+* res/ => FaceVerification/src/main/res/
+* src/ => FaceVerification/src/main/java/
 
 Next Steps:
 -----------

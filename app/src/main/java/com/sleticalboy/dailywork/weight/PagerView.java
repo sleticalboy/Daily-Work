@@ -160,7 +160,7 @@ public class PagerView extends LinearLayout {
         if (indicatorSize < INDICATOR_SIZE) {
             mIndicatorSize = (int) INDICATOR_SIZE;
         } else {
-            mIndicatorSize = UIUtils.dp2px(getContext(), indicatorSize);
+            mIndicatorSize = UIUtils.INSTANCE.dp2px(getContext(), indicatorSize);
         }
     }
 

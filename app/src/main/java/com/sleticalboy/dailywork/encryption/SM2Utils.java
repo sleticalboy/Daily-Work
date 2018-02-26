@@ -120,7 +120,7 @@ public class SM2Utils {
         //国密规范正式公钥
         String pubk = "04F6E0C3345AE42B51E06BF50B98834988D54EBC7460FE135A48171BC0629EAE205EEDE253A530608178A98F1E19BB737302813BA39ED3FA3C51639D7A20C7391A";
         byte[] sourceData = plainText.getBytes();
-        char c = UnicodeUtils.string2char(plainText);
+        char c = UnicodeUtils.INSTANCE.string2char(plainText);
         try {
             //加密后的String！
             String cipherText = SM2Utils.encrypt(Util.hexToByte(pubk), sourceData);
