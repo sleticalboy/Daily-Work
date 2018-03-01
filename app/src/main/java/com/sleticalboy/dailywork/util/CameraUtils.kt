@@ -53,7 +53,6 @@ class CameraUtils {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     /**
@@ -82,6 +81,7 @@ class CameraUtils {
         if (mCamera != null) {
             val params = mCamera!!.parameters
             params.pictureFormat = ImageFormat.JPEG
+            // 解决相机预览时旋转问题
             mCamera!!.setDisplayOrientation(90)
             if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 params.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
@@ -92,7 +92,10 @@ class CameraUtils {
 
             val supportedPictureSizes = params.supportedPictureSizes[0]
             params.setPictureSize(supportedPictureSizes.width, supportedPictureSizes.height)
-
+            // 以下两行是为了解决拍照后照片被旋转问题
+            // params.set("orientation", "portrait") // 可选
+            // params.set("rotation", 90) // 必须 推荐使用 params.setRotation(90) 进行设置
+            params.setRotation(90)
             mCamera!!.parameters = params
 
             try {

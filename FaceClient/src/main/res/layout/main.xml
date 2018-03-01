@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="启动服务" />
+
+    <Button
+        android:id="@+id/btnStop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="停止服务" />
+
+    <Button
+        android:id="@+id/btnApps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="获取应用" />
+
+    <Button
+        android:id="@+id/btnCertInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="获取证书信息" />
+    
+	 <Button
+        android:id="@+id/btnInterfaceExtend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="扩展联动接口" />
+    
+    <Button
+        android:id="@+id/btnQuit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="退出" />
+</LinearLayout>

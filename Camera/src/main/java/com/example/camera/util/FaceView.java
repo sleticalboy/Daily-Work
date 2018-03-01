@@ -18,7 +18,7 @@ import com.example.camera.R;
  * Email: renlei0109@yeah.net
  */
 public class FaceView extends ImageView {
-    private Context mContext;
+
     private Camera.Face[] mFaces;
     private Matrix mMatrix = new Matrix();
     private boolean mirror;
@@ -30,8 +30,7 @@ public class FaceView extends ImageView {
     public FaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initPaint();
-        this.mContext = context;
-        mFaceIndicator = mContext.getResources().getDrawable(R.drawable.ic_face_find_2);
+        mFaceIndicator = context.getResources().getDrawable(R.drawable.ic_face_find_2);
     }
 
     public void setFaces(Camera.Face[] faces) {

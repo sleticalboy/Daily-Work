@@ -32,7 +32,7 @@ public class CameraActivity extends Activity {
     int height;
 
     /**
-     * Called when the activity is first created.
+     * Called when the activity was first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,6 @@ public class CameraActivity extends Activity {
         switchCameraIV = (ImageView) findViewById(R.id.swich_camera_iv);
         settingRl = (RelativeLayout) findViewById(R.id.setting_rl);
         faceView = (FaceView) findViewById(R.id.face_view);
-
     }
 
     private void bindListeners() {

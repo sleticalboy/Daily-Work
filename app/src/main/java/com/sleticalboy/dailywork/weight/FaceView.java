@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.util.CameraUtils;
@@ -44,6 +45,9 @@ public class FaceView extends AppCompatImageView {
         mMatrix.postRotate(0);
         canvas.rotate(0);
         for (Camera.Face face : mFaces) {
+            Log.d("FaceView", face.leftEye.toString());
+            Log.d("FaceView", face.rightEye.toString());
+            Log.d("FaceView", face.mouth.toString());
             mRectF.set(face.rect);
             mMatrix.mapRect(mRectF);
             mFaceIndicator.setBounds(
