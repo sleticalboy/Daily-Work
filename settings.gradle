@@ -1,3 +1,3 @@
-include ':app', ':Camera2'
+include ':MainApp', ':Camera2'
 include ':FaceClient'
 include ':Camera'

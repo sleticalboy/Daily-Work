@@ -4,12 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.sleticalboy.dailywork.weight.FaceContourView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <TextureView
         android:id="@+id/mLiveView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:background="@mipmap/ic_face_verification"/>
+
 
     <FrameLayout
         android:id="@+id/mFocusIcon"
