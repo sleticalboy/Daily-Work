@@ -1,3 +1,3 @@
-include ':MainApp', ':Camera2'
+include ':MainApp', ':Camera2', ':GreenDao'
 include ':FaceClient'
 include ':Camera'
