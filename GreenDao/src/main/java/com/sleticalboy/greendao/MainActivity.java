@@ -1,6 +1,10 @@
 package com.sleticalboy.greendao;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,11 +20,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.sleticalboy.greendao.bean.DaoSession;
 import com.sleticalboy.greendao.bean.StudentMsgBean;
 import com.sleticalboy.greendao.bean.StudentMsgBeanDao;
 
 import org.greenrobot.greendao.query.Query;
 
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -42,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private StudentMsgBeanDao mDao;
     private Query<StudentMsgBean> mQuery;
 
+    private final MyHandler mHandler = new MyHandler(this);
+
     private final StudentAdapter.OnItemClickListener mListener = new StudentAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(int position) {
@@ -62,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
         setupViews();
-        mDao = ((App) getApplication()).getDaoSession().getStudentMsgBeanDao();
+        mDao = ((DaoSession) App.getDaoSession()).getStudentMsgBeanDao();
         mQuery = mDao.queryBuilder().orderAsc(StudentMsgBeanDao.Properties.Text).build();
         updateList();
     }
@@ -128,9 +137,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        buttonAdd = (Button) findViewById(R.id.buttonAdd);
-        etHint = (EditText) findViewById(R.id.etHint);
-        ssRecyclerView = (RecyclerView) findViewById(R.id.ssRecyclerView);
+        toolbar = findViewById(R.id.toolbar);
+        buttonAdd = findViewById(R.id.buttonAdd);
+        etHint = findViewById(R.id.etHint);
+        ssRecyclerView = findViewById(R.id.ssRecyclerView);
+    }
+
+    static class MyHandler extends Handler {
+
+        final Reference<Activity> mActivity;
+
+        public MyHandler(Activity activity) {
+            mActivity = new SoftReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            final Activity activity = mActivity.get();
+        }
     }
 }

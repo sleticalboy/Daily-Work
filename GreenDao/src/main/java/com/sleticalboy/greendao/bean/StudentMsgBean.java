@@ -7,6 +7,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Property;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -17,7 +19,7 @@ import java.util.Date;
  * @description
  */
 @Entity(indexes = {@Index(value = "text, date DESC", unique = true)})
-public class StudentMsgBean {
+public class StudentMsgBean implements Serializable {
 
     @Id
     private Long id;
