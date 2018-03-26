@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.ui.activity;
+package com.sleticalboy.dailywork.ui.adapter;
 
 import android.content.Context;
 import android.util.Log;

@@ -67,7 +67,7 @@ class CircleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
     private var mReady: Boolean = false
     private var mSetupPending: Boolean = false
     private var mBorderOverlay: Boolean = false
-    var isDisableCircularTransformation: Boolean = false
+    private var isDisableCircularTransformation: Boolean = false
         set(disableCircularTransformation) {
             if (isDisableCircularTransformation == disableCircularTransformation) {
                 return

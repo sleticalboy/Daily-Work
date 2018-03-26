@@ -36,7 +36,12 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
     private boolean mNotifyOnChange = false;
 
     public XRecyclerAdapter(Context context) {
-        init(context, new ArrayList<M>());
+        init(context, new ArrayList<>());
+    }
+
+    private void init(Context context, List<M> dataList) {
+        mContext = context;
+        mDataList = new ArrayList<>(dataList);
     }
 
     public XRecyclerAdapter(Context context, M[] dataArray) {
@@ -47,24 +52,8 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
         init(context, dataList);
     }
 
-    private void init(Context context, List<M> dataList) {
-        mContext = context;
-        mDataList = new ArrayList<>(dataList);
-    }
-
     public Context getContext() {
         return mContext;
-    }
-
-    // placeholder
-    private static class PlaceHolder extends XBaseHolder {
-        PlaceHolder(View itemView) {
-            super(itemView);
-        }
-
-        @Override
-        protected void setData(Object data) {
-        }
     }
 
     @Override
@@ -95,8 +84,6 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
         return holder;
     }
 
-    protected abstract XBaseHolder onCreateItemHolder(ViewGroup parent, int viewType);
-
     private View createViewByViewType(ViewGroup parent, int viewType) {
         for (HeaderView headerView : mHeaders) {
             if (headerView.hashCode() == viewType) {
@@ -110,6 +97,8 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
         }
         return null;
     }
+
+    protected abstract XBaseHolder onCreateItemHolder(ViewGroup parent, int viewType);
 
     @NonNull
     private View getView(ViewGroup parent, ItemView itemView) {
@@ -176,6 +165,10 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
         return mHeaders.size() + getCount() + mFooters.size();
     }
 
+    public int getCount() {
+        return mDataList.size();
+    }
+
     public void setData(List<M> dataList) {
         mDataList = dataList;
     }
@@ -188,19 +181,15 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
         return mDataList;
     }
 
-    public int getCount() {
-        return mDataList.size();
-    }
-
     public int getPosition(M item) {
         return mDataList.indexOf(item);
     }
 
-    // --------------------对数据的一些操作-------------------
-
     public void add(M object) {
         add(getCount(), object);
     }
+
+    // --------------------对数据的一些操作-------------------
 
     public void add(int index, M object) {
         if (index > getCount() || index < 0) {
@@ -293,10 +282,6 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
         }
     }
 
-    // --------------------对数据的一些操作-------------------
-
-    // -------------对 header 和 footer 的一些操作------------
-
     public void addHeader(HeaderView headerView) {
         if (headerView == null) {
             throw new NullPointerException("view can not be null");
@@ -304,6 +289,10 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
         mHeaders.add(headerView);
         notifyItemInserted(mHeaders.size() - 1);
     }
+
+    // --------------------对数据的一些操作-------------------
+
+    // -------------对 header 和 footer 的一些操作------------
 
     public HeaderView getHeader(int position) {
         return mHeaders.get(position);
@@ -353,10 +342,18 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
         return mFooters.size();
     }
 
-    // -------------对 header 和 footer 的一些操作------------
-
     public void setNotifyOnChange(boolean notifyOnChange) {
         mNotifyOnChange = notifyOnChange;
+    }
+
+    // -------------对 header 和 footer 的一些操作------------
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        mOnItemLongClickListener = onItemLongClickListener;
     }
 
     /**
@@ -395,11 +392,14 @@ public abstract class XRecyclerAdapter<M> extends RecyclerView.Adapter<XBaseHold
         boolean onItemLongClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
-    }
+    // placeholder
+    private static class PlaceHolder extends XBaseHolder {
+        PlaceHolder(View itemView) {
+            super(itemView);
+        }
 
-    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
-        mOnItemLongClickListener = onItemLongClickListener;
+        @Override
+        protected void setData(Object data) {
+        }
     }
 }

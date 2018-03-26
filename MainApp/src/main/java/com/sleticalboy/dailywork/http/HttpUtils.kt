@@ -12,10 +12,11 @@ import okhttp3.logging.HttpLoggingInterceptor
  */
 object HttpUtils {
 
-    private val mOkHttpClient = OkHttpClient.Builder()
-            .addNetworkInterceptor(HttpLoggingInterceptor()
-                    .setLevel(HttpLoggingInterceptor.Level.BODY)) // 打印网络请求日志
-            .build()
+    private val mOkHttpClient = RetrofitClient.getInstance().okHttpClient
+// OkHttpClient.Builder()
+//            .addNetworkInterceptor(HttpLoggingInterceptor()
+//                    .setLevel(HttpLoggingInterceptor.Level.BODY)) // 打印网络请求日志
+//            .build()
 
     private fun isEmpty(text: CharSequence?): Boolean {
         return text == null || text.isEmpty() || text.toString().trim { it <= ' ' }.isEmpty()

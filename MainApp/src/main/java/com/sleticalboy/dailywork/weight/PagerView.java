@@ -2,6 +2,7 @@ package com.sleticalboy.dailywork.weight;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -9,7 +10,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ public class PagerView extends LinearLayout {
     private int mIndicatorDrawableResId = INDICATOR_DRAWABLE;
     private int mPageSize;
     private int mCurrentPage;
+    private PageScrollHelper.OnPageSelectedListener mOnPageSelectedListener;
 
     public PagerView(Context context, int rows, int columns) {
         this(context);
@@ -50,6 +52,19 @@ public class PagerView extends LinearLayout {
 
     public PagerView(Context context) {
         this(context, null);
+    }
+
+    public void setRowsAndColumns(int rows, int columns) {
+        if (rows <= 0) {
+            mRows = DEFAULT_ROWS;
+        } else {
+            mRows = rows;
+        }
+        if (columns <= 0) {
+            mColumns = DEFAULT_COLUMNS;
+        } else {
+            mColumns = columns;
+        }
     }
 
     public PagerView(Context context, @Nullable AttributeSet attrs) {
@@ -62,6 +77,13 @@ public class PagerView extends LinearLayout {
         initView();
         initFromAttrs(attrs);
         ensurePageSize();
+    }
+
+    private void initView() {
+        LayoutInflater.from(getContext()).inflate(R.layout.custom_pager_view_layout, this);
+        mTextView = findViewById(R.id.tv_title);
+        mRecyclerView = findViewById(R.id.recycler_view);
+        mIndicatorLayout = findViewById(R.id.ll_indicators);
     }
 
     private void initFromAttrs(@Nullable AttributeSet attrs) {
@@ -89,6 +111,16 @@ public class PagerView extends LinearLayout {
         }
     }
 
+    private void ensurePageSize() {
+        calc();
+    }
+
+    public void setIndicatorLayoutGravity(int gravity) {
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mIndicatorLayout.getLayoutParams();
+        lp.gravity = gravity;
+        mIndicatorLayout.setLayoutParams(lp);
+    }
+
     private void calc() {
         if (getLayoutManager() == null) {
             return;
@@ -99,15 +131,29 @@ public class PagerView extends LinearLayout {
         }
     }
 
-    private void ensurePageSize() {
-        calc();
+    private RecyclerView.LayoutManager getLayoutManager() {
+        if (mRecyclerView == null || mRecyclerView.getLayoutManager() == null) {
+            return null;
+        }
+        return mRecyclerView.getLayoutManager();
     }
 
-    private void initView() {
-        LayoutInflater.from(getContext()).inflate(R.layout.custom_pager_view_layout, this);
-        mTextView = findViewById(R.id.tv_title);
-        mRecyclerView = findViewById(R.id.recycler_view);
-        mIndicatorLayout = findViewById(R.id.ll_indicators);
+    private void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        if (mRecyclerView == null || mRecyclerView.getLayoutManager() != null) {
+            return;
+        }
+        layoutManager.setAutoMeasureEnabled(true);
+        mRecyclerView.setLayoutManager(layoutManager);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
     }
 
     @Override
@@ -143,19 +189,6 @@ public class PagerView extends LinearLayout {
         }
     }
 
-    public void setRowsAndColumns(int rows, int columns) {
-        if (rows <= 0) {
-            mRows = DEFAULT_ROWS;
-        } else {
-            mRows = rows;
-        }
-        if (columns <= 0) {
-            mColumns = DEFAULT_COLUMNS;
-        } else {
-            mColumns = columns;
-        }
-    }
-
     public void setIndicatorSize(int indicatorSize) {
         if (indicatorSize < INDICATOR_SIZE) {
             mIndicatorSize = (int) INDICATOR_SIZE;
@@ -172,6 +205,26 @@ public class PagerView extends LinearLayout {
         }
     }
 
+    public void setTitle(CharSequence title) {
+        if (!TextUtils.isEmpty(title)) {
+            mTextView.setText(title);
+            mTextView.setVisibility(VISIBLE);
+        }
+    }
+
+    public int getPageSize() {
+        return mPageSize;
+    }
+
+    public void scrollToPage(int pageIndex) {
+        mCurrentPage = pageIndex;
+    }
+
+    public RecyclerView.Adapter getAdapter() {
+        if (mRecyclerView == null || mRecyclerView.getAdapter() == null) return null;
+        return mRecyclerView.getAdapter();
+    }
+
     public void setAdapter(RecyclerView.Adapter adapter) {
         if (mRecyclerView == null || adapter == null) {
             return;
@@ -185,44 +238,23 @@ public class PagerView extends LinearLayout {
         ensurePageSize();
     }
 
-    private void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
-        if (mRecyclerView == null || mRecyclerView.getLayoutManager() != null) {
-            return;
-        }
-        layoutManager.setAutoMeasureEnabled(true);
-        mRecyclerView.setLayoutManager(layoutManager);
-    }
-
-    public void setTitle(CharSequence title) {
-        if (!TextUtils.isEmpty(title)) {
-            mTextView.setText(title);
-            mTextView.setVisibility(VISIBLE);
-        }
-    }
-
     private void setScrollHelper(PageScrollHelper helper) {
         if (mRecyclerView == null || helper == null) {
             return;
         }
         // 将 ScrollHelper 与 RecyclerView 关联起来
         helper.setUpWithRecycleView(mRecyclerView);
-        helper.setOnPageSelectedListener(new SimpleOnPageSelectedListener());
-    }
-
-    private RecyclerView.LayoutManager getLayoutManager() {
-        if (mRecyclerView == null || mRecyclerView.getLayoutManager() == null) {
-            return null;
+        if (mOnPageSelectedListener == null) {
+            mOnPageSelectedListener = new SimpleOnPageSelectedListener();
         }
-        return mRecyclerView.getLayoutManager();
+        helper.setOnPageSelectedListener(mOnPageSelectedListener);
     }
 
-    public void setIndicatorLayoutGravity(int gravity) {
-        LinearLayout.LayoutParams lp = (LayoutParams) mIndicatorLayout.getLayoutParams();
-        lp.gravity = gravity;
-        mIndicatorLayout.setLayoutParams(lp);
+    public void setOnPageSelectedListener(PageScrollHelper.OnPageSelectedListener onPageSelectedListener) {
+        mOnPageSelectedListener = onPageSelectedListener;
     }
 
-    class SimpleOnPageSelectedListener implements PageScrollHelper.OnPageSelectedListener {
+    public class SimpleOnPageSelectedListener implements PageScrollHelper.OnPageSelectedListener {
 
         @Override
         public void onPageChanged(int pageIndex) {

@@ -3,11 +3,10 @@ package com.sleticalboy.dailywork.ui.activity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.widget.Toast;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
-import com.sleticalboy.dailywork.weight.xrecycler.adapter.XRecyclerAdapter;
+import com.sleticalboy.dailywork.ui.adapter.ItemTouchAdapter;
 import com.sleticalboy.dailywork.weight.xrecycler.decoration.DividerGridItemDecoration;
 import com.sleticalboy.dailywork.weight.xrecycler.helper.SelectedItemDragItemTouchCallback;
 

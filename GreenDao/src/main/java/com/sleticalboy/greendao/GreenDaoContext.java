@@ -1,6 +1,5 @@
 package com.sleticalboy.greendao;
 
-import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;

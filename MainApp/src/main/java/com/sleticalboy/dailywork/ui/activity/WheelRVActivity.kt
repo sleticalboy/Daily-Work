@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import com.sleticalboy.dailywork.R
 import com.sleticalboy.dailywork.base.BaseActivity
+import com.sleticalboy.dailywork.ui.adapter.ItemAdapter
 
 /**
  * Created on 18-2-7.

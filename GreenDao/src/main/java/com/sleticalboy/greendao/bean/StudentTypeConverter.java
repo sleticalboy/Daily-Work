@@ -10,6 +10,7 @@ import org.greenrobot.greendao.converter.PropertyConverter;
  * @description Type Converter
  */
 public class StudentTypeConverter implements PropertyConverter<StudentType, String> {
+
     @Override
     public StudentType convertToEntityProperty(String databaseValue) {
         return StudentType.valueOf(databaseValue);

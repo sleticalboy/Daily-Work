@@ -25,7 +25,7 @@ public abstract class XBaseHolder<M> extends RecyclerView.ViewHolder {
     }
 
     public XBaseHolder(ViewGroup parent, @LayoutRes int res) {
-        super(LayoutInflater.from(parent.getContext()).inflate(res, parent, false));
+        this(LayoutInflater.from(parent.getContext()).inflate(res, parent, false));
     }
 
     protected <V extends View> V getView(@IdRes int id) {
@@ -40,12 +40,6 @@ public abstract class XBaseHolder<M> extends RecyclerView.ViewHolder {
         return getAdapterPosition();
     }
 
-    protected Context getContext() {
-        return itemView.getContext();
-    }
-
-    protected abstract void setData(M data);
-
     @Nullable
     protected <A extends RecyclerView.Adapter> A getOwnerAdapter() {
         RecyclerView recyclerView = getOwnerRecyclerView();
@@ -54,9 +48,9 @@ public abstract class XBaseHolder<M> extends RecyclerView.ViewHolder {
 
     protected RecyclerView getOwnerRecyclerView() {
         try {
-            Field field = RecyclerView.ViewHolder.class.getDeclaredField("mOwnerRecyclerView");
-            field.setAccessible(true);
-            return (RecyclerView) field.get(this);
+            Field mOwnerRecyclerView = RecyclerView.ViewHolder.class.getDeclaredField("mOwnerRecyclerView");
+            mOwnerRecyclerView.setAccessible(true);
+            return (RecyclerView) mOwnerRecyclerView.get(this);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -64,4 +58,10 @@ public abstract class XBaseHolder<M> extends RecyclerView.ViewHolder {
         }
         return null;
     }
+
+    protected Context getContext() {
+        return itemView.getContext();
+    }
+
+    protected abstract void setData(M data);
 }

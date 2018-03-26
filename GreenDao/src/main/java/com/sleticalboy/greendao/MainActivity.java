@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private StudentMsgBeanDao mDao;
     private Query<StudentMsgBean> mQuery;
 
-    private final MyHandler mHandler = new MyHandler(this);
-
     private final StudentAdapter.OnItemClickListener mListener = new StudentAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(int position) {
@@ -143,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         ssRecyclerView = findViewById(R.id.ssRecyclerView);
     }
 
-    static class MyHandler extends Handler {
+    static final class MyHandler extends Handler {
 
         final Reference<Activity> mActivity;
 

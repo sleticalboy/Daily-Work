@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,30 +9,47 @@
     <!--header: title-->
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="4dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="4dp"
         android:textSize="18sp"
-        android:visibility="gone"/>
+        android:visibility="visible"
+        tools:background="@color/colorPrimary"
+        tools:text="@string/app_name"/>
 
     <!--body: content-->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
 
+    <!--footer-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:background="@color/colorPrimary">
 
-    <!--footer: indicator layout-->
-    <LinearLayout
-        android:id="@+id/ll_indicators"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_gravity="bottom|end"
-        android:gravity="center_vertical|end"
-        android:orientation="horizontal"
-        android:paddingLeft="4dp"
-        android:paddingRight="8dp"/>
+        <!--sub page description-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginLeft="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/app_name"
+            android:visibility="visible"/>
+
+        <!--page indicator-->
+        <LinearLayout
+            android:id="@+id/ll_indicators"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_gravity="bottom|end"
+            android:gravity="center_vertical|end"
+            android:orientation="horizontal"
+            android:paddingLeft="4dp"
+            android:paddingRight="8dp"/>
+    </FrameLayout>
 </LinearLayout>

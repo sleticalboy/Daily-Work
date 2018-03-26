@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.LinearLayout;
 
 /**
@@ -18,21 +17,17 @@ public class PageScrollHelper {
     public static final int HORIZONTAL = LinearLayout.HORIZONTAL;
     public static final int VERTICAL = LinearLayout.VERTICAL;
     public static final int ORIENTATION_NULL = 0xfff;
-
-    private RecyclerView mRecyclerView = null;
-    private OnPageSelectedListener mOnPageSelectedListener;
-    private int mOrientation = HORIZONTAL;
-
-    private int offsetY = 0;
-    private int offsetX = 0;
-
-    private int startY = 0;
-    private int startX = 0;
-
-    private ValueAnimator mAnimator = null;
     private final MyOnScrollListener mOnScrollListener = new MyOnScrollListener();
     private final MyOnFlingListener mOnFlingListener = new MyOnFlingListener();
     private final MyOnTouchListener mOnTouchListener = new MyOnTouchListener();
+    private RecyclerView mRecyclerView = null;
+    private OnPageSelectedListener mOnPageSelectedListener;
+    private int mOrientation = HORIZONTAL;
+    private int offsetY = 0;
+    private int offsetX = 0;
+    private int startY = 0;
+    private int startX = 0;
+    private ValueAnimator mAnimator = null;
 
     public void setUpWithRecycleView(RecyclerView recycleView) {
         if (recycleView == null) {
@@ -70,7 +65,35 @@ public class PageScrollHelper {
         offsetY = 0;
     }
 
-    private class MyOnFlingListener extends RecyclerView.OnFlingListener {
+    private int getPageIndex() {
+        int p;
+        if (mOrientation == VERTICAL) {
+            p = offsetY / mRecyclerView.getHeight();
+        } else {
+            p = offsetX / mRecyclerView.getWidth();
+        }
+        return p;
+    }
+
+    private int getStartPageIndex() {
+        int p;
+        if (mOrientation == VERTICAL) {
+            p = startY / mRecyclerView.getHeight();
+        } else {
+            p = startX / mRecyclerView.getWidth();
+        }
+        return p;
+    }
+
+    public void setOnPageSelectedListener(OnPageSelectedListener listener) {
+        mOnPageSelectedListener = listener;
+    }
+
+    public interface OnPageSelectedListener {
+        void onPageChanged(int pageIndex);
+    }
+
+    private final class MyOnFlingListener extends RecyclerView.OnFlingListener {
 
         @Override
         public boolean onFling(int velocityX, int velocityY) {
@@ -147,7 +170,7 @@ public class PageScrollHelper {
         }
     }
 
-    private class MyOnScrollListener extends RecyclerView.OnScrollListener {
+    private final class MyOnScrollListener extends RecyclerView.OnScrollListener {
 
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -182,7 +205,7 @@ public class PageScrollHelper {
         }
     }
 
-    private class MyOnTouchListener implements View.OnTouchListener {
+    private final class MyOnTouchListener implements View.OnTouchListener {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -193,33 +216,5 @@ public class PageScrollHelper {
             }
             return false;
         }
-    }
-
-    private int getPageIndex() {
-        int p;
-        if (mOrientation == VERTICAL) {
-            p = offsetY / mRecyclerView.getHeight();
-        } else {
-            p = offsetX / mRecyclerView.getWidth();
-        }
-        return p;
-    }
-
-    private int getStartPageIndex() {
-        int p;
-        if (mOrientation == VERTICAL) {
-            p = startY / mRecyclerView.getHeight();
-        } else {
-            p = startX / mRecyclerView.getWidth();
-        }
-        return p;
-    }
-
-    public void setOnPageSelectedListener(OnPageSelectedListener listener) {
-        mOnPageSelectedListener = listener;
-    }
-
-    public interface OnPageSelectedListener {
-        void onPageChanged(int pageIndex);
     }
 }

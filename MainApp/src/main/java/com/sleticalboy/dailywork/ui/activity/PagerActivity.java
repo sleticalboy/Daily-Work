@@ -4,21 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.weight.PagerView;
 import com.sleticalboy.dailywork.weight.xrecycler.adapter.XBaseHolder;
 import com.sleticalboy.dailywork.weight.xrecycler.adapter.XRecyclerAdapter;
-import com.sleticalboy.dailywork.weight.xrecycler.helper.PagerLayoutManager;
-import com.sleticalboy.dailywork.weight.xrecycler.helper.PageScrollHelper;
 
 /**
  * Created on 18-2-11.
@@ -30,6 +23,8 @@ import com.sleticalboy.dailywork.weight.xrecycler.helper.PageScrollHelper;
 public class PagerActivity extends AppCompatActivity {
 
     private static final String TAG = "PagerActivity";
+
+    private static int sCounter = 0;
 
     private Integer[] mImagesId = {
             R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher,
@@ -48,6 +43,21 @@ public class PagerActivity extends AppCompatActivity {
         setLayout();
     }
 
+    private void setLayout() {
+        setContentView(R.layout.activity_pager);
+        PagerView pagerView = findViewById(R.id.pager_view);
+        pagerView.setTitle("已添加的应用");
+        pagerView.setAdapter(new PagerAdapter(this, mImagesId));
+        pagerView.setIndicatorDrawable(R.drawable.mx_page_indicator);
+
+        findViewById(R.id.btnShowPage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pagerView.setVisibility(++sCounter % 2 == 0 ? View.GONE : View.VISIBLE);
+            }
+        });
+    }
+
     private void setView() {
         int rows = 3;
         int columns = 4;
@@ -56,14 +66,6 @@ public class PagerActivity extends AppCompatActivity {
         pagerView.setIndicatorDrawable(R.drawable.mx_page_indicator);
         pagerView.setAdapter(new PagerAdapter(this, mImagesId));
         setContentView(pagerView);
-    }
-
-    private void setLayout() {
-        setContentView(R.layout.activity_pager);
-        PagerView pagerView = findViewById(R.id.pager_view);
-        pagerView.setTitle("已添加的应用");
-        pagerView.setAdapter(new PagerAdapter(this, mImagesId));
-        pagerView.setIndicatorDrawable(R.drawable.mx_page_indicator);
     }
 
     static class PagerAdapter extends XRecyclerAdapter<Integer> {

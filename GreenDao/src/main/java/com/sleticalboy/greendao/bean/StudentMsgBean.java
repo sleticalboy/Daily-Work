@@ -21,6 +21,8 @@ import java.util.Date;
 @Entity(indexes = {@Index(value = "text, date DESC", unique = true)})
 public class StudentMsgBean implements Serializable {
 
+    private static final long serialVersionUID = -690057300242434133L;
+
     @Id
     private Long id;
 

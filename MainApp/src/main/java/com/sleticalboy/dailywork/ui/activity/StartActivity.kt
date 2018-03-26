@@ -18,11 +18,13 @@ import android.widget.TextView
 class StartActivity : ListActivity() {
 
     private val dataList = arrayOf(
+            ItemHolder(LiveRecogCheckActivity::class.java, "活体检测接口验证"),
+            ItemHolder(GreenDaoActivity::class.java, "GreenDao 数据库框架使用"),
             ItemHolder(PathActivity::class.java, "绘图：Path 类使用"),
             ItemHolder(LiveCameraActivity::class.java, "TextureView 实现实时预览"),
             ItemHolder(FaceActivity::class.java, "SurfaceView 实现实时预览"),
-//            ItemHolder(NewCameraActivity::class.java, "camera2 API 测试"),
             ItemHolder(ClassifyActivity::class.java, "RecyclerView 分类别显示"),
+//            ItemHolder(IndicatorActivity::class.java, "页面 Indicator"),
             ItemHolder(PagerActivity::class.java, "RecyclerView 分页"),
             ItemHolder(DecorationActivity::class.java, "RecyclerView 添加 item 分割线 / 拖拽排序"),
             ItemHolder(WheelRVActivity::class.java, "RecyclerView 轮播"),
