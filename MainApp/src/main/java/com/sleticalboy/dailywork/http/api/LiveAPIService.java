@@ -19,7 +19,7 @@ import retrofit2.http.PartMap;
  * @author sleticalboy
  * @description 活体检测接口
  */
-public interface LiveRecogAPI {
+public interface LiveAPIService {
 
     @FormUrlEncoded // application/x-www-form-urlencoded
     @POST(Constants.API_QUERY)
