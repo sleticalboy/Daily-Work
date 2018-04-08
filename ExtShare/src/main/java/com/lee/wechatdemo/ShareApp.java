@@ -1,6 +1,7 @@
 package com.lee.wechatdemo;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -13,17 +14,16 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
  */
 public class ShareApp extends Application {
 
-    private static final java.lang.String APP_ID = "wx24696ce81c4cd191";
     private static IWXAPI mWxapi;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        mWxapi = WXAPIFactory.createWXAPI(this, APP_ID, true);
-        mWxapi.registerApp(APP_ID);
-    }
 
     public static IWXAPI getmWxapi() {
         return mWxapi;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        mWxapi = WXAPIFactory.createWXAPI(this, Constants.APP_ID, false);
+        mWxapi.registerApp(Constants.APP_ID);
     }
 }

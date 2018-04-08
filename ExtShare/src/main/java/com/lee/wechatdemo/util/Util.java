@@ -1,5 +1,7 @@
 package com.lee.wechatdemo.util;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -24,6 +26,15 @@ public class Util {
 
     private static final String TAG = "SDK_Sample.Util";
     private static final int MAX_DECODE_PICTURE_SIZE = 1920 * 1440;
+
+    public static boolean isWeChatAvaliable(Context context) {
+        try {
+            context.getPackageManager().getPackageInfo("com.tencent.mm", PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
 
     public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -56,15 +67,16 @@ public class Util {
                     if (responseCode == HttpURLConnection.HTTP_OK) {
                         inStream = httpConnection.getInputStream();
                     }
+                    if (inStream != null) {
+                        data[0] = inputStreamToByte(inStream);
+                        inStream.close();
+                    } else {
+                        data[0] = null;
+                    }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
-                if (inStream != null) {
-                    data[0] = inputStreamToByte(inStream);
-                } else {
-                    data[0] = null;
                 }
             }
         }).start();
@@ -103,7 +115,8 @@ public class Util {
             len = (int) file.length();
         }
 
-        Log.d(TAG, "readFromFile : offset = " + offset + " len = " + len + " offset + len = " + (offset + len));
+        Log.d(TAG, "readFromFile : offset = " + offset + " len = " + len + " offset + len = "
+                + (offset + len));
 
         if (offset < 0) {
             Log.e(TAG, "readFromFile invalid offset:" + offset);
@@ -133,7 +146,8 @@ public class Util {
         return b;
     }
 
-    public static Bitmap extractThumbNail(final String path, final int height, final int width, final boolean crop) {
+    public static Bitmap extractThumbNail(final String path, final int height, final int width,
+                                          final boolean crop) {
         Assert.assertTrue(path != null && !path.equals("") && height > 0 && width > 0);
 
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -143,7 +157,6 @@ public class Util {
             Bitmap tmp = BitmapFactory.decodeFile(path, options);
             if (tmp != null) {
                 tmp.recycle();
-                tmp = null;
             }
 
             Log.d(TAG, "extractThumbNail: round=" + width + "x" + height + ", crop=" + crop);
@@ -178,7 +191,8 @@ public class Util {
 
             options.inJustDecodeBounds = false;
 
-            Log.i(TAG, "bitmap required size=" + newWidth + "x" + newHeight + ", orig=" + options.outWidth + "x" + options.outHeight + ", sample=" + options.inSampleSize);
+            Log.i(TAG, "bitmap required size=" + newWidth + "x" + newHeight + ", orig=" + options.outWidth
+                    + "x" + options.outHeight + ", sample=" + options.inSampleSize);
             Bitmap bm = BitmapFactory.decodeFile(path, options);
             if (bm == null) {
                 Log.e(TAG, "bitmap decode failed");
@@ -193,7 +207,8 @@ public class Util {
             }
 
             if (crop) {
-                final Bitmap cropped = Bitmap.createBitmap(bm, (bm.getWidth() - width) >> 1, (bm.getHeight() - height) >> 1, width, height);
+                final Bitmap cropped = Bitmap.createBitmap(bm, (bm.getWidth() - width) >> 1,
+                        (bm.getHeight() - height) >> 1, width, height);
                 if (cropped == null) {
                     return bm;
                 }

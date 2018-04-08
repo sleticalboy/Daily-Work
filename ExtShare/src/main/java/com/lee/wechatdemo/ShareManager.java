@@ -6,9 +6,16 @@ import com.lee.wechatdemo.manager.WXShareManager;
  * Created on 18-4-8.
  *
  * @author sleticalboy
- * @description
+ * @description share manager for external share
  */
 public class ShareManager {
+
+    private ShareManager() {
+    }
+
+    public static ShareManager newInstance() {
+        return Holder.MANAGER;
+    }
 
     public void shareText2WeChat(String text) {
         WXShareManager.shareText(text);
@@ -22,7 +29,8 @@ public class ShareManager {
         WXShareManager.sharePageUrl(pageUrl, title, thumbUrl, description);
     }
 
-//    public static void shareText2SinaWeibo(String text) {
-//        WBShareManager.shareText(text);
-//    }
+    private static final class Holder {
+        private static final ShareManager MANAGER = new ShareManager();
+    }
+
 }
