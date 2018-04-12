@@ -1,8 +1,11 @@
 package com.lee.wechatdemo.ui;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.lee.wechatdemo.R;
@@ -20,8 +23,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initView();
+        Log.d("MainActivity", "packageName = " + getPackageName());
+        try {
+            final PackageInfo packageInfo = getPackageManager().getPackageInfo(
+                    getPackageName(), PackageManager.GET_ACTIVITIES);
+            Log.d("MainActivity", "packageInfo.packageName = " + packageInfo.packageName);
+            Log.d("MainActivity", "processName = " + packageInfo.applicationInfo.processName);
+            Log.d("MainActivity", "className = " + packageInfo.applicationInfo.className);
+            Log.d("MainActivity", "dataDir = " + packageInfo.applicationInfo.dataDir);
+            Log.d("MainActivity", "taskAffinity = " + packageInfo.applicationInfo.taskAffinity);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {
@@ -40,10 +54,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ShareManager.newInstance().shareText2WeChat("text from " + getPackageName());
                 break;
             case R.id.btnShareImageWX:
+                ShareManager.newInstance().shareImage2WeChat("");
                 break;
             case R.id.btnShareUrlWX:
+                ShareManager.newInstance().sharePage2WeChat("", "", "", "");
                 break;
             case R.id.btnShareTextWB:
+                ShareManager.newInstance().shareText2SinaWeibo("text from " + getPackageName());
                 break;
             case R.id.btnShareImageWB:
                 break;

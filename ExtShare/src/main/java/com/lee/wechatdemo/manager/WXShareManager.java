@@ -1,5 +1,6 @@
 package com.lee.wechatdemo.manager;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -10,6 +11,8 @@ import com.tencent.mm.opensdk.modelmsg.WXImageObject;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 /**
  * Created on 18-4-8.
@@ -19,13 +22,20 @@ import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
  */
 public class WXShareManager {
 
+    private static IWXAPI sWxapi;
+
+    public static void init(Context context, String appId) {
+        sWxapi = WXAPIFactory.createWXAPI(context, appId, false);
+        sWxapi.registerApp(appId);
+    }
+
     public static void shareText(String text) {
         WXTextObject textObject = new WXTextObject(text);
         if (textObject.checkArgs()) {
             SendMessageToWX.Req request = new SendMessageToWX.Req();
             request.transaction = String.valueOf(System.currentTimeMillis());
             request.message = new WXMediaMessage(textObject);
-            ShareApp.getmWxapi().sendReq(request);
+            sWxapi.sendReq(request);
         }
     }
 
@@ -39,7 +49,7 @@ public class WXShareManager {
             final SendMessageToWX.Req request = new SendMessageToWX.Req();
             request.transaction = String.valueOf(System.currentTimeMillis());
             request.message = message;
-            ShareApp.getmWxapi().sendReq(request);
+            sWxapi.sendReq(request);
         }
     }
 
@@ -65,7 +75,7 @@ public class WXShareManager {
             final SendMessageToWX.Req request = new SendMessageToWX.Req();
             request.transaction = String.valueOf(System.currentTimeMillis());
             request.message = message;
-            ShareApp.getmWxapi().sendReq(request);
+            sWxapi.sendReq(request);
         }
     }
 }

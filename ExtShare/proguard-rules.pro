@@ -20,14 +20,9 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.tencent.mm.opensdk.** {
-*;
-}
-
--keep class com.tencent.wxop.** {
-*;
-}
-
--keep class com.tencent.mm.sdk.** {
-*;
-}
+# tencent
+-keep class com.tencent.mm.opensdk.** { *; }
+-keep class com.tencent.wxop.** { *; }
+-keep class com.tencent.mm.sdk.** { *; }
+# sina
+-keep class com.sina.weibo.sdk.** { *; }
