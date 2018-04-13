@@ -38,6 +38,7 @@
         <activity android:name=".ui.activity.PathActivity"/>
         <activity android:name=".ui.activity.GreenDaoActivity"/>
         <activity android:name=".ui.activity.LiveRecogCheckActivity"/>
+        <activity android:name=".ui.activity.ACacheActivity"/>
     </application>
 
 </manifest>

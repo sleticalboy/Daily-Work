@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.sleticalboy.dailywork.bean.DaoMaster;
 import com.sleticalboy.dailywork.bean.DaoSession;
+import com.sleticalboy.dailywork.cache.ACache;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -32,6 +33,15 @@ public class MainApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initCache();
+        initDB();
+    }
+
+    private void initCache() {
+        ACache.mCacheName = "DailyWork";
+    }
+
+    private void initDB() {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "daily-work");
         Database database = helper.getWritableDb();
         sDaoSession = new DaoMaster(database).newSession();

@@ -28,8 +28,7 @@
         android:id="@+id/btnGetIdByName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="根据 name 获取 id"
-        />
+        android:text="根据 name 获取 id"/>
 
     <ScrollView
         android:id="@+id/svResult"
