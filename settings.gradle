@@ -1,6 +1,6 @@
-include ':MainApp'
-//include ':Camera2'
+include ':MainApp', ':ImageLoader'
 include ':GreenDao'
 include ':ExtShare'
+//include ':Camera2'
 //include ':FaceClient'
 //include ':Camera'
