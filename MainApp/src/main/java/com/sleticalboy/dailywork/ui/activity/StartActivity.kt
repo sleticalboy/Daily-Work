@@ -18,6 +18,7 @@ import android.widget.TextView
 class StartActivity : ListActivity() {
 
     private val dataList = arrayOf(
+            ItemHolder(AlarmActivity::class.java, "定时任务"),
             ItemHolder(ACacheActivity::class.java, "ACache 测试"),
             ItemHolder(LiveRecogCheckActivity::class.java, "活体检测接口验证"),
             ItemHolder(GreenDaoActivity::class.java, "GreenDao 数据库框架使用"),

@@ -6,6 +6,7 @@ import android.os.Handler
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -32,7 +33,7 @@ class StockActivity : BaseActivity() {
         HttpUtils.request(url, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Handler(mainLooper).post { Toast.makeText(this@StockActivity, "网络异常", Toast.LENGTH_SHORT).show() }
-                e.printStackTrace()
+                Log.d("error", e.message)
             }
 
             @Throws(IOException::class)
@@ -40,7 +41,7 @@ class StockActivity : BaseActivity() {
                 val vBody = response.body() ?: return
                 val vJson = vBody.string() ?: return
                 val vStock = Gson().fromJson(vJson, Stock::class.java)
-                if (vStock.data != null && vStock.data!!.size > 0) {
+                if (vStock.data != null && vStock.data!!.isNotEmpty()) {
                     Handler(mainLooper).post { setStockView(vStock.data!![0]) }
                 }
             }
