@@ -22,12 +22,12 @@ import java.lang.ref.WeakReference;
 public class MainApp extends Application {
 
     private static DaoSession sDaoSession;
-    private static Reference<Context> mContext;
+    private static Reference<Context> mRefContext;
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        mContext = new WeakReference<>(base);
+        mRefContext = new WeakReference<>(base);
     }
 
     @Override
@@ -52,6 +52,6 @@ public class MainApp extends Application {
     }
 
     public static Context getContext() {
-        return mContext.get();
+        return mRefContext.get();
     }
 }

@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.weight;
+package com.sleticalboy.dailywork.weight.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;

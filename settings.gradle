@@ -1,4 +1,4 @@
-include ':MainApp', ':ImageLoader', ':OkHttp2.5'
+include ':MainApp', ':ImageLoader', ':OkHttp2.5', ':EventBus'
 include ':GreenDao'
 include ':ExtShare'
 //include ':Camera2'

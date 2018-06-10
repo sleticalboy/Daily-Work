@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.weight;
+package com.sleticalboy.dailywork.weight.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -43,7 +43,9 @@ public class CirclePageIndicator extends View implements PageIndicator {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (mPagerView == null) return;
+        if (mPagerView == null) {
+            return;
+        }
         final int count = mPagerView.getPageSize();
     }
 
@@ -133,17 +135,16 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
     @Override
     public void setWithPagerView(PagerView pagerView) {
-        if (mPagerView == null) return;
+        if (mPagerView == null) {
+            return;
+        }
         checkValid();
         if (mPagerView.getAdapter() == null) {
             throw new IllegalStateException("没有设置 Adapter");
         }
         mPagerView = pagerView;
-        mPagerView.setOnPageSelectedListener(new PageScrollHelper.OnPageSelectedListener() {
-            @Override
-            public void onPageChanged(int pageIndex) {
-                //
-            }
+        mPagerView.setOnPageSelectedListener(pageIndex -> {
+            //
         });
         invalidate();
     }

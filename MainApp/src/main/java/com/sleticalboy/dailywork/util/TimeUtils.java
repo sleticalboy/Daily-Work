@@ -18,7 +18,7 @@ import java.util.Locale;
 public final class TimeUtils {
 
     private static final SimpleDateFormat DEFAULT_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.SIMPLIFIED_CHINESE);
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+08:00", Locale.SIMPLIFIED_CHINESE);
 
     public static float getDistance(double lat1, double lng1, double lat2, double lng2) {
         lng1 *= 0.01745329251994329D;

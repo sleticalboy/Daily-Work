@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.weight;
+package com.sleticalboy.dailywork.weight.view;
 
 /**
  * Created on 18-3-15.

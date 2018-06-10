@@ -37,9 +37,9 @@ open class PermissionCheckActivity : AppCompatActivity() {
 
     @TargetApi(Build.VERSION_CODES.M)
     private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(this, permissions[0]) != 0
-                || ContextCompat.checkSelfPermission(this, permissions[1]) != 0
-                || ContextCompat.checkSelfPermission(this, permissions[2]) != 0) {
+        if (ContextCompat.checkSelfPermission(this, permissions[0]) != 0 ||
+                ContextCompat.checkSelfPermission(this, permissions[1]) != 0 ||
+                ContextCompat.checkSelfPermission(this, permissions[2]) != 0) {
             ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE)
         }
     }

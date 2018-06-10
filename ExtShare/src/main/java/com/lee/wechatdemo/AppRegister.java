@@ -7,6 +7,9 @@ import android.content.Intent;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+/**
+ * @author sleticalboy
+ */
 public class AppRegister extends BroadcastReceiver {
 
 	@Override

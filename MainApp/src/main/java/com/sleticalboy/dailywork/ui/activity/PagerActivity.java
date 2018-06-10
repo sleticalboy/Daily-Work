@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.sleticalboy.dailywork.R;
-import com.sleticalboy.dailywork.weight.PagerView;
+import com.sleticalboy.dailywork.weight.view.PagerView;
 import com.sleticalboy.dailywork.weight.xrecycler.adapter.XBaseHolder;
 import com.sleticalboy.dailywork.weight.xrecycler.adapter.XRecyclerAdapter;
 

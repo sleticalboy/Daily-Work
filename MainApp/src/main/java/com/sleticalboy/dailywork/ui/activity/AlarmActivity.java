@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
+import com.sleticalboy.dailywork.util.DevicesUtils;
 import com.sleticalboy.dailywork.util.TimeUtils;
 
 /**
@@ -58,6 +59,8 @@ public class AlarmActivity extends BaseActivity {
         tvTime.append("\n" + msg);
         final double distance = TimeUtils.getDistance(34.7704267, 113.7584882, 34.7703974, 113.7583287);
         tvTime.append("\ndistance = " + distance);
+        tvTime.append("\nmac address = " + DevicesUtils.getWifiMacAddress(this));
+        tvTime.append("\nwifi mac address = " + DevicesUtils.getConnectedWifiMacAddress(this));
     }
 
     @Override
