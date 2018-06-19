@@ -5,10 +5,11 @@ import android.graphics.Canvas;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.sleticalboy.dailywork.weight.xrecycler.helper.PageScrollHelper;
+import java.util.Objects;
 
 /**
  * Created on 18-3-15.
@@ -16,23 +17,24 @@ import com.sleticalboy.dailywork.weight.xrecycler.helper.PageScrollHelper;
  * @author sleticalboy
  * @description 圆点页面指示器
  */
-public class CirclePageIndicator extends View implements PageIndicator {
+public class CommonPageIndicator extends View implements PageIndicator {
 
     private static final int INVALID_POINTER = -1;
 
     private int mRadius;
     private int mCurrentPage;
-    private PagerView mPagerView;
+    private ViewPager mViewPager;
+    private ViewPager.OnPageChangeListener mInternalListener;
 
-    public CirclePageIndicator(Context context) {
+    public CommonPageIndicator(Context context) {
         this(context, null);
     }
 
-    public CirclePageIndicator(Context context, AttributeSet attrs) {
+    public CommonPageIndicator(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public CirclePageIndicator(Context context, AttributeSet attrs, int defStyle) {
+    public CommonPageIndicator(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
@@ -41,12 +43,13 @@ public class CirclePageIndicator extends View implements PageIndicator {
     }
 
     @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (mPagerView == null) {
-            return;
-        }
-        final int count = mPagerView.getPageSize();
     }
 
     @Nullable
@@ -89,10 +92,10 @@ public class CirclePageIndicator extends View implements PageIndicator {
         int result = 0;
         int specMode = View.MeasureSpec.getMode(heightMeasureSpec);
         int specSize = View.MeasureSpec.getSize(heightMeasureSpec);
-        if (specMode == MeasureSpec.EXACTLY || mPagerView == null) {
+        if (specMode == MeasureSpec.EXACTLY || mViewPager == null || mViewPager.getAdapter() == null) {
             result = specSize;
         } else {
-            final int count = mPagerView.getPageSize();
+            final int count = mViewPager.getAdapter().getCount();
             result = getPaddingLeft() + getPaddingRight() + 2 * count * mRadius + (count - 1) * mRadius + 1;
             if (specMode == MeasureSpec.AT_MOST) {
                 result = Math.min(result, specSize);
@@ -117,7 +120,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
         int mCurrentPage;
 
-        public SavedState(Parcelable superState) {
+        SavedState(Parcelable superState) {
             super(superState);
         }
 
@@ -134,34 +137,24 @@ public class CirclePageIndicator extends View implements PageIndicator {
     }
 
     @Override
-    public void setWithPagerView(PagerView pagerView) {
-        if (mPagerView == null) {
-            return;
-        }
-        checkValid();
-        if (mPagerView.getAdapter() == null) {
+    public void setupWithViewPager(ViewPager pagerView, int initialPos) {
+        mViewPager = checkValid(mViewPager);
+        if (mViewPager.getAdapter() == null) {
             throw new IllegalStateException("没有设置 Adapter");
         }
-        mPagerView = pagerView;
-        mPagerView.setOnPageSelectedListener(pageIndex -> {
-            //
-        });
+        mViewPager = pagerView;
         invalidate();
     }
 
-    private void checkValid() {
-        //
-    }
-
-    @Override
-    public void setWithPagerView(PagerView pagerView, int initialPos) {
-        setWithPagerView(pagerView);
-        setCurrentPage(initialPos);
+    private <T> T checkValid(T ref) {
+        if (ref == null) {
+            throw new IllegalArgumentException();
+        }
+        return ref;
     }
 
     @Override
     public void setCurrentPage(int pageIndex) {
-        mPagerView.scrollToPage(pageIndex);
         mCurrentPage = pageIndex;
         invalidate();
     }

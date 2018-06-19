@@ -16,13 +16,13 @@ import android.widget.Scroller;
  */
 public class ScrollerView extends ViewGroup {
 
-    private int mTouchSlop;
-    private Scroller mScroller;
-    private float mDownX;
-    private float mMoveX;
-    private float mUpX;
-    private int mLeftBorder;
-    private int mRightBorder;
+    private int mTouchSlop; // 最小滑动距离
+    private Scroller mScroller; // 辅助滑动
+    private float mDownX; // 手指按下时 x 的位置
+    private float mMoveX; // 手指移动时 x 的位置
+    private float mUpX; // 手指抬起时的 x 位置
+    private int mLeftBorder; // 左边临界点
+    private int mRightBorder; // 右边临界点
 
     public ScrollerView(Context context) {
         this(context, null);
@@ -48,8 +48,8 @@ public class ScrollerView extends ViewGroup {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mUpX = 0F;
                 mDownX = event.getRawX();
+                mUpX = mDownX;
                 break;
             case MotionEvent.ACTION_MOVE:
                 mMoveX = event.getRawX();
@@ -102,8 +102,8 @@ public class ScrollerView extends ViewGroup {
     public boolean onInterceptTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mUpX = 0F;
                 mDownX = event.getRawX();
+                mUpX = mDownX;
                 break;
             case MotionEvent.ACTION_MOVE:
                 mMoveX = event.getRawX();

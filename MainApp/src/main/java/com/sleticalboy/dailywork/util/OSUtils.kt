@@ -22,7 +22,8 @@ object OSUtils {
     }
 
     private fun getProcessName(context: Context, pid: Int): String? {
-        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val am = context.applicationContext.getSystemService(Context.ACTIVITY_SERVICE)
+                as ActivityManager
         val runningApps = am.runningAppProcesses ?: return null
         return runningApps
                 .firstOrNull { it.pid == pid }

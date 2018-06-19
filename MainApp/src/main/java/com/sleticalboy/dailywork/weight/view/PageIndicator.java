@@ -1,5 +1,7 @@
 package com.sleticalboy.dailywork.weight.view;
 
+import android.support.v4.view.ViewPager;
+
 /**
  * Created on 18-3-15.
  *
@@ -8,11 +10,19 @@ package com.sleticalboy.dailywork.weight.view;
  */
 public interface PageIndicator {
 
-    void setWithPagerView(PagerView pagerView);
+    /**
+     * @param viewPager
+     * @param initialPos
+     */
+    void setupWithViewPager(ViewPager viewPager, int initialPos);
 
-    void setWithPagerView(PagerView pagerView, int initialPos);
-
+    /**
+     * @param pageIndex
+     */
     void setCurrentPage(int pageIndex);
 
+    /**
+     *
+     */
     void notifyDataSetChanged();
 }

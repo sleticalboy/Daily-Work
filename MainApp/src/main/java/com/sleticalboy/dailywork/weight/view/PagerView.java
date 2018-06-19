@@ -221,7 +221,9 @@ public class PagerView extends LinearLayout {
     }
 
     public RecyclerView.Adapter getAdapter() {
-        if (mRecyclerView == null || mRecyclerView.getAdapter() == null) return null;
+        if (mRecyclerView == null || mRecyclerView.getAdapter() == null) {
+            return null;
+        }
         return mRecyclerView.getAdapter();
     }
 
