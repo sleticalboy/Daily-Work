@@ -1,7 +1,9 @@
 package com.sleticalboy.scananimation;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -13,24 +15,46 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     final static int DURATION = 5000;
-    final static int ORIGINAL_HEIGHT = 322;
+    private ImageView ivAnimLowBg;
     private ImageView ivAnimHighBg;
     private ImageView ivAnimScanner;
     private TextView btnStop;
     private TextView btnStart;
+    private int mHeight;
+    private int mWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        mHeight = ivAnimLowBg.getDrawable().getIntrinsicHeight();
+        //final ClipDrawable drawable = (ClipDrawable) ivAnimHighBg.getDrawable();
     }
 
+
     private void initView() {
+        ivAnimLowBg = findViewById(R.id.iv_anim_low_bg);
         ivAnimHighBg = (ImageView) findViewById(R.id.iv_anim_high_bg);
         ivAnimScanner = (ImageView) findViewById(R.id.iv_anim_scanner);
         btnStop = (TextView) findViewById(R.id.btn_stop);
         btnStart = (TextView) findViewById(R.id.btn_start);
+        ivAnimLowBg.post(new Runnable() {
+            @Override
+            public void run() {
+                mHeight = ivAnimLowBg.getHeight();
+                mWidth = ivAnimHighBg.getWidth();
+                Log.d("MainActivity", "mHeight:" + mHeight);
+                Log.d("MainActivity", "mWidth:" + mWidth);
+            }
+        });
+        mHeight = ivAnimHighBg.getDrawable().getIntrinsicHeight();
+        mWidth = ivAnimLowBg.getDrawable().getIntrinsicWidth();
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivAnimHighBg.getLayoutParams();
+        lp.height = mHeight;
+        lp.width = mWidth;
+        ivAnimHighBg.setLayoutParams(lp);
+
         initListener();
     }
 
@@ -42,13 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         final int id = v.getId();
-        int height = ivAnimHighBg.getLayoutParams().height;
-        int topMargin = ((RelativeLayout.LayoutParams) ivAnimScanner.getLayoutParams()).topMargin;
         if (id == R.id.btn_start) {
-            for (int t = 0; t < DURATION; t++) {
-                height = height * (t * ORIGINAL_HEIGHT / DURATION);
-                topMargin = topMargin * (t * ORIGINAL_HEIGHT / DURATION);
-            }
         } else if (id == R.id.btn_stop) {
         }
     }
@@ -56,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     static class ViewWrapper {
 
         static final String HEIGHT = "height";
-        static final String TOP_MARGIN = "topMargin";
         final View mView;
 
         ViewWrapper(View view) {
@@ -69,19 +86,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         public void setHeight(int height) {
             mView.getLayoutParams().height -= height;
-        }
-
-        public int getTopMargin() {
-            if (mView.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
-                return ((RelativeLayout.LayoutParams) mView.getLayoutParams()).topMargin;
-            }
-            return 0;
-        }
-
-        public void setTopMargin(int topMargin) {
-            if (mView.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
-                ((RelativeLayout.LayoutParams) mView.getLayoutParams()).topMargin -= topMargin;
-            }
         }
     }
 }

@@ -1,4 +1,4 @@
-include ':MainApp', ':ImageLoader', ':OkHttp2.5', ':EventBus', ':Glide3.7', ':Glide4.x', ':ScanAnimation'
+include ':MainApp', ':ImageLoader', ':OkHttp2.5', ':EventBus', ':Glide3.7', ':Glide4.x', ':ScanAnimation', ':MQTT'
 include ':GreenDao'
 //include ':ExtShare'
 //include ':Camera2'
