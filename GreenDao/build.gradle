@@ -43,4 +43,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
     // add green dao dependency
     implementation 'org.greenrobot:greendao:3.2.2'
+    compile 'com.alibaba:fastjson:1.2.47'
 }

@@ -15,14 +15,17 @@ import java.io.File;
  */
 public class GreenDaoContext extends ContextWrapper {
 
-    public GreenDaoContext() {
+    private final String mDBPath;
+
+    public GreenDaoContext(String dbPath) {
         super(App.getContext());
+        mDBPath = dbPath;
     }
 
     @Override
     public File getDatabasePath(String name) {
         // TODO: 18-3-2 custom your own Database File path
-        return super.getDatabasePath(name);
+        return super.getDatabasePath(mDBPath);
     }
 
     @Override
