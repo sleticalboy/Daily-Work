@@ -1,7 +1,6 @@
 package com.sleticalboy.okhttp25.upload.custom;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.ResponseBody;
@@ -22,12 +21,19 @@ import okio.Source;
 public final class ProgressResponseBody extends ResponseBody {
 
     private final ResponseBody mResponseBody;
+    private final long mBreakPoint;
     private ProgressCallback mCallback;
     private BufferedSource mSource;
 
-    public ProgressResponseBody(String url, ResponseBody body) {
+    public ProgressResponseBody(String url, ResponseBody body, long breakPoint) throws IOException {
         mResponseBody = body;
         mCallback = ProgressInterceptor.getCallback(url);
+        mBreakPoint = breakPoint;
+        if (mCallback != null) {
+            // 断点续传时是剩余文件的长度
+            // contentLength() + mBreakPoint 是文件的总长度
+            mCallback.onPreExecute(contentLength());
+        }
     }
 
     @Override
@@ -43,35 +49,39 @@ public final class ProgressResponseBody extends ResponseBody {
     @Override
     public BufferedSource source() throws IOException {
         if (mSource == null) {
-            mSource = Okio.buffer(new ProgressSource(mResponseBody.source()));
+            mSource = Okio.buffer(new ProgressSource(mResponseBody.source(), mCallback, mBreakPoint, contentLength()));
         }
         return mSource;
     }
 
-    private class ProgressSource extends ForwardingSource {
+    private static class ProgressSource extends ForwardingSource {
 
+        final long mContentLength;
         long bytesTotalRead;
-        int currentProgress;
+        float currentProgress;
+        ProgressCallback mCallback;
 
-        ProgressSource(Source delegate) {
+        ProgressSource(Source delegate, ProgressCallback callback, long breakPoint, long remaining) {
             super(delegate);
+            bytesTotalRead = breakPoint;
+            mCallback = callback;
+            mContentLength = remaining + breakPoint;
         }
 
         @Override
         public long read(@NonNull Buffer sink, long byteCount) throws IOException {
             final long bytesRead = super.read(sink, byteCount);
-            final long contentLength = mResponseBody.contentLength();
             if (bytesRead == -1) {
-                bytesTotalRead = contentLength;
+                bytesTotalRead = mContentLength;
             } else {
                 bytesTotalRead += bytesRead;
             }
-            int progress = (int) (100F * bytesTotalRead / contentLength);
-//            Log.d("ProgressResponseBody", "progress is " + progress + ", total read is " + bytesTotalRead);
+            float progress = 100f * bytesTotalRead / mContentLength;
+//            Log.d("ProgressResponseBody", "progress is " + progress + ", total read is " + bytesTotalRead + ", total is " + contentLength);
             if (mCallback != null && currentProgress != progress) {
                 mCallback.onProgress(progress, bytesTotalRead);
             }
-            if (mCallback != null && bytesTotalRead == contentLength) {
+            if (mCallback != null && bytesTotalRead == mContentLength) {
                 mCallback = null;
             }
             currentProgress = progress;

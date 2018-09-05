@@ -1,7 +1,6 @@
 package com.sleticalboy.okhttp25.upload.custom;
 
 import android.support.v4.util.ArrayMap;
-import android.util.Log;
 
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.Request;
@@ -19,6 +18,7 @@ import java.util.Map;
 public class ProgressInterceptor implements Interceptor {
 
     private static final Map<String, ProgressCallback> PROGRESS_CALLBACK_MAP = new ArrayMap<>();
+    private long mBreakPoint;
 
     public static ProgressInterceptor newInstance() {
         return new ProgressInterceptor();
@@ -42,17 +42,18 @@ public class ProgressInterceptor implements Interceptor {
         PROGRESS_CALLBACK_MAP.clear();
     }
 
+    public void setBreakPoint(long breakPoint) {
+        mBreakPoint = breakPoint;
+    }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
-        String threadName = Thread.currentThread().getName();
-        Log.d("ProgressInterceptor", "current thread is " + threadName);
         final Request request = chain.request();
         final Response response = chain.proceed(request);
         final String url = request.url().toString();
-        Log.d("ProgressInterceptor", "interceptor url is " + url);
         final ResponseBody body = response.body();
         return response.newBuilder()
-                .body(new ProgressResponseBody(url, body))
+                .body(new ProgressResponseBody(url, body, mBreakPoint))
                 .build();
     }
 }

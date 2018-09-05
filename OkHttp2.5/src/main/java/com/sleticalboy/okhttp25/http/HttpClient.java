@@ -5,8 +5,6 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import com.alibaba.fastjson.JSON;
-import com.sleticalboy.okhttp25.ContextProvider;
-import com.sleticalboy.okhttp25.R;
 import com.sleticalboy.okhttp25.http.builder.AbstractBuilder;
 import com.sleticalboy.okhttp25.http.builder.DeleteBuilder;
 import com.sleticalboy.okhttp25.http.builder.GetBuilder;
@@ -20,6 +18,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created on 18-9-3.
@@ -70,9 +69,13 @@ public final class HttpClient {
      * @return {@link HttpClient}
      */
     public HttpClient interceptor(Interceptor interceptor) {
-        checkInitialize();
-        mOkHttpClient.interceptors().add(interceptor);
+        interceptors().add(interceptor);
         return this;
+    }
+
+    public List<Interceptor> interceptors() {
+        checkInitialize();
+        return mOkHttpClient.interceptors();
     }
 
     /**

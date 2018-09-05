@@ -2,6 +2,8 @@ package com.sleticalboy.okhttp25.download;
 
 /**
  * Created on 18-9-3.
+ * <p>
+ * 回调都已经在 UI 线程了 不需要再做切换线程的操作
  *
  * @author sleticalboy
  */
@@ -24,10 +26,9 @@ public interface DownloadCallback {
     /**
      * 下载进度回调
      *
-     * @param progress       进度条
-     * @param bytesTotalRead 已下载长度
+     * @param progress 进度条
      */
-    void onProgress(int progress, long bytesTotalRead);
+    void onProgress(float progress);
 
     /**
      * 下载暂停回调
@@ -60,7 +61,7 @@ public interface DownloadCallback {
         }
 
         @Override
-        public void onProgress(int progress, long bytesTotalRead) {
+        public void onProgress(float progress) {
         }
 
         @Override

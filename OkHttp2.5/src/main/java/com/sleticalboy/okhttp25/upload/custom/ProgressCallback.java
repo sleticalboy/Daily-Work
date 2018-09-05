@@ -10,25 +10,24 @@ public interface ProgressCallback {
     /**
      * 开始下载之前回调
      *
-     * @param contentLength 下载内容总长度
+     * @param total 下载内容总长度
      */
-    void onPreExecute(long contentLength);
+    void onPreExecute(long total);
 
     /**
      * 瞎子啊进度回调
-     *
-     * @param progress       下载进度
-     * @param bytesTotalRead 已下载文件长度
+     *  @param progress
+     * @param read 已下载文件长度
      */
-    void onProgress(int progress, long bytesTotalRead);
+    void onProgress(float progress, long read);
 
     class SimpleCallback implements ProgressCallback {
         @Override
-        public void onPreExecute(long contentLength) {
+        public void onPreExecute(long total) {
         }
 
         @Override
-        public void onProgress(int progress, long bytesTotalRead) {
+        public void onProgress(float progress, long read) {
         }
     }
 

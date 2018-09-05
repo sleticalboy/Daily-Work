@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sleticalboy.okhttp25.download.DownloadCallback;
-import com.sleticalboy.okhttp25.download.ProgressDownloader;
+import com.sleticalboy.okhttp25.download.OkDownloader;
 import com.sleticalboy.okhttp25.http.HttpCallback;
 import com.sleticalboy.okhttp25.http.HttpClient;
 import com.sleticalboy.okhttp25.http.builder.AbstractBuilder;
@@ -18,13 +18,13 @@ import com.squareup.okhttp.internal.io.FileSystem;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
 
 public final class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private TextView tvResult;
-    private long lastPoint = 0L;
-    private ProgressDownloader mDownloader;
+    private OkDownloader mDownloader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,22 +56,29 @@ public final class MainActivity extends AppCompatActivity {
         final String url = "http://gdown.baidu.com/data/wisegame/df65a597122796a4/weixin_821.apk";
         String fileName = url.substring(url.lastIndexOf("/") + 1, url.length());
         File apk = new File(file, fileName);
-        mDownloader = new ProgressDownloader(url, apk);
+
+        NumberFormat format = NumberFormat.getInstance();
+        mDownloader = new OkDownloader(url, apk, true);
         mDownloader.setDownloadCallback(new DownloadCallback.SimpleCallback() {
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: " + e.getMessage(), e);
+                Log.e(TAG, "onError() " + e.getMessage(), e);
+                Log.d(TAG, "onError() delete file " + apk.delete());
             }
 
             @Override
             public void onStart(long total) {
                 Log.d(TAG, "onStart() called with: total = [" + total + "]");
+                if (apk.exists()) {
+                    Log.d(TAG, "initDownload file exist, delete it");
+                    boolean delete = apk.delete();
+                    Log.d(TAG, "initDownload delete file: " + delete);
+                }
             }
 
             @Override
-            public void onProgress(int progress, long bytesTotalRead) {
-                lastPoint = bytesTotalRead;
-                Log.d(TAG, "onProgress() called with: progress = [" + progress + "], bytesTotalRead = [" + bytesTotalRead + "]");
+            public void onProgress(float progress) {
+                Log.d(TAG, "onProgress() called with: progress = [" + format.format(progress) + "]");
             }
 
             @Override
@@ -81,12 +88,12 @@ public final class MainActivity extends AppCompatActivity {
 
             @Override
             public void onComplete() {
-                Log.d(TAG, "onComplete() called");
+                Log.d(TAG, "onComplete() saved file to " + apk.getAbsolutePath());
             }
 
             @Override
             public void onCancel() {
-                Log.d(TAG, "onCancel() called");
+                Log.d(TAG, "onCancel() delete file " + apk.delete());
             }
 
             @Override
@@ -107,7 +114,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void showError(Throwable e) {
-        toast(e.getMessage());
+        toast(e == null ? "" : e.getMessage());
     }
 
     private void deleteContents(File directory) throws IOException {
@@ -131,7 +138,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     public void resumeDownload(View view) {
-        mDownloader.resume(lastPoint);
+        mDownloader.resume();
     }
 
     public void cancelDownload(View view) {
