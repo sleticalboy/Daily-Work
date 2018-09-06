@@ -12,13 +12,17 @@ import com.sleticalboy.okhttp25.download.DownloadCallback;
 import com.sleticalboy.okhttp25.download.OkDownloader;
 import com.sleticalboy.okhttp25.http.HttpCallback;
 import com.sleticalboy.okhttp25.http.HttpClient;
-import com.sleticalboy.okhttp25.http.builder.AbstractBuilder;
+import com.sleticalboy.okhttp25.http.builder.DeleteBuilder;
 import com.sleticalboy.okhttp25.http.builder.GetBuilder;
+import com.sleticalboy.okhttp25.http.builder.PostBuilder;
+import com.sleticalboy.okhttp25.http.builder.PutBuilder;
+import com.sleticalboy.okhttp25.http.builder.RequestBuilder;
 import com.squareup.okhttp.internal.io.FileSystem;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.HashMap;
 
 public final class MainActivity extends AppCompatActivity {
 
@@ -33,9 +37,16 @@ public final class MainActivity extends AppCompatActivity {
 
         tvResult = findViewById(R.id.tvResult);
 
-        final AbstractBuilder builder = new GetBuilder().url("http://www.baidu.com/")
+        getTest();
+
+        initDownload();
+    }
+
+    private void getTest() {
+        final RequestBuilder get = new GetBuilder()
+                .url("http://www.baidu.com/")
                 .header("custom-header", "minxing");
-        HttpClient.getInstance().asyncExecute(builder, new HttpCallback<String>() {
+        HttpClient.getInstance().asyncExecute(get, new HttpCallback<String>() {
 
             @Override
             public void onSuccess(String response) {
@@ -47,8 +58,27 @@ public final class MainActivity extends AppCompatActivity {
                 showError(e);
             }
         });
+    }
 
-        initDownload();
+    private void postTest() {
+        RequestBuilder postBuilder = new PostBuilder()
+                .url("")
+                .post(new HashMap<>(), null);
+        HttpClient.getInstance().asyncExecute(postBuilder, null);
+    }
+
+    private void putTest() {
+        RequestBuilder putBuilder = new PutBuilder()
+                .url("")
+                .put(new HashMap<>(), null);
+        HttpClient.getInstance().asyncExecute(putBuilder, null);
+    }
+
+    private void deleteTest() {
+        RequestBuilder deleteBuilder = new DeleteBuilder()
+                .url("")
+                .delete(null);
+        HttpClient.getInstance().asyncExecute(deleteBuilder, null);
     }
 
     private void initDownload() {

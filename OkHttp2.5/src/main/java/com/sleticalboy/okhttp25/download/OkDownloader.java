@@ -4,7 +4,7 @@ import android.support.annotation.WorkerThread;
 
 import com.sleticalboy.okhttp25.CloseUtils;
 import com.sleticalboy.okhttp25.http.HttpClient;
-import com.sleticalboy.okhttp25.http.builder.AbstractBuilder;
+import com.sleticalboy.okhttp25.http.builder.RequestBuilder;
 import com.sleticalboy.okhttp25.http.builder.GetBuilder;
 import com.sleticalboy.okhttp25.upload.custom.ProgressCallback;
 import com.sleticalboy.okhttp25.upload.custom.ProgressInterceptor;
@@ -101,8 +101,10 @@ public final class OkDownloader {
                 }
             }
         }
-        AbstractBuilder builder = new GetBuilder().url(mUrl).breakPoint(startPoint);
-        mCall = mHttpClient.getOkHttpClient().newCall(builder.build());
+        RequestBuilder getBuilder = new GetBuilder()
+                .url(mUrl)
+                .breakPoint(startPoint);
+        mCall = mHttpClient.getOkHttpClient().newCall(getBuilder.build());
         mCall.enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

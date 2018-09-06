@@ -5,7 +5,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import com.alibaba.fastjson.JSON;
-import com.sleticalboy.okhttp25.http.builder.AbstractBuilder;
+import com.sleticalboy.okhttp25.http.builder.RequestBuilder;
 import com.sleticalboy.okhttp25.http.builder.DeleteBuilder;
 import com.sleticalboy.okhttp25.http.builder.GetBuilder;
 import com.sleticalboy.okhttp25.http.builder.PostBuilder;
@@ -81,12 +81,12 @@ public final class HttpClient {
     /**
      * 执行异步网络请求
      *
-     * @param builder  {@link AbstractBuilder} see also {@link GetBuilder}, {@link PostBuilder},
+     * @param builder  {@link RequestBuilder} see also {@link GetBuilder}, {@link PostBuilder},
      *                 {@link PutBuilder}, {@link DeleteBuilder}
      * @param callback {@link HttpCallback} 网络请求回调[都已经回调到了主线程]
      * @param <T>      请求返回类型
      */
-    public <T> void asyncExecute(@NonNull AbstractBuilder builder, HttpCallback<T> callback) {
+    public <T> void asyncExecute(@NonNull RequestBuilder builder, HttpCallback<T> callback) {
         checkInitialize();
         final Call newCall = mOkHttpClient.newCall(builder.build());
         newCall.enqueue(new Callback() {
@@ -123,7 +123,7 @@ public final class HttpClient {
         });
     }
 
-    public void download(@NonNull AbstractBuilder builder, HttpCallback<Response> callback) {
+    public void download(@NonNull RequestBuilder builder, HttpCallback<Response> callback) {
         checkInitialize();
     }
 

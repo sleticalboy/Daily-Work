@@ -7,6 +7,7 @@ import com.sleticalboy.okhttp25.R;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Map;
  *
  * @author sleticalboy
  */
-public abstract class AbstractBuilder {
+public abstract class RequestBuilder {
 
     static final String TYPE_TEXT = "text";
     static final String TYPE_IMAGE = "image";
@@ -25,11 +26,11 @@ public abstract class AbstractBuilder {
     final Request.Builder mRequestBuilder;
     private long mStartPoint;
 
-    AbstractBuilder() {
+    RequestBuilder() {
         mRequestBuilder = new Request.Builder();
     }
 
-    public AbstractBuilder url(@NonNull String url) {
+    public RequestBuilder url(@NonNull String url) {
         mRequestBuilder.url(inspectUrl(url));
         return this;
     }
@@ -44,14 +45,14 @@ public abstract class AbstractBuilder {
         return mRequestBuilder.build();
     }
 
-    protected abstract AbstractBuilder method();
+    protected abstract RequestBuilder method();
 
-    public AbstractBuilder header(@NonNull String name, @NonNull String value) {
+    public RequestBuilder header(@NonNull String name, @NonNull String value) {
         mRequestBuilder.header(name, value);
         return this;
     }
 
-    public AbstractBuilder headers(@NonNull Map<String, String> headers) {
+    public RequestBuilder headers(@NonNull Map<String, String> headers) {
         if (headers.size() != 0) {
             for (final String key : headers.keySet()) {
                 mRequestBuilder.header(key, headers.get(key));
@@ -61,33 +62,33 @@ public abstract class AbstractBuilder {
     }
 
     /**
-     * 用于断点续传
-     *
-     * @param startPoint 断点的位置
-     * @return {@link AbstractBuilder}
-     */
-    public AbstractBuilder breakPoint(long startPoint) {
-        mStartPoint = startPoint;
-        mRequestBuilder.header("RANGE", "bytes=" + startPoint + "-");
-        return this;
-    }
-
-    /**
      * 注入 header
      *
      * @param name  key
      * @param value value
-     * @return {@link AbstractBuilder}
+     * @return {@link RequestBuilder}
      */
-    public AbstractBuilder injectHeader(@NonNull String name, @NonNull String value) {
+    public RequestBuilder injectHeader(@NonNull String name, @NonNull String value) {
         return header(name, value);
     }
 
-    public AbstractBuilder injectHeaders(@NonNull Map<String, String> headers) {
+    public RequestBuilder injectHeaders(@NonNull Map<String, String> headers) {
         return headers(headers);
     }
 
-    public long getStartPoint() {
-        return mStartPoint;
+    public RequestBuilder delete(Map<String, String> params) {
+        return this;
+    }
+
+    public RequestBuilder post(@NonNull Map<String, String> params, List<String> files) {
+        return this;
+    }
+
+    public RequestBuilder put(@NonNull Map<String, String> params, List<String> files) {
+        return this;
+    }
+
+    public RequestBuilder breakPoint(long startPoint) {
+        return this;
     }
 }

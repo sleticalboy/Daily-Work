@@ -10,13 +10,13 @@ import java.util.Map;
  *
  * @author sleticalboy
  */
-public final class DeleteBuilder extends AbstractBuilder {
+public final class DeleteBuilder extends RequestBuilder {
 
     private final MultipartBuilder mBuilder = new MultipartBuilder();
     private boolean mEmpty = false;
 
     @Override
-    protected AbstractBuilder method() {
+    protected RequestBuilder method() {
         mRequestBuilder.delete(createBody());
         return this;
     }
@@ -25,12 +25,14 @@ public final class DeleteBuilder extends AbstractBuilder {
         return mEmpty ? EMPTY_BODY : mBuilder.build();
     }
 
-    public void delete(Map<String, String> params) {
+    @Override
+    public RequestBuilder delete(Map<String, String> params) {
         mEmpty = params == null || params.size() == 0;
         if (!mEmpty) {
             for (final String key : params.keySet()) {
                 mBuilder.addFormDataPart(key, params.get(key));
             }
         }
+        return this;
     }
 }
