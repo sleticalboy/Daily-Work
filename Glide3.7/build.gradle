@@ -3,8 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
 
-
-
     defaultConfig {
         applicationId "com.sleticalboy.glide37"
         minSdkVersion 16
@@ -28,6 +26,9 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -43,5 +44,5 @@ dependencies {
     api 'jp.wasabeef:glide-transformations:2.0.2'
     api 'com.squareup.okhttp3:okhttp:3.10.0'
     // 官方替换方式
-    // compile 'com.github.bumptech.glide:okhttp3-integration:1.5.0@aar'
+    // api 'com.github.bumptech.glide:okhttp3-integration:1.5.0@aar'
 }
