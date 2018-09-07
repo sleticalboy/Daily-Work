@@ -2,8 +2,6 @@ package com.sleticalboy.okhttp25.http.builder;
 
 import android.support.annotation.NonNull;
 
-import com.sleticalboy.okhttp25.ContextProvider;
-import com.sleticalboy.okhttp25.R;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 
@@ -24,7 +22,7 @@ public abstract class RequestBuilder {
     static final String TYPE_APPLICATION = "application";
     static final RequestBody EMPTY_BODY = RequestBody.create(null, new byte[0]);
     final Request.Builder mRequestBuilder;
-    private long mStartPoint;
+    long mBreadPoint;
 
     RequestBuilder() {
         mRequestBuilder = new Request.Builder();
@@ -35,8 +33,8 @@ public abstract class RequestBuilder {
         return this;
     }
 
+    @NonNull
     private String inspectUrl(@NonNull String url) {
-        ContextProvider.getApplicationContext().getResources().getString(R.string.app_name);
         return url;
     }
 
@@ -90,5 +88,9 @@ public abstract class RequestBuilder {
 
     public RequestBuilder breakPoint(long startPoint) {
         return this;
+    }
+
+    public long getBreakPoint() {
+        return 0L;
     }
 }

@@ -1,13 +1,16 @@
-package com.sleticalboy.okhttp25;
+package com.sleticalboy.okhttp25.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sleticalboy.okhttp25.R;
 import com.sleticalboy.okhttp25.download.DownloadCallback;
 import com.sleticalboy.okhttp25.download.OkDownloader;
 import com.sleticalboy.okhttp25.http.HttpCallback;
@@ -24,25 +27,25 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.HashMap;
 
-public final class MainActivity extends AppCompatActivity {
+public class HttpRequestActivity extends Activity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "HttpRequestActivity";
+
     private TextView tvResult;
     private OkDownloader mDownloader;
+    private ProgressBar pbDownload;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         tvResult = findViewById(R.id.tvResult);
-
-        getTest();
-
+        pbDownload = findViewById(R.id.pb_download);
+        pbDownload.setMax(100);
         initDownload();
     }
 
-    private void getTest() {
+    private void testGet() {
         final RequestBuilder get = new GetBuilder()
                 .url("http://www.baidu.com/")
                 .header("custom-header", "minxing");
@@ -60,21 +63,21 @@ public final class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void postTest() {
+    private void testPost() {
         RequestBuilder postBuilder = new PostBuilder()
                 .url("")
                 .post(new HashMap<>(), null);
         HttpClient.getInstance().asyncExecute(postBuilder, null);
     }
 
-    private void putTest() {
+    private void testPut() {
         RequestBuilder putBuilder = new PutBuilder()
                 .url("")
                 .put(new HashMap<>(), null);
         HttpClient.getInstance().asyncExecute(putBuilder, null);
     }
 
-    private void deleteTest() {
+    private void testDelete() {
         RequestBuilder deleteBuilder = new DeleteBuilder()
                 .url("")
                 .delete(null);
@@ -109,6 +112,7 @@ public final class MainActivity extends AppCompatActivity {
             @Override
             public void onProgress(float progress) {
                 Log.d(TAG, "onProgress() called with: progress = [" + format.format(progress) + "]");
+                pbDownload.setProgress((int) progress);
             }
 
             @Override
@@ -159,19 +163,23 @@ public final class MainActivity extends AppCompatActivity {
         FileSystem.SYSTEM.delete(file);
     }
 
-    public void startDownload(View view) {
+    public void onStartClick(View view) {
         mDownloader.start();
     }
 
-    public void pauseDownload(View view) {
+    public void onPauseClick(View view) {
         mDownloader.pause();
     }
 
-    public void resumeDownload(View view) {
+    public void onResumeClick(View view) {
         mDownloader.resume();
     }
 
-    public void cancelDownload(View view) {
+    public void onCancelClick(View view) {
         mDownloader.cancel();
+    }
+
+    public void onGetClick(View view) {
+        testGet();
     }
 }

@@ -5,11 +5,11 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import com.alibaba.fastjson.JSON;
-import com.sleticalboy.okhttp25.http.builder.RequestBuilder;
 import com.sleticalboy.okhttp25.http.builder.DeleteBuilder;
 import com.sleticalboy.okhttp25.http.builder.GetBuilder;
 import com.sleticalboy.okhttp25.http.builder.PostBuilder;
 import com.sleticalboy.okhttp25.http.builder.PutBuilder;
+import com.sleticalboy.okhttp25.http.builder.RequestBuilder;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Interceptor;
@@ -31,7 +31,6 @@ public final class HttpClient {
     private OkHttpClient mOkHttpClient;
     private Handler mMainHandler;
     private boolean mInitialized = false;
-    //    private String mBaseUrl;
 
     private HttpClient() {
         internalInit();
@@ -39,7 +38,6 @@ public final class HttpClient {
 
     private void internalInit() {
         mMainHandler = new Handler(Looper.getMainLooper());
-//        mBaseUrl = ContextProvider.getApplicationContext().getResources().getString(R.string.app_name);
         mOkHttpClient = new OkHttpClient();
         if (DBG) {
             mOkHttpClient.interceptors().add(new HttpLoggerInterceptor());
@@ -68,7 +66,7 @@ public final class HttpClient {
      * @param interceptor {@link Interceptor}
      * @return {@link HttpClient}
      */
-    public HttpClient interceptor(Interceptor interceptor) {
+    public HttpClient addInterceptor(Interceptor interceptor) {
         interceptors().add(interceptor);
         return this;
     }
@@ -83,48 +81,82 @@ public final class HttpClient {
      *
      * @param builder  {@link RequestBuilder} see also {@link GetBuilder}, {@link PostBuilder},
      *                 {@link PutBuilder}, {@link DeleteBuilder}
+     * @param async    是否异步
+     * @param callback {@link HttpCallback} 网络请求回调[都已经回调到了主线程]
+     * @param <T>      请求返回类型
+     */
+    public <T> void execute(@NonNull RequestBuilder builder, boolean async, HttpCallback<T> callback) {
+        checkInitialize();
+        final Call newCall = mOkHttpClient.newCall(builder.build());
+        if (async) {
+            newCall.enqueue(new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    if (callback != null) {
+                        mMainHandler.post(() -> callback.onFailure(e));
+                    }
+                    if (!newCall.isCanceled()) {
+                        newCall.cancel();
+                    }
+                }
+
+                @Override
+                @SuppressWarnings("unchecked")
+                public void onResponse(Response response) throws IOException {
+                    if (response != null && response.isSuccessful()) {
+                        final String result = response.body().string();
+                        if (callback != null) {
+                            Object object;
+                            if (callback.isStringType()) {
+                                object = result;
+                            } else {
+                                object = JSON.parseObject(result, callback.getGenericClass());
+                            }
+                            mMainHandler.post(() -> callback.onSuccess((T) object));
+                        }
+                    }
+                    if (!newCall.isCanceled()) {
+                        newCall.cancel();
+                    }
+                }
+            });
+        } else {
+            try {
+                Response response = newCall.execute();
+                if (response != null && response.isSuccessful()) {
+                    final String result = response.body().string();
+                    if (callback != null) {
+                        Object object;
+                        if (callback.isStringType()) {
+                            object = result;
+                        } else {
+                            object = JSON.parseObject(result, callback.getGenericClass());
+                        }
+                        callback.onSuccess((T) object);
+                    }
+                } else {
+                    if (callback != null) {
+                        callback.onFailure(new IOException("IOException"));
+                    }
+                }
+            } catch (IOException e) {
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * 执行异步网络请求
+     *
+     * @param builder  {@link RequestBuilder} see also {@link GetBuilder}, {@link PostBuilder},
+     *                 {@link PutBuilder}, {@link DeleteBuilder}
      * @param callback {@link HttpCallback} 网络请求回调[都已经回调到了主线程]
      * @param <T>      请求返回类型
      */
     public <T> void asyncExecute(@NonNull RequestBuilder builder, HttpCallback<T> callback) {
-        checkInitialize();
-        final Call newCall = mOkHttpClient.newCall(builder.build());
-        newCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                if (callback != null) {
-                    mMainHandler.post(() -> callback.onFailure(e));
-                }
-                if (!newCall.isCanceled()) {
-                    newCall.cancel();
-                }
-            }
-
-            @Override
-            @SuppressWarnings("unchecked")
-            public void onResponse(Response response) throws IOException {
-                if (response != null && response.isSuccessful()) {
-                    final String result = response.body().string();
-                    if (callback != null) {
-                        final Class<T> genericClass = callback.getGenericClass();
-                        Object object;
-                        if (genericClass != String.class) {
-                            object = JSON.parseObject(result, genericClass);
-                        } else {
-                            object = result;
-                        }
-                        mMainHandler.post(() -> callback.onSuccess((T) object));
-                    }
-                }
-                if (!newCall.isCanceled()) {
-                    newCall.cancel();
-                }
-            }
-        });
-    }
-
-    public void download(@NonNull RequestBuilder builder, HttpCallback<Response> callback) {
-        checkInitialize();
+        execute(builder, true, callback);
     }
 
     public Handler getMainHandler() {

@@ -20,8 +20,13 @@ public final class GetBuilder extends RequestBuilder {
      */
     @Override
     public RequestBuilder breakPoint(long startPoint) {
+        mBreadPoint = startPoint;
         mRequestBuilder.header("RANGE", "bytes=" + startPoint + "-");
         return this;
     }
 
+    @Override
+    public long getBreakPoint() {
+        return mBreadPoint;
+    }
 }

@@ -52,7 +52,7 @@ public final class OkDownloader {
         mSaveFile = saveFile;
         mHttpClient = HttpClient.getInstance();
         if (isNeedProgress) {
-            mHttpClient.interceptor(ProgressInterceptor.newInstance());
+            mHttpClient.addInterceptor(ProgressInterceptor.newInstance());
             ProgressInterceptor.addCallback(mUrl, new ProgressCallback.SimpleCallback() {
 
                 @Override
