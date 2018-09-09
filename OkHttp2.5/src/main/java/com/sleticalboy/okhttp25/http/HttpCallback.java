@@ -32,7 +32,7 @@ public abstract class HttpCallback<T> implements Serializable {
     }
 
     final boolean isStringType() {
-        return !isPrimaryType() && getGenericClass() == String.class;
+        return getGenericClass() == String.class;
     }
 
 //    final boolean isOtherType() {

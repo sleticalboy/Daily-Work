@@ -19,6 +19,7 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 18-9-3.
@@ -26,40 +27,58 @@ import java.util.List;
  * @author sleticalboy
  */
 public final class HttpClient {
-
+    
     private static final boolean DBG = true;
     private OkHttpClient mOkHttpClient;
     private Handler mMainHandler;
     private boolean mInitialized = false;
-
+    // private boolean vpnEnable = false;
+    
     private HttpClient() {
         internalInit();
     }
-
+    
     private void internalInit() {
         mMainHandler = new Handler(Looper.getMainLooper());
         mOkHttpClient = new OkHttpClient();
+        mOkHttpClient.setConnectTimeout(10, TimeUnit.MINUTES);
+        mOkHttpClient.setReadTimeout(10, TimeUnit.MINUTES);
+        mOkHttpClient.setWriteTimeout(10, TimeUnit.MINUTES);
+        
+        /*Route#
+        public boolean requiresTunnel() {
+            return address.sslSocketFactory != null && proxy.type() == Proxy.Type.HTTP;
+        }*/
+        // if (vpnEnable) {
+        //     mOkHttpClient.setSslSocketFactory((SSLSocketFactory) SSLSocketFactory.getDefault());
+        //     final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8088));
+        //     mOkHttpClient.setProxy(proxy);
+        //     mOkHttpClient.setProxySelector(ProxySelector.getDefault());
+        // }
+        
         if (DBG) {
-            mOkHttpClient.interceptors().add(new HttpLoggerInterceptor());
+            final HttpLoggerInterceptor loggerInterceptor = new HttpLoggerInterceptor()
+                    .setLevel(HttpLoggerInterceptor.Level.HEADERS);
+            mOkHttpClient.interceptors().add(loggerInterceptor);
         }
         mInitialized = true;
     }
-
+    
     public static HttpClient getInstance() {
         return SingleHolder.HTTP_CLIENT;
     }
-
+    
     public OkHttpClient getOkHttpClient() {
         checkInitialize();
         return mOkHttpClient;
     }
-
+    
     private void checkInitialize() {
         if (!mInitialized) {
             internalInit();
         }
     }
-
+    
     /**
      * 添加拦截器
      *
@@ -70,12 +89,12 @@ public final class HttpClient {
         interceptors().add(interceptor);
         return this;
     }
-
+    
     public List<Interceptor> interceptors() {
         checkInitialize();
         return mOkHttpClient.interceptors();
     }
-
+    
     /**
      * 执行异步网络请求
      *
@@ -99,7 +118,7 @@ public final class HttpClient {
                         newCall.cancel();
                     }
                 }
-
+                
                 @Override
                 @SuppressWarnings("unchecked")
                 public void onResponse(Response response) throws IOException {
@@ -146,7 +165,7 @@ public final class HttpClient {
             }
         }
     }
-
+    
     /**
      * 执行异步网络请求
      *
@@ -158,14 +177,14 @@ public final class HttpClient {
     public <T> void asyncExecute(@NonNull RequestBuilder builder, HttpCallback<T> callback) {
         execute(builder, true, callback);
     }
-
+    
     public Handler getMainHandler() {
         checkInitialize();
         return mMainHandler;
     }
-
+    
     private final static class SingleHolder {
         private static final HttpClient HTTP_CLIENT = new HttpClient();
     }
-
+    
 }

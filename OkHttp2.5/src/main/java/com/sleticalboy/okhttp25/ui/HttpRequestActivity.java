@@ -47,7 +47,7 @@ public class HttpRequestActivity extends Activity {
 
     private void testGet() {
         final RequestBuilder get = new GetBuilder()
-                .url("http://www.baidu.com/")
+                .url("https://www.baidu.com/")
                 .header("custom-header", "minxing");
         HttpClient.getInstance().asyncExecute(get, new HttpCallback<String>() {
 

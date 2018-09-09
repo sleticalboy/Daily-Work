@@ -90,7 +90,7 @@ public final class HttpLoggerInterceptor implements Interceptor {
         boolean hasRequestBody = requestBody != null;
 
         Connection connection = chain.connection();
-        String requestStartMessage = "--> "
+        String requestStartMessage = "request --> "
                 + request.method()
                 + ' ' + request.url()
                 + (connection != null ? " " + connection.getProtocol() : "");
@@ -121,9 +121,9 @@ public final class HttpLoggerInterceptor implements Interceptor {
             }
 
             if (!logBody || !hasRequestBody) {
-                logger.log("--> END " + request.method());
+                logger.log("request --> END " + request.method());
             } else if (bodyEncoded(request.headers())) {
-                logger.log("--> END " + request.method() + " (encoded body omitted)");
+                logger.log("request --> END " + request.method() + " (encoded body omitted)");
             } else {
                 Buffer buffer = new Buffer();
                 requestBody.writeTo(buffer);
@@ -137,21 +137,21 @@ public final class HttpLoggerInterceptor implements Interceptor {
                 logger.log("");
                 if (isPlaintext(buffer)) {
                     logger.log(buffer.readString(charset));
-                    logger.log("--> END " + request.method()
+                    logger.log("request --> END " + request.method()
                             + " (" + requestBody.contentLength() + "-byte body)");
                 } else {
-                    logger.log("--> END " + request.method() + " (binary "
+                    logger.log("request --> END " + request.method() + " (binary "
                             + requestBody.contentLength() + "-byte body omitted)");
                 }
             }
         }
-
+        ////////////////////// response /////////////////////////////
         long startNs = System.nanoTime();
         Response response;
         try {
             response = chain.proceed(request);
         } catch (Exception e) {
-            logger.log("<-- HTTP FAILED: " + e);
+            logger.log("response <-- HTTP FAILED: " + e);
             throw e;
         }
         long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
@@ -159,7 +159,7 @@ public final class HttpLoggerInterceptor implements Interceptor {
         ResponseBody responseBody = response.body();
         long contentLength = responseBody.contentLength();
         String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
-        logger.log("<-- "
+        logger.log("response <-- "
                 + response.code()
                 + (response.message().isEmpty() ? "" : ' ' + response.message())
                 + ' ' + response.request().url()
@@ -173,9 +173,9 @@ public final class HttpLoggerInterceptor implements Interceptor {
 
             response.body();
             if (!logBody || !hasBody(response)) {
-                logger.log("<-- END HTTP");
+                logger.log("response <-- END HTTP");
             } else if (bodyEncoded(response.headers())) {
-                logger.log("<-- END HTTP (encoded body omitted)");
+                logger.log("response <-- END HTTP (encoded body omitted)");
             } else {
                 BufferedSource source = responseBody.source();
                 source.request(Long.MAX_VALUE); // Buffer the entire body.
@@ -189,7 +189,7 @@ public final class HttpLoggerInterceptor implements Interceptor {
 
                 if (!isPlaintext(buffer)) {
                     logger.log("");
-                    logger.log("<-- END HTTP (binary " + buffer.size() + "-byte body omitted)");
+                    logger.log("response <-- END HTTP (binary " + buffer.size() + "-byte body omitted)");
                     return response;
                 }
 
@@ -198,7 +198,7 @@ public final class HttpLoggerInterceptor implements Interceptor {
                     logger.log(buffer.clone().readString(charset));
                 }
 
-                logger.log("<-- END HTTP (" + buffer.size() + "-byte body)");
+                logger.log("response <-- END HTTP (" + buffer.size() + "-byte body)");
             }
         }
 
@@ -331,7 +331,7 @@ public final class HttpLoggerInterceptor implements Interceptor {
          */
         HttpLoggerInterceptor.Logger DEFAULT = message -> {
 //                Platform.get().log(Platform.INFO, message, null);
-            Log.d("OkHttp2.5", "" + message, null);
+            Log.d("MXHttpLogger", "" + message, null);
         };
 
         void log(String message);
