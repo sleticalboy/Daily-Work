@@ -15,7 +15,7 @@ import java.util.Map;
  *
  * @author sleticalboy
  */
-public class ProgressInterceptor implements Interceptor {
+public final class ProgressInterceptor implements Interceptor {
 
     private static final Map<String, ProgressCallback> PROGRESS_CALLBACK_MAP = new ArrayMap<>();
 
@@ -47,14 +47,14 @@ public class ProgressInterceptor implements Interceptor {
         final Request request = chain.request();
         final String range = request.header("RANGE");
         long breakPoint = 0L;
+        // 取出请求头中的断点信息
         if (range != null && range.contains("-")) {
             breakPoint = Long.parseLong(range.split("-")[0]);
         }
         final Response response = chain.proceed(request);
-        final String url = request.url().toString();
         final ResponseBody body = response.body();
         return response.newBuilder()
-                .body(new ProgressResponseBody(url, body, breakPoint))
+                .body(new ProgressResponseBody(request.url().toString(), body, breakPoint))
                 .build();
     }
 }
