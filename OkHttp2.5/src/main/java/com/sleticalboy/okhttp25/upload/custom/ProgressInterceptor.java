@@ -18,7 +18,6 @@ import java.util.Map;
 public class ProgressInterceptor implements Interceptor {
 
     private static final Map<String, ProgressCallback> PROGRESS_CALLBACK_MAP = new ArrayMap<>();
-    private long mBreakPoint;
 
     public static ProgressInterceptor newInstance() {
         return new ProgressInterceptor();
@@ -42,18 +41,20 @@ public class ProgressInterceptor implements Interceptor {
         PROGRESS_CALLBACK_MAP.clear();
     }
 
-    public void setBreakPoint(long breakPoint) {
-        mBreakPoint = breakPoint;
-    }
-
     @Override
     public Response intercept(Chain chain) throws IOException {
+        // RANGE: bytes=123456-654321
         final Request request = chain.request();
+        final String range = request.header("RANGE");
+        long breakPoint = 0L;
+        if (range != null && range.contains("-")) {
+            breakPoint = Long.parseLong(range.split("-")[0]);
+        }
         final Response response = chain.proceed(request);
         final String url = request.url().toString();
         final ResponseBody body = response.body();
         return response.newBuilder()
-                .body(new ProgressResponseBody(url, body, mBreakPoint))
+                .body(new ProgressResponseBody(url, body, breakPoint))
                 .build();
     }
 }

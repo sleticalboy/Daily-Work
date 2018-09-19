@@ -20,9 +20,8 @@ public final class PutBuilder extends RequestBuilder {
     private final MultipartBuilder mBuilder = new MultipartBuilder();
 
     @Override
-    protected RequestBuilder method() {
+    protected void method() {
         mRequestBuilder.put(createBody());
-        return this;
     }
 
     private RequestBody createBody() {

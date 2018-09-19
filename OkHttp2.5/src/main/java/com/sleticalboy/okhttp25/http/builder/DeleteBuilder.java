@@ -16,9 +16,8 @@ public final class DeleteBuilder extends RequestBuilder {
     private boolean mEmpty = false;
 
     @Override
-    protected RequestBuilder method() {
+    protected void method() {
         mRequestBuilder.delete(createBody());
-        return this;
     }
 
     private RequestBody createBody() {

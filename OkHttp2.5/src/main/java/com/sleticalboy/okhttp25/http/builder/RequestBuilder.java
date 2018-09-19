@@ -7,6 +7,7 @@ import com.squareup.okhttp.RequestBody;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created on 18-9-3.
@@ -22,7 +23,6 @@ public abstract class RequestBuilder {
     static final String TYPE_APPLICATION = "application";
     static final RequestBody EMPTY_BODY = RequestBody.create(null, new byte[0]);
     final Request.Builder mRequestBuilder;
-    long mBreadPoint;
 
     RequestBuilder() {
         mRequestBuilder = new Request.Builder();
@@ -43,7 +43,7 @@ public abstract class RequestBuilder {
         return mRequestBuilder.build();
     }
 
-    protected abstract RequestBuilder method();
+    protected abstract void method();
 
     public RequestBuilder header(@NonNull String name, @NonNull String value) {
         mRequestBuilder.header(name, value);
@@ -53,7 +53,7 @@ public abstract class RequestBuilder {
     public RequestBuilder headers(@NonNull Map<String, String> headers) {
         if (headers.size() != 0) {
             for (final String key : headers.keySet()) {
-                mRequestBuilder.header(key, headers.get(key));
+                mRequestBuilder.header(key, Objects.requireNonNull(headers.get(key)));
             }
         }
         return this;
@@ -86,11 +86,7 @@ public abstract class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder breakPoint(long startPoint) {
+    public RequestBuilder breakPoint(Long startPoint, Long endPoint) {
         return this;
-    }
-
-    public long getBreakPoint() {
-        return 0L;
     }
 }

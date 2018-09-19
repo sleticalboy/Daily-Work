@@ -20,9 +20,8 @@ public final class PostBuilder extends RequestBuilder {
     private final MultipartBuilder mBuilder = new MultipartBuilder();
 
     @Override
-    protected RequestBuilder method() {
+    protected void method() {
         mRequestBuilder.post(createBody());
-        return this;
     }
 
     private RequestBody createBody() {
