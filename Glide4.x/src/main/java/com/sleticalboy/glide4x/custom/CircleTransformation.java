@@ -19,8 +19,8 @@ import java.security.MessageDigest;
  * @author sleticalboy
  * @description
  */
-public class CircleCrop extends BitmapTransformation {
-
+public class CircleTransformation extends BitmapTransformation {
+    
     @Override
     protected Bitmap transform(@NonNull BitmapPool pool,
                                @NonNull Bitmap toTransform, int outWidth, int outHeight) {
@@ -28,7 +28,7 @@ public class CircleCrop extends BitmapTransformation {
         final Bitmap toReuse = pool.get(outWidth, outHeight, Bitmap.Config.ARGB_8888);
         final Bitmap result;
         result = toReuse;
-
+        
         int dx = (toTransform.getWidth() - diameter) / 2;
         int dy = (toTransform.getHeight() - diameter) / 2;
         Canvas canvas = new Canvas(result);
@@ -44,18 +44,13 @@ public class CircleCrop extends BitmapTransformation {
         paint.setAntiAlias(true);
         float radius = diameter / 2.0f;
         canvas.drawCircle(radius, radius, radius, paint);
-
+        // 有时调用下面的方法回报异常, 不知道为什么
         toReuse.recycle();
         return result;
     }
-
-//    @Override
-//    public String getId() {
-//        return "com.sleticalboy.glide37.custom.CircleCrop";
-//    }
-
+    
     @Override
-    public void updateDiskCacheKey(MessageDigest messageDigest) {
+    public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
         messageDigest.reset();
     }
 }

@@ -1,5 +1,7 @@
-include ':MainApp', ':OkHttp2.5', ':Glide3.7', ':Glide4.x', ':OkHttp3.x'
+include ':MainApp', ':OkHttp2.5', ':Glide4.x'
 include ':GreenDao'
+//include ':OkHttp3.x'
+//include ':Glide3.7'
 //include ':ExtShare'
 //include ':Camera2'
 //include ':FaceClient'

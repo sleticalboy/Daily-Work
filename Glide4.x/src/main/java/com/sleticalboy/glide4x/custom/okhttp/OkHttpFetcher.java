@@ -20,24 +20,23 @@ import okhttp3.ResponseBody;
 /**
  * Created on 18-6-17.
  *
- * @author sleticalboy
- * @description
+ * @author leebin
  */
 public class OkHttpFetcher implements DataFetcher<InputStream> {
-
+    
     private final OkHttpClient client;
     private final GlideUrl url;
     private InputStream stream;
     private ResponseBody responseBody;
     private volatile boolean isCancelled;
-
+    
     public OkHttpFetcher(OkHttpClient client, GlideUrl url) {
         this.client = client;
         this.url = url;
     }
-
+    
     @Override
-    public void loadData(Priority priority, DataCallback<? super InputStream> callback) {
+    public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
         InputStream result;
         try {
             result = loadThisData(url.toStringUrl(), url.getHeaders());
@@ -47,7 +46,7 @@ public class OkHttpFetcher implements DataFetcher<InputStream> {
         }
         callback.onDataReady(result);
     }
-
+    
     private InputStream loadThisData(String url, Map<String, String> headers) throws IOException {
         Request.Builder builder = new Request.Builder().url(url);
         for (Map.Entry<String, String> headerEntry : headers.entrySet()) {
@@ -69,7 +68,7 @@ public class OkHttpFetcher implements DataFetcher<InputStream> {
                 responseBody.contentLength());
         return stream;
     }
-
+    
     @Override
     public void cleanup() {
         try {
@@ -82,18 +81,18 @@ public class OkHttpFetcher implements DataFetcher<InputStream> {
         } catch (IOException ignored) {
         }
     }
-
+    
     @Override
     public void cancel() {
         isCancelled = true;
     }
-
+    
     @NonNull
     @Override
     public Class<InputStream> getDataClass() {
         return InputStream.class;
     }
-
+    
     @NonNull
     @Override
     public DataSource getDataSource() {
