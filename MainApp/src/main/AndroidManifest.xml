@@ -47,6 +47,7 @@
         <activity android:name=".ui.activity.HeaderActivity"/>
         <activity android:name=".ui.activity.CustomViewActivity"/>
         <activity android:name=".ui.activity.ScrollerActivity"/>
+        <activity android:name=".ui.activity.ImageConvertUI"/>
     </application>
 
 </manifest>

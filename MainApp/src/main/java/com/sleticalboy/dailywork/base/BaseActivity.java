@@ -11,7 +11,6 @@ import android.os.Bundle;
  */
 public abstract class BaseActivity extends PermissionCheckActivity {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);

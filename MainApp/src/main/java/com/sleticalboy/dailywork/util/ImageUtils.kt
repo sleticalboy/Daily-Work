@@ -1,9 +1,12 @@
 package com.sleticalboy.dailywork.util
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
 import android.os.Environment
+import android.util.Base64
 import android.util.Log
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 
@@ -66,5 +69,17 @@ object ImageUtils {
             ExifInterface.ORIENTATION_ROTATE_270 -> degrees = 270
         }
         return degrees
+    }
+
+    fun bitmap2StrByBase64(bit: Bitmap): String {
+        val bos = ByteArrayOutputStream()
+        bit.compress(Bitmap.CompressFormat.JPEG, 10, bos)//参数100表示不压缩
+        val bytes = bos.toByteArray()
+        return Base64.encodeToString(bytes, Base64.DEFAULT)
+    }
+
+    fun base64ToBitmap(base64Data: String): Bitmap {
+        val bytes = Base64.decode(base64Data, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
 }
