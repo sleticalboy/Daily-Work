@@ -1,4 +1,4 @@
-package com.sleticalboy.okhttp25.uploader.custom;
+package com.sleticalboy.okhttp25.upload.custom;
 
 import android.support.annotation.StringDef;
 

@@ -1,4 +1,4 @@
-package com.sleticalboy.okhttp25.uploader.custom;
+package com.sleticalboy.okhttp25.upload.custom;
 
 /**
  * Created on 16-6-2.

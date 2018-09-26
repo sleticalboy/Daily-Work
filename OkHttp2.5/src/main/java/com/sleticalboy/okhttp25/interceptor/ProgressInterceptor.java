@@ -1,7 +1,9 @@
-package com.sleticalboy.okhttp25.upload.custom;
+package com.sleticalboy.okhttp25.interceptor;
 
 import android.support.v4.util.ArrayMap;
 
+import com.sleticalboy.okhttp25.body.ProgressResponseBody;
+import com.sleticalboy.okhttp25.callback.ProgressCallback;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;

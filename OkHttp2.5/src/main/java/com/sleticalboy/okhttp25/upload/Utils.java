@@ -1,4 +1,4 @@
-package com.sleticalboy.okhttp25.uploader;
+package com.sleticalboy.okhttp25.upload;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

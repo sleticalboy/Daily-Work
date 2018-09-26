@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sleticalboy.okhttp25.uploader;
+package com.sleticalboy.okhttp25.upload;
 
 import java.util.ArrayList;
 import java.util.Collections;

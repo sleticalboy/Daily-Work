@@ -29,8 +29,8 @@ public final class OKioUnitTest {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            CloseUtils.closeSilently(source);
-            CloseUtils.closeSilently(bufferedSource);
+            OkUtils.closeSilently(source);
+            OkUtils.closeSilently(bufferedSource);
         }
     }
 
@@ -51,8 +51,8 @@ public final class OKioUnitTest {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            CloseUtils.closeSilently(sink);
-            CloseUtils.closeSilently(bufferedSink);
+            OkUtils.closeSilently(sink);
+            OkUtils.closeSilently(bufferedSink);
         }
     }
 }

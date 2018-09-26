@@ -2,13 +2,12 @@ package com.sleticalboy.okhttp25.download;
 
 import android.support.annotation.WorkerThread;
 
-import com.sleticalboy.okhttp25.CloseUtils;
+import com.sleticalboy.okhttp25.OkUtils;
 import com.sleticalboy.okhttp25.http.HttpClient;
 import com.sleticalboy.okhttp25.http.builder.GetBuilder;
 import com.sleticalboy.okhttp25.http.builder.RequestBuilder;
-import com.sleticalboy.okhttp25.upload.custom.ProgressCallback;
-import com.sleticalboy.okhttp25.upload.custom.ProgressInterceptor;
-import com.squareup.okhttp.Call;
+import com.sleticalboy.okhttp25.callback.ProgressCallback;
+import com.sleticalboy.okhttp25.interceptor.ProgressInterceptor;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -34,7 +33,6 @@ public final class OkDownloader {
     private final String mUrl;
     private final File mSaveFile;
     private DownloadCallback mCallback;
-    private Call mCall;
     private boolean mIsPause = false;
     private boolean mIsCancel = false;
     private boolean mIsDownloading = false;
@@ -91,19 +89,10 @@ public final class OkDownloader {
      * @param startPoint 位置
      */
     private void download(final long startPoint) {
-        // final List<Interceptor> interceptors = mHttpClient.interceptors();
-        // if (interceptors.size() != 0) {
-        //     for (final Interceptor interceptor : interceptors) {
-        //         if (interceptor != null && interceptor instanceof ProgressInterceptor) {
-        //             ((ProgressInterceptor) interceptor).setBreakPoint(startPoint);
-        //         }
-        //     }
-        // }
         RequestBuilder getBuilder = new GetBuilder()
                 .url(mUrl)
                 .breakPoint(startPoint, null);
-        mCall = mHttpClient.getOkHttpClient().newCall(getBuilder.build());
-        mCall.enqueue(new Callback() {
+        mHttpClient.getOkHttpClient().newCall(getBuilder.build()).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 if (mCallback != null) {
@@ -150,8 +139,8 @@ public final class OkDownloader {
                 mHttpClient.getMainHandler().post(() -> mCallback.onError(ignored));
             }
         } finally {
-            CloseUtils.closeSilently(inputStream);
-            CloseUtils.closeSilently(randomAccessFile);
+            OkUtils.closeSilently(inputStream);
+            OkUtils.closeSilently(randomAccessFile);
         }
     }
 

@@ -1,7 +1,9 @@
-package com.sleticalboy.okhttp25.upload.custom;
+package com.sleticalboy.okhttp25.body;
 
 import android.support.annotation.NonNull;
 
+import com.sleticalboy.okhttp25.callback.ProgressCallback;
+import com.sleticalboy.okhttp25.interceptor.ProgressInterceptor;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.ResponseBody;
 

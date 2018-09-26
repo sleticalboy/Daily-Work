@@ -1,4 +1,4 @@
-package com.sleticalboy.okhttp25.uploader;
+package com.sleticalboy.okhttp25.upload;
 
 import java.io.File;
 import java.io.FileInputStream;
