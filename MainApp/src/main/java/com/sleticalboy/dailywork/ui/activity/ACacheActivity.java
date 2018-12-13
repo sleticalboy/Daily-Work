@@ -12,7 +12,7 @@ import com.sleticalboy.dailywork.base.BaseActivity;
 public class ACacheActivity extends BaseActivity {
 
     @Override
-    protected int attachLayout() {
+    protected int layoutResId() {
         return R.layout.activity_acache;
     }
 

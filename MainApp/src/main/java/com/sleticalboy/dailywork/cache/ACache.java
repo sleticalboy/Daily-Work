@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012-2013, Michael Yang 杨福海 (www.yangfuhai.com).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
