@@ -40,7 +40,7 @@ public class AlarmActivity extends BaseActivity {
     }
 
     @Override
-    protected int attachLayout() {
+    protected int layoutResId() {
         return R.layout.activity_alarm;
     }
 

@@ -70,7 +70,7 @@ public class GreenDaoActivity extends BaseActivity {
     }
 
     @Override
-    protected int attachLayout() {
+    protected int layoutResId() {
         return R.layout.activity_green_dao;
     }
 }

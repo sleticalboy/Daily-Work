@@ -27,7 +27,7 @@ public class HeaderActivity extends BaseActivity {
     private static final List<String> M_DATA_SET = new ArrayList<>();
 
     @Override
-    protected int attachLayout() {
+    protected int layoutResId() {
         return R.layout.activity_header;
     }
 

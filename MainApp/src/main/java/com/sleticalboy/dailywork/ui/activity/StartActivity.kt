@@ -18,6 +18,8 @@ import android.widget.TextView
 class StartActivity : ListActivity() {
 
     private val dataList = arrayOf(
+            ItemHolder(AutoSwitchUI::class.java, ""),
+            ItemHolder(IntentCameraUI::class.java, "Intent 启动相机"),
             ItemHolder(ImageConvertUI::class.java, "图片和字符串相互转换"),
             ItemHolder(HeaderActivity::class.java, "头部悬停效果"),
             ItemHolder(AlphaActivity::class.java, "控件透明度"),

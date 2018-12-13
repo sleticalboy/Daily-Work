@@ -25,4 +25,6 @@
     </string>
     <string name="yesterday_income">昨收 %1$3</string>
     <string name="stock_code">02799.港元</string>
+    <string name="title_activity_intent_camera_ui">IntentCamera</string>
+    <string name="title_activity_auto_switch_view">AutoSwitchView</string>
 </resources>

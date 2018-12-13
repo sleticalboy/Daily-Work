@@ -82,7 +82,7 @@ class WheelRVActivity : BaseActivity() {
         mRecyclerView!!.addOnScrollListener(MyOnScrollListener())
     }
 
-    override fun attachLayout(): Int {
+    override fun layoutResId(): Int {
         return R.layout.activity_wheel_rv
     }
 

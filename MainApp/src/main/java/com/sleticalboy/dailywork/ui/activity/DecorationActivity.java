@@ -47,7 +47,7 @@ public class DecorationActivity extends BaseActivity {
     }
 
     @Override
-    protected int attachLayout() {
+    protected int layoutResId() {
         return R.layout.activity_decoration;
     }
 }

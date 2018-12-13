@@ -123,7 +123,7 @@ class ClassifyActivity : BaseActivity() {
         recyclerView.adapter = mAdapter
     }
 
-    override fun attachLayout(): Int {
+    override fun layoutResId(): Int {
         return R.layout.activity_classify
     }
 

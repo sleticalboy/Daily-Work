@@ -2,14 +2,24 @@ package com.sleticalboy.glide4x.custom;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.Registry;
 import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.Options;
+import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.engine.cache.DiskCache;
+import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
+import com.bumptech.glide.load.engine.cache.ExternalPreferredCacheDiskCacheFactory;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.ModelLoader;
+import com.bumptech.glide.load.model.ModelLoaderFactory;
+import com.bumptech.glide.load.model.MultiModelLoaderFactory;
 import com.bumptech.glide.module.AppGlideModule;
 import com.sleticalboy.glide4x.custom.okhttp.DefaultEventListener;
 import com.sleticalboy.glide4x.custom.okhttp.HttpLoggerInterceptor;
@@ -36,11 +46,10 @@ public class MyGlideModule extends AppGlideModule {
     @Override
     public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
         Log.d(TAG, "applyOptions() called with: context = [" + context + "], builder = [" + builder + "]");
-        // 自定义默认缓存目录以及默认缓存大小
-//        builder.setDiskCache(new ExternalCacheDiskCacheFactory(context,
-//                DISK_CACHE_DIR, DISK_CACHE_SIZE));
         // 自定义默认图片加载质量
-       // builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
+        // builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
+        // 自定义默认缓存目录以及默认缓存大小
+        builder.setDiskCache(new ExternalPreferredCacheDiskCacheFactory(context, "", 1024L));
     }
     
     @Override

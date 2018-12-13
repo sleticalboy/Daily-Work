@@ -52,7 +52,7 @@ class StockActivity : BaseActivity() {
 
     }
 
-    override fun attachLayout(): Int {
+    override fun layoutResId(): Int {
         return R.layout.activity_main
     }
 

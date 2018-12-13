@@ -26,7 +26,7 @@ public class AlphaActivity extends BaseActivity {
     private final int[] mLocation = new int[2];
 
     @Override
-    protected int attachLayout() {
+    protected int layoutResId() {
         return R.layout.activity_alpha;
     }
 

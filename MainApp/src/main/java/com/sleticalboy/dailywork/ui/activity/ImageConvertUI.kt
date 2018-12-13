@@ -23,7 +23,7 @@ class ImageConvertUI : BaseActivity() {
     private var imageStr: String? = null
     private var resultBitmap: Bitmap? = null
 
-    override fun attachLayout(): Int {
+    override fun layoutResId(): Int {
         return R.layout.image_convert_activity
     }
 

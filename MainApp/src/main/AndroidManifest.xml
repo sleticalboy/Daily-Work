@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sleticalboy.dailywork">
+          package="com.sleticalboy.dailywork">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -22,21 +22,21 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".ui.activity.StartActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.StockActivity" />
-        <activity android:name=".ui.activity.SmsSenderActivity" />
-        <activity android:name=".ui.activity.RefreshActivity" />
+        <activity android:name=".ui.activity.StockActivity"/>
+        <activity android:name=".ui.activity.SmsSenderActivity"/>
+        <activity android:name=".ui.activity.RefreshActivity"/>
         <activity android:name=".ui.activity.PullRefreshActivity"/>
         <activity android:name=".ui.activity.WheelRVActivity"/>
         <activity android:name=".ui.activity.DecorationActivity"/>
         <activity android:name=".ui.activity.PagerActivity"/>
         <activity android:name=".ui.activity.ClassifyActivity"/>
         <activity android:name=".ui.activity.FaceActivity"/>
-        <!--<activity android:name=".ui.activity.NewCameraActivity"/>-->
+        <!-- <activity android:name=".ui.activity.NewCameraActivity"/> -->
         <activity android:name=".ui.activity.LiveCameraActivity"/>
         <activity android:name=".ui.activity.PathActivity"/>
         <activity android:name=".ui.activity.GreenDaoActivity"/>
@@ -48,6 +48,14 @@
         <activity android:name=".ui.activity.CustomViewActivity"/>
         <activity android:name=".ui.activity.ScrollerActivity"/>
         <activity android:name=".ui.activity.ImageConvertUI"/>
+        <activity
+            android:name=".ui.activity.IntentCameraUI"
+            android:label="@string/title_activity_intent_camera_ui"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+        <activity
+            android:name=".ui.activity.AutoSwitchUI"
+            android:label="@string/title_activity_auto_switch_view"/>
     </application>
 
 </manifest>

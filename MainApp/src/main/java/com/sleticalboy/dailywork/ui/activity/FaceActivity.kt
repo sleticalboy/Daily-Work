@@ -147,7 +147,7 @@ class FaceActivity : BaseActivity() {
         camera.startFaceDetection()
     }
 
-    override fun attachLayout(): Int {
+    override fun layoutResId(): Int {
         return R.layout.activity_face
     }
 

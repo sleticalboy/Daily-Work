@@ -18,7 +18,7 @@ public class ScrollerActivity extends BaseActivity {
     private LinearLayout layout;
 
     @Override
-    protected int attachLayout() {
+    protected int layoutResId() {
         return R.layout.activity_scroller;
     }
 

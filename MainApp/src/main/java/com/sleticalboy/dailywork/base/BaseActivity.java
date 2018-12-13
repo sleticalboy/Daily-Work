@@ -15,16 +15,16 @@ public abstract class BaseActivity extends PermissionCheckActivity {
     protected void onCreate(Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         prepareWork();
-        setContentView(attachLayout());
+        setContentView(layoutResId());
         initView();
         initData();
     }
 
-    protected abstract int attachLayout();
+    protected abstract int layoutResId();
 
     protected abstract void initView();
 
-    protected abstract void initData();
+    protected void initData() {}
 
     protected void prepareWork() {
     }
