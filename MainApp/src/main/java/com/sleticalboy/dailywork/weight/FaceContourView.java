@@ -1,22 +1,16 @@
 package com.sleticalboy.dailywork.weight;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
-import android.graphics.Shader;
-import android.support.v7.widget.AppCompatImageView;
+
+import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
-
-import com.sleticalboy.dailywork.R;
 
 /**
  * Created on 18-3-1.

@@ -1,6 +1,6 @@
 package com.sleticalboy.okhttp25.download;
 
-import android.support.annotation.WorkerThread;
+import androidx.annotation.WorkerThread;
 
 import com.sleticalboy.okhttp25.OkUtils;
 import com.sleticalboy.okhttp25.http.HttpClient;

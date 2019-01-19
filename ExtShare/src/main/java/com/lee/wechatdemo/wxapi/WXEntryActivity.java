@@ -2,7 +2,7 @@ package com.lee.wechatdemo.wxapi;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.lee.wechatdemo.ShareApp;
 import com.tencent.mm.opensdk.modelbase.BaseReq;

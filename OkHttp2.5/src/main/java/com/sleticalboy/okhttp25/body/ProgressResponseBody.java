@@ -1,6 +1,6 @@
 package com.sleticalboy.okhttp25.body;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.sleticalboy.okhttp25.callback.ProgressCallback;
 import com.sleticalboy.okhttp25.interceptor.ProgressInterceptor;

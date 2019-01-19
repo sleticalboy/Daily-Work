@@ -1,8 +1,8 @@
 package com.sleticalboy.dailywork.ui.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
@@ -35,12 +35,7 @@ public class LiveCameraActivity extends AppCompatActivity {
         TextureView liveView = findViewById(R.id.mLiveView);
         liveView.setSurfaceTextureListener(new CameraManager.SimpleSurfaceTextureListener());
         ImageButton takePicBtn = findViewById(R.id.mTakePicBtn);
-        takePicBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePicture();
-            }
-        });
+        takePicBtn.setOnClickListener(v -> takePicture());
     }
 
     private void takePicture() {

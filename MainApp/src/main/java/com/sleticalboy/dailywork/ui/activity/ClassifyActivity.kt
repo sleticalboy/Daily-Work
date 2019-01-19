@@ -1,24 +1,20 @@
 package com.sleticalboy.dailywork.ui.activity
 
 import android.content.Context
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sleticalboy.dailywork.R
 import com.sleticalboy.dailywork.base.BaseActivity
 import com.sleticalboy.dailywork.bean.AppInfo
 import com.sleticalboy.dailywork.weight.xrecycler.decoration.DividerGridItemDecoration
-import com.sleticalboy.dailywork.weight.xrecycler.decoration.SpaceDecoration
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created on 18-2-12.
@@ -106,9 +102,9 @@ class ClassifyActivity : BaseActivity() {
     }
 
     override fun initView() {
-        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
+        val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_view)
 
-        val layoutManager = GridLayoutManager(this, 3)
+        val layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 3)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -131,13 +127,12 @@ class ClassifyActivity : BaseActivity() {
         : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private var mInflater: LayoutInflater = LayoutInflater.from(mContext)
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             if (viewType == TYPE_TITLE) {
                 return ClassifyHolder(mInflater.inflate(R.layout.item_classify_title, parent, false))
-            } else if (viewType == TYPE_CHILD) {
+            } else /*(viewType == TYPE_CHILD)*/ {
                 return AppInfoHolder(mInflater.inflate(R.layout.item_app_layout, parent, false))
             }
-            return null
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

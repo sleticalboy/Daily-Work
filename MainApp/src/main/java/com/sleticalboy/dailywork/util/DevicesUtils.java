@@ -4,8 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.support.annotation.RequiresPermission;
-import android.util.Log;
+import androidx.annotation.RequiresPermission;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

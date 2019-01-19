@@ -1,7 +1,6 @@
 package com.sleticalboy.dailywork.ui.activity;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -57,12 +56,8 @@ public class RefreshActivity extends BaseActivity {
         listView.setAdapter(new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_1, mDataList
         ));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("RefreshActivity", mDataList.get(position));
-            }
-        });
+        listView.setOnItemClickListener((parent, view, position, id)
+                -> Log.d("RefreshActivity", mDataList.get(position)));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.sleticalboy.okhttp25.interceptor;
 
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import com.sleticalboy.okhttp25.body.ProgressResponseBody;
 import com.sleticalboy.okhttp25.callback.ProgressCallback;

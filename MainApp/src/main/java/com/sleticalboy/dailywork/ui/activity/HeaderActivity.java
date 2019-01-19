@@ -1,8 +1,8 @@
 package com.sleticalboy.dailywork.ui.activity;
 
-import android.support.design.widget.AppBarLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,12 +34,8 @@ public class HeaderActivity extends BaseActivity {
     @Override
     protected void initView() {
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                Log.d("HeaderActivity", "verticalOffset:" + verticalOffset);
-            }
-        });
+        appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset)
+                -> Log.d("HeaderActivity", "verticalOffset:" + verticalOffset));
 
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);

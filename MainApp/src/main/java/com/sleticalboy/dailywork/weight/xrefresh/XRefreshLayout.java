@@ -4,7 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.support.v4.view.ViewCompat;
+import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -121,7 +121,7 @@ public class XRefreshLayout extends FrameLayout {
     }
 
     private void reset() {
-        // reset views
+        // release views
     }
 
     private void addHeader() {

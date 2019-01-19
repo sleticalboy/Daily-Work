@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/fakeSearch"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:transitionName="shared_element_test"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:drawableStart="@drawable/ic_search"
+            android:drawableLeft="@drawable/ic_search"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:longClickable="false"
+            android:padding="4dp"
+            android:text="搜索"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+    </FrameLayout>
+
+    <include layout="@layout/sear_result_layout"/>
+</LinearLayout>

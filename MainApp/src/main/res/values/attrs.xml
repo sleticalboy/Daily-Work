@@ -31,4 +31,20 @@
             <enum name="end" value="8388613"/>
         </attr>
     </declare-styleable>
+
+    <!--PullToZoomView-->
+    <declare-styleable name="PullToZoomBase">
+        <attr name="headerView" format="reference"/>
+        <attr name="contentView" format="reference"/>
+        <attr name="zoomView" format="reference"/>
+        <attr name="isHeaderParallax" format="boolean"/>
+    </declare-styleable>
+
+    <!--SingleLine-->
+    <declare-styleable name="SingleLine">
+        <attr name="circlePadding" format="dimension"/>
+        <attr name="circleRadius" format="integer"/>
+        <attr name="lineWidth" format="integer"/>
+        <attr name="lineColor" format="color"/>
+    </declare-styleable>
 </resources>

@@ -2,8 +2,8 @@ package com.sleticalboy.dailywork.ui.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -50,12 +50,8 @@ public class PagerActivity extends AppCompatActivity {
         pagerView.setAdapter(new PagerAdapter(this, mImagesId));
         pagerView.setIndicatorDrawable(R.drawable.mx_page_indicator);
 
-        findViewById(R.id.btnShowPage).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pagerView.setVisibility(++sCounter % 2 == 0 ? View.GONE : View.VISIBLE);
-            }
-        });
+        findViewById(R.id.btnShowPage).setOnClickListener(v ->
+                pagerView.setVisibility(++sCounter % 2 == 0 ? View.GONE : View.VISIBLE));
     }
 
     private void setView() {

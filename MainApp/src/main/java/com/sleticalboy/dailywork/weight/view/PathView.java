@@ -10,7 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -148,7 +148,7 @@ public class PathView extends View {
     }
 
     private void point(Canvas canvas) {
-        //        mPaint.reset(); // 重置画笔
+        //        mPaint.release(); // 重置画笔
         mPaint.setColor(Color.BLACK);
         mPaint.setStrokeWidth(20); // 设置线条宽度
         mPaint.setStrokeCap(Paint.Cap.ROUND); // 设置形状

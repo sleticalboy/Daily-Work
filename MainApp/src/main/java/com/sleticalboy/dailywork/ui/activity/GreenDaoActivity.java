@@ -1,8 +1,6 @@
 package com.sleticalboy.dailywork.ui.activity;
 
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -11,6 +9,8 @@ import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
 import com.sleticalboy.dailywork.bean.DaoSession;
 import com.sleticalboy.dailywork.bean.Note;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created on 18-3-5.
@@ -45,12 +45,7 @@ public class GreenDaoActivity extends BaseActivity {
     }
 
     private void setupViews() {
-        btnAddNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNote();
-            }
-        });
+        btnAddNote.setOnClickListener(v -> addNote());
     }
 
     private void addNote() {

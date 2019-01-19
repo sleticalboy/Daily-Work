@@ -1,6 +1,6 @@
 package com.sleticalboy.okhttp25.http.builder;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;

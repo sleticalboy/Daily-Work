@@ -1,7 +1,7 @@
 package com.sleticalboy.glide4x.custom.okhttp;
 
-import android.support.annotation.NonNull;
-import android.support.v4.util.ArrayMap;
+import androidx.annotation.NonNull;
+import androidx.collection.ArrayMap;
 import android.util.Log;
 
 import com.sleticalboy.glide4x.listener.ProgressListener;

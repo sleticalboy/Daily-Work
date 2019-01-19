@@ -1,7 +1,7 @@
 package com.sleticalboy.okhttp25.mine;
 
 import android.os.Process;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.Locale;

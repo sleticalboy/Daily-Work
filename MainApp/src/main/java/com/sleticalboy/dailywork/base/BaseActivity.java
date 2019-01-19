@@ -11,9 +11,12 @@ import android.os.Bundle;
  */
 public abstract class BaseActivity extends PermissionCheckActivity {
 
+    protected Bundle mSaveInstanceState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
+        mSaveInstanceState = savedInstanceState;
         prepareWork();
         setContentView(layoutResId());
         initView();

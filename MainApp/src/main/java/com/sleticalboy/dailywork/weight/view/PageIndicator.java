@@ -1,6 +1,6 @@
 package com.sleticalboy.dailywork.weight.view;
 
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Created on 18-3-15.

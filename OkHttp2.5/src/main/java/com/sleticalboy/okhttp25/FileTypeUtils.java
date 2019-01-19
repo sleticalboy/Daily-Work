@@ -1,7 +1,7 @@
 package com.sleticalboy.okhttp25;
 
-import android.support.annotation.NonNull;
-import android.support.v4.util.ArrayMap;
+import androidx.annotation.NonNull;
+import androidx.collection.ArrayMap;
 
 import java.io.File;
 import java.io.FileInputStream;

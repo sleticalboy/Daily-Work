@@ -2,7 +2,7 @@ package com.sleticalboy.okhttp25.http;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.alibaba.fastjson.JSON;
 import com.sleticalboy.okhttp25.http.builder.DeleteBuilder;

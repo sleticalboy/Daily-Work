@@ -23,6 +23,7 @@
         <activity android:name=".ui.activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
@@ -36,12 +37,9 @@
         <activity android:name=".ui.activity.PagerActivity"/>
         <activity android:name=".ui.activity.ClassifyActivity"/>
         <activity android:name=".ui.activity.FaceActivity"/>
-        <!-- <activity android:name=".ui.activity.NewCameraActivity"/> -->
         <activity android:name=".ui.activity.LiveCameraActivity"/>
         <activity android:name=".ui.activity.PathActivity"/>
         <activity android:name=".ui.activity.GreenDaoActivity"/>
-        <activity android:name=".ui.activity.LiveRecogCheckActivity"/>
-        <activity android:name=".ui.activity.ACacheActivity"/>
         <activity android:name=".ui.activity.AlarmActivity"/>
         <activity android:name=".ui.activity.AlphaActivity"/>
         <activity android:name=".ui.activity.HeaderActivity"/>
@@ -56,6 +54,7 @@
         <activity
             android:name=".ui.activity.AutoSwitchUI"
             android:label="@string/title_activity_auto_switch_view"/>
+        <activity android:name=".ui.activity.TransitionUI"/>
     </application>
 
 </manifest>

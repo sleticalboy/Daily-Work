@@ -1,6 +1,6 @@
 package com.sleticalboy.okhttp25.download;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Objects;
 

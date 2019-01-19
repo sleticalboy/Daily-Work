@@ -24,7 +24,6 @@ public class GreenDaoContext extends ContextWrapper {
 
     @Override
     public File getDatabasePath(String name) {
-        // TODO: 18-3-2 custom your own Database File path
         return super.getDatabasePath(mDBPath);
     }
 

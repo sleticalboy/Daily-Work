@@ -1,6 +1,6 @@
 package com.sleticalboy.glide4x.custom.okhttp;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
@@ -53,7 +53,6 @@ public class OkHttpFetcher implements DataFetcher<InputStream> {
             String key = headerEntry.getKey();
             builder.addHeader(key, headerEntry.getValue());
         }
-        // TODO: 18-6-18 自定义 header
         builder.addHeader("httplib", "OkHttp");
         Request request = builder.build();
         if (isCancelled) {
