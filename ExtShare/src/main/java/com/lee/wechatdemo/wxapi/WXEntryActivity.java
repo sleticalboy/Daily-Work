@@ -20,7 +20,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ShareApp.getmWxapi().handleIntent(getIntent(), this);
+        ShareApp.getWxapi().handleIntent(getIntent(), this);
     }
 
     @Override

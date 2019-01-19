@@ -16,7 +16,7 @@ public class ShareApp extends Application {
 
     private static IWXAPI mWxapi;
 
-    public static IWXAPI getmWxapi() {
+    public static IWXAPI getWxapi() {
         return mWxapi;
     }
 
