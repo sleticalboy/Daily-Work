@@ -29,7 +29,7 @@ public final class ProgressInterceptor implements Interceptor {
         PROGRESS_CALLBACK_MAP.put(tag, callback);
     }
 
-    static ProgressCallback getCallback(String tag) {
+    public static ProgressCallback getCallback(String tag) {
         return PROGRESS_CALLBACK_MAP.get(tag);
     }
 

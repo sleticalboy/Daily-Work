@@ -42,7 +42,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'com.squareup.okhttp:okhttp:2.5.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
 
     api 'com.squareup.retrofit2:retrofit:2.4.0'
     api 'com.alibaba:fastjson:1.2.47'

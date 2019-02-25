@@ -28,7 +28,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.StockActivity"/>
         <activity android:name=".ui.activity.SmsSenderActivity"/>
         <activity android:name=".ui.activity.RefreshActivity"/>
         <activity android:name=".ui.activity.PullRefreshActivity"/>
@@ -39,7 +38,6 @@
         <activity android:name=".ui.activity.FaceActivity"/>
         <activity android:name=".ui.activity.LiveCameraActivity"/>
         <activity android:name=".ui.activity.PathActivity"/>
-        <activity android:name=".ui.activity.GreenDaoActivity"/>
         <activity android:name=".ui.activity.AlarmActivity"/>
         <activity android:name=".ui.activity.AlphaActivity"/>
         <activity android:name=".ui.activity.HeaderActivity"/>

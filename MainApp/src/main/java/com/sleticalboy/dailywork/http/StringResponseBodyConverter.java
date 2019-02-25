@@ -9,7 +9,6 @@ import retrofit2.Converter;
  * Created on 18-3-26.
  *
  * @author sleticalboy
- * @description
  */
 public final class StringResponseBodyConverter<T> implements Converter<ResponseBody, T> {
 
