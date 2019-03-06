@@ -16,7 +16,7 @@ import java.security.MessageDigest;
 /**
  * Created on 18-6-17.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class CircleTransformation extends BitmapTransformation {

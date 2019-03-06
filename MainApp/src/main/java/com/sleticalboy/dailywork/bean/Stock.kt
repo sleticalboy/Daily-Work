@@ -5,7 +5,7 @@ import java.io.Serializable
 /**
  * Created by AS on 18-1-29.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description 股票实体类
  */

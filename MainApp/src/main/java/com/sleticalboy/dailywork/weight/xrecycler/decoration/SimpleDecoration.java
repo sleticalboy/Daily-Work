@@ -4,16 +4,17 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.view.View;
+import android.widget.LinearLayout;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
-import android.widget.LinearLayout;
 
 /**
  * Created on 18-2-6.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description RecyclerView Item 的分割线
  */

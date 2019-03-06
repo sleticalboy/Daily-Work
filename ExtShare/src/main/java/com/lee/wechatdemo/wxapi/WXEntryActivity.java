@@ -12,7 +12,7 @@ import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 /**
  * Created on 18-4-8.
  *
- * @author sleticalboy
+ * @author leebin
  * @description 分享到微信结果回调入口类
  */
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {

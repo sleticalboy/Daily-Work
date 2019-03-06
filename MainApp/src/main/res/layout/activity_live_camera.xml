@@ -12,9 +12,7 @@
         android:id="@+id/mLiveView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:background="@mipmap/ic_face_verification"/>
-
+        android:layout_gravity="center_horizontal"/>
 
     <FrameLayout
         android:id="@+id/mFocusIcon"

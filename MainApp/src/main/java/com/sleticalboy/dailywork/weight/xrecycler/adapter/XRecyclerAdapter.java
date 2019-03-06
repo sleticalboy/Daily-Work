@@ -1,9 +1,6 @@
 package com.sleticalboy.dailywork.weight.xrecycler.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,10 +11,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 /**
  * Created on 18-2-7.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description
  */

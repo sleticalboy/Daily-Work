@@ -39,7 +39,7 @@ import jp.wasabeef.glide.transformations.GrayscaleTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
- * @author sleticalboy
+ * @author leebin
  */
 public class MainActivity extends AppCompatActivity {
 

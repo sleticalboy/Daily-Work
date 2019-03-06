@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author sleticalboy
+ * @author leebin
  */
 public class MainActivity extends AppCompatActivity {
 

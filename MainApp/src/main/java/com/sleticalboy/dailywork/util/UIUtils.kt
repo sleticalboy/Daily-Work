@@ -7,7 +7,7 @@ import android.view.WindowManager
 /**
  * Created on 18-2-3.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description utils for operations about UI
  */

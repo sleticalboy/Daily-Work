@@ -5,7 +5,6 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -26,10 +25,11 @@ import java.util.List;
 
 /**
  * Created on 18-2-27.
+ * <p>
+ * CameraManager
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
- * @description CameraManager
  */
 public final class CameraManager {
 
@@ -45,7 +45,26 @@ public final class CameraManager {
         }
     }
 
-    // 打开相机
+    /**
+     * 开启预览
+     *
+     * @param surface
+     */
+    public void startPreview(SurfaceTexture surface) {
+        try {
+            if (mCamera == null) {
+                openCamera();
+            }
+            mCamera.setPreviewTexture(surface);
+            mCamera.startPreview();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 打开相机
+     */
     private void openCamera() {
         int cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
         mCamera = Camera.open(cameraId);
@@ -63,23 +82,6 @@ public final class CameraManager {
     }
 
     /**
-     * 开启预览
-     *
-     * @param surface
-     */
-    public void startPreview(SurfaceTexture surface) {
-        if (mCamera == null) {
-            openCamera();
-        }
-        try {
-            mCamera.setPreviewTexture(surface);
-            mCamera.startPreview();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * 关闭预览
      */
     public void stopPreview() {
@@ -91,19 +93,53 @@ public final class CameraManager {
     /**
      * 拍照
      *
+     * @param dir
      * @param callback
      */
-    public void takePicture(final OnPictureTakenCallback callback) {
-        mCamera.takePicture(new Camera.ShutterCallback() {
-            @Override
-            public void onShutter() {
-                // do nothing
+    public void takePicture(final File dir, final OnPictureTakenCallback callback) {
+        mCamera.takePicture(() -> {
+            // do nothing
+        }, null, (data, camera) -> {
+            CameraManager.this.onPictureTaken(dir, data, callback);
+            camera.startPreview();
+        });
+    }
+
+    private void onPictureTaken(File dir, byte[] data, OnPictureTakenCallback callback) {
+        if (callback == null || dir == null) {
+            throw new RuntimeException("OnPictureTakenCallback and dir can not be null");
+        }
+        new Thread(() -> {
+            final File file = new File(dir, System.currentTimeMillis() + ".jpg");
+            BufferedOutputStream bos;
+            try {
+                bos = new BufferedOutputStream(new FileOutputStream(file, true));
+                bos.write(data);
+                bos.flush();
+                bos.close();
+                if (file.exists() && file.length() > 0) {
+                    if (DEBUG) {
+                        Log.d(TAG, "take picture success, " + file.getPath());
+                    }
+                    callback.onSuccess(file);
+                }
+            } catch (Exception e) {
+                callback.onFailure(e);
             }
-        }, null, new Camera.PictureCallback() {
-            @Override
-            public void onPictureTaken(byte[] data, Camera camera) {
-                CameraManager.this.onPictureTaken(data, callback);
-                camera.startPreview();
+        }).start();
+    }
+
+    public void autoFocus(final Context context, final ViewGroup focusView,
+                          final Size focusViewSize, final MotionEvent event) {
+        mCamera.autoFocus((success, camera) -> {
+            if (success) {
+                // 1, 设置聚焦区域
+                setFocusArea(context, event);
+                // 2, 显示聚焦图标
+                showFocusIcon(focusView, event, focusViewSize);
+                Log.e(TAG, "onAutoFocus: 聚焦成功");
+            } else {
+                Log.e(TAG, "onAutoFocus: 聚焦失败");
             }
         });
     }
@@ -150,70 +186,7 @@ public final class CameraManager {
         params.topMargin = (int) (y - size.getHeight() + 0.5);
         focusView.setLayoutParams(params);
         focusView.setVisibility(View.VISIBLE);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                focusView.setVisibility(View.GONE);
-            }
-        }, 100);
-    }
-
-    public void autoFocus(final Context context, final ViewGroup focusView,
-                          final Size focusViewSize, final MotionEvent event) {
-        mCamera.autoFocus(new Camera.AutoFocusCallback() {
-            @Override
-            public void onAutoFocus(boolean success, Camera camera) {
-                if (success) {
-                    // 1, 设置聚焦区域
-                    setFocusArea(context, event);
-                    // 2, 显示聚焦图标
-                    showFocusIcon(focusView, event, focusViewSize);
-                    Log.e(TAG, "onAutoFocus: 聚焦成功");
-                } else {
-                    Log.e(TAG, "onAutoFocus: 聚焦失败");
-                }
-            }
-        });
-    }
-
-    private void onPictureTaken(final byte[] data, final OnPictureTakenCallback callback) {
-        if (callback == null) {
-            throw new RuntimeException("OnPictureTakenCallback can not be null");
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String path = getPath();
-                if (path == null) {
-                    return;
-                }
-                File file = new File(path);
-                BufferedOutputStream bos = null;
-                try {
-                    bos = new BufferedOutputStream(new FileOutputStream(file, true));
-                    bos.write(data);
-                    bos.flush();
-                    bos.close();
-                    if (file.exists() && file.length() > 0) {
-                        if (DEBUG) {
-                            Log.d(TAG, "take picture success, " + file.getPath());
-                        }
-                        callback.onSuccess(file);
-                        file.delete();
-                    }
-                } catch (Exception e) {
-                    callback.onFailure(e);
-                }
-            }
-        }).start();
-    }
-
-    private String getPath() {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            return Environment.getExternalStorageDirectory().getPath() + File.separator
-                    + System.currentTimeMillis() + ".jpg";
-        }
-        return null;
+        mHandler.postDelayed(() -> focusView.setVisibility(View.GONE), 100);
     }
 
     /**
@@ -259,7 +232,7 @@ public final class CameraManager {
 
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-            CameraManager.getInstance().startPreview(surface);
+            // CameraManager.getInstance().startPreview(surface);
             if (DEBUG) {
                 Log.d(TAG, "preview start");
             }

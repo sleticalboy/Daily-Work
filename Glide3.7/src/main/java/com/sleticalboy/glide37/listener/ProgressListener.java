@@ -3,7 +3,7 @@ package com.sleticalboy.glide37.listener;
 /**
  * Created on 18-6-17.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public interface ProgressListener {

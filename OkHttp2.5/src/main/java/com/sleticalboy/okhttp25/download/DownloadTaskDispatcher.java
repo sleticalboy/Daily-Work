@@ -7,7 +7,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created on 18-9-3.
  *
- * @author sleticalboy
+ * @author leebin
  */
 public class DownloadTaskDispatcher extends Thread {
 

@@ -11,9 +11,10 @@ import java.util.Locale;
 
 /**
  * Created on 18-5-11.
+ * <p>
+ * 日期工具类
  *
- * @author sleticalboy
- * @description 日期工具类
+ * @author leebin
  */
 public final class TimeUtils {
 

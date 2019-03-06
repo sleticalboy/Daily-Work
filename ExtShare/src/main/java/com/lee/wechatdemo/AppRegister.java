@@ -8,7 +8,7 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 /**
- * @author sleticalboy
+ * @author leebin
  */
 public class AppRegister extends BroadcastReceiver {
 

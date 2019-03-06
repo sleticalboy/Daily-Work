@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Created on 18-9-3.
  *
- * @author sleticalboy
+ * @author leebin
  */
 public abstract class DownloadTask implements Comparable<DownloadTask>, Cancelable {
 

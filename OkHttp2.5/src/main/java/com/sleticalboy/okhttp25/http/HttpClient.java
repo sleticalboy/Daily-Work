@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created on 18-9-3.
  *
- * @author sleticalboy
+ * @author leebin
  */
 public final class HttpClient {
     

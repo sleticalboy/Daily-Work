@@ -10,7 +10,7 @@ import okhttp3.internal.platform.Platform;
 /**
  * Created on 18-4-3.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public abstract class InterceptorImpl implements Interceptor {

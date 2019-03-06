@@ -1,7 +1,6 @@
 package com.sleticalboy.dailywork.ui.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -18,7 +17,7 @@ import java.util.List;
 /**
  * Created on 18-2-7.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description
  */

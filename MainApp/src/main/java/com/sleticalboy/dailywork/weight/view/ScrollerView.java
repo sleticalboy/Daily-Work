@@ -11,7 +11,7 @@ import android.widget.Scroller;
 /**
  * Created on 18-6-10.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class ScrollerView extends ViewGroup {

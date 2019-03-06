@@ -3,7 +3,7 @@ package com.sleticalboy.http.builder;
 /**
  * Created on 18-9-3.
  *
- * @author sleticalboy
+ * @author leebin
  */
 public final class DeleteBuilder extends RequestBuilder {
     

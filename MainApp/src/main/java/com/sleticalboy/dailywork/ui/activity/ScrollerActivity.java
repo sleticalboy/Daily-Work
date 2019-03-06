@@ -1,16 +1,15 @@
 package com.sleticalboy.dailywork.ui.activity;
 
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
+import com.sleticalboy.dailywork.R;
 
 /**
  * Created on 18-6-10.
  *
- * @author sleticalboy
+ * @author leebin
  * @description Scroller 使用练习
  */
 public class ScrollerActivity extends BaseActivity {

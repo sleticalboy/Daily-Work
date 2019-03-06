@@ -2,15 +2,13 @@ package com.sleticalboy.dailywork.ui.activity;
 
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.jwenfeng.library.pulltorefresh.BaseRefreshListener;
 import com.jwenfeng.library.pulltorefresh.PullToRefreshLayout;
-import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
+import com.sleticalboy.dailywork.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,7 @@ import java.util.List;
 /**
  * Created on 18-2-4.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description 测试第三方 Refresh 库
  */
@@ -28,13 +26,8 @@ public class PullRefreshActivity extends BaseActivity {
     private ArrayAdapter<String> mAdapter;
 
     @Override
-    protected void initData() {
-        if (mDataList == null) {
-            mDataList = new ArrayList<>();
-        }
-        for (int i = 0; i < 20; i++) {
-            mDataList.add("Sub Item Data " + i);
-        }
+    protected int layoutResId() {
+        return R.layout.activity_pull_refresh;
     }
 
     @Override
@@ -57,13 +50,10 @@ public class PullRefreshActivity extends BaseActivity {
             @Override
             public void loadMore() {
                 Log.d("PullRefreshActivity", "pull up to refresh");
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadData(false);
-                        mAdapter.notifyDataSetChanged();
-                        refreshLayout.finishLoadMore();
-                    }
+                new Handler().postDelayed(() -> {
+                    loadData(false);
+                    mAdapter.notifyDataSetChanged();
+                    refreshLayout.finishLoadMore();
                 }, 2000);
             }
         });
@@ -73,17 +63,17 @@ public class PullRefreshActivity extends BaseActivity {
                 this, android.R.layout.simple_list_item_1, mDataList
         );
         listView.setAdapter(mAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("RefreshActivity", mDataList.get(position));
-            }
-        });
+        listView.setOnItemClickListener((parent, view, position, id) -> Log.d("RefreshActivity", mDataList.get(position)));
     }
 
     @Override
-    protected int layoutResId() {
-        return R.layout.activity_pull_refresh;
+    protected void initData() {
+        if (mDataList == null) {
+            mDataList = new ArrayList<>();
+        }
+        for (int i = 0; i < 20; i++) {
+            mDataList.add("Sub Item Data " + i);
+        }
     }
 
     private void loadData(boolean refresh) {

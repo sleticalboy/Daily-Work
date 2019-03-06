@@ -1,25 +1,27 @@
 package com.sleticalboy.dailywork.ui.activity;
 
-import com.google.android.material.appbar.AppBarLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sleticalboy.dailywork.R;
+import com.google.android.material.appbar.AppBarLayout;
 import com.sleticalboy.dailywork.base.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.sleticalboy.dailywork.R;
+
 /**
  * Created on 18-6-6.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class HeaderActivity extends BaseActivity {

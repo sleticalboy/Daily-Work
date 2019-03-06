@@ -17,7 +17,7 @@ import okhttp3.ResponseBody;
 /**
  * Created on 18-6-17.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class OkHttpFetcher implements DataFetcher<InputStream> {

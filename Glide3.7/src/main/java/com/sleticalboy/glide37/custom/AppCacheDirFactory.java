@@ -8,7 +8,7 @@ import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 /**
  * Created on 18-6-17.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class AppCacheDirFactory extends DiskLruCacheFactory {

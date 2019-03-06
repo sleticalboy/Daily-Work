@@ -1,15 +1,16 @@
 package com.sleticalboy.dailywork.weight.xrecycler.helper;
 
 import android.content.Context;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created on 18-2-23.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description
  */
@@ -59,7 +60,7 @@ public class MyLinearLayoutManager extends LinearLayoutManager {
             case View.MeasureSpec.AT_MOST:
             case View.MeasureSpec.UNSPECIFIED:
         }
-       setMeasuredDimension(width, height);
+        setMeasuredDimension(width, height);
     }
 
     private void measureScrapChild(RecyclerView.Recycler recycler, int position, int widthSpec,

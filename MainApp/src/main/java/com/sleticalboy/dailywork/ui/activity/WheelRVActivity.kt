@@ -13,7 +13,7 @@ import com.sleticalboy.dailywork.ui.adapter.ItemAdapter
 /**
  * Created on 18-2-7.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description
  */
@@ -23,7 +23,7 @@ class WheelRVActivity : BaseActivity() {
             R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher,
             R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher)
 
-    private var mRecyclerView: androidx.recyclerview.widget.RecyclerView? = null
+    private var mRecyclerView: RecyclerView? = null
     private var mCurrentPos = Integer.MAX_VALUE shr 1
 
     private var mIsPause = false
@@ -67,15 +67,15 @@ class WheelRVActivity : BaseActivity() {
     }
 
     override fun initView() {
-        mRecyclerView = findViewById<View>(R.id.recycler_view) as androidx.recyclerview.widget.RecyclerView
-        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
-        layoutManager.orientation = androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
+        mRecyclerView = findViewById<View>(R.id.recycler_view) as RecyclerView
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.orientation = LinearLayoutManager.HORIZONTAL
         mRecyclerView!!.layoutManager = layoutManager
         val adapter = ItemAdapter(this, mImagesId)
         mRecyclerView!!.adapter = adapter
         mRecyclerView!!.scrollToPosition(mCurrentPos)
         //        new LinearSnapHelper().attachToRecyclerView(mRecyclerView);
-        androidx.recyclerview.widget.PagerSnapHelper().attachToRecyclerView(mRecyclerView)
+        PagerSnapHelper().attachToRecyclerView(mRecyclerView)
         //        new StartSnapHelper().attachToRecyclerView(mRecyclerView);
 
         mRecyclerView!!.setOnTouchListener(MyOnTouchListener())
@@ -88,16 +88,16 @@ class WheelRVActivity : BaseActivity() {
 
     private inner class MyOnTouchListener : View.OnTouchListener {
         override fun onTouch(v: View, event: MotionEvent): Boolean {
-            when (event.action) {
-                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> mIsPause = true
-                else -> mIsPause = false
+            mIsPause = when (event.action) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> true
+                else -> false
             }
             return false
         }
     }
 
-    private inner class MyOnScrollListener : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+    private inner class MyOnScrollListener : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             if (mIsPause && dy < 0) {
                 mCurrentPos--
             } else if (mIsPause && dy > 0) {

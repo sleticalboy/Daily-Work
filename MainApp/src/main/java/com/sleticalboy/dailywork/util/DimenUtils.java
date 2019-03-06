@@ -5,7 +5,7 @@ import android.content.Context;
 /**
  * Created on 18-6-11.
  *
- * @author sleticalboy
+ * @author leebin
  * @description 单位转换工具
  */
 public final class DimenUtils {

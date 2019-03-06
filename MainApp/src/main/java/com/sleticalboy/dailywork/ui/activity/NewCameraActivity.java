@@ -6,7 +6,7 @@ import com.sleticalboy.dailywork.base.BaseActivity;
 /**
  * Created on 18-2-26.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description
  */

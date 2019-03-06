@@ -13,7 +13,7 @@ import com.sleticalboy.dailywork.util.CameraUtils;
 /**
  * Created on 18-2-24.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description
  */

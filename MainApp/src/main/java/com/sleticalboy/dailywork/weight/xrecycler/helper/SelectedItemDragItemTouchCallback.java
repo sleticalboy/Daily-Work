@@ -1,13 +1,13 @@
 package com.sleticalboy.dailywork.weight.xrecycler.helper;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created on 18-2-7.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description
  */

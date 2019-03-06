@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created on 18-9-3.
  *
- * @author sleticalboy
+ * @author leebin
  */
 public final class DownloadTaskQueue {
 

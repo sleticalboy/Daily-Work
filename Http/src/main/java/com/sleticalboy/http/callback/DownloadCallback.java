@@ -7,7 +7,7 @@ import androidx.annotation.UiThread;
  * <p>
  * 回调都已经在 UI 线程了 不需要再做切换线程的操作
  *
- * @author sleticalboy
+ * @author leebin
  */
 @UiThread
 public interface DownloadCallback extends NetworkCallback {

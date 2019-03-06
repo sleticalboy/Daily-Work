@@ -2,15 +2,16 @@ package com.sleticalboy.dailywork.weight;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Bitmap.Config;
 import android.graphics.Paint.Style;
-import androidx.appcompat.widget.AppCompatImageView;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 public class FaceView2 extends AppCompatImageView {
 

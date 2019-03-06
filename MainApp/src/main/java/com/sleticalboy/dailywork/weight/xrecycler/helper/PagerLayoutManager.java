@@ -1,10 +1,11 @@
 package com.sleticalboy.dailywork.weight.xrecycler.helper;
 
 import android.graphics.Rect;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created on 2016/11/9.

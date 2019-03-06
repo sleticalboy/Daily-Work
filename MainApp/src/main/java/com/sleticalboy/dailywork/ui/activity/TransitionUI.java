@@ -1,11 +1,12 @@
 package com.sleticalboy.dailywork.ui.activity;
 
 import android.content.Intent;
-import androidx.core.app.ActivityOptionsCompat;
 import android.view.View;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
+
+import androidx.core.app.ActivityOptionsCompat;
 
 /**
  * Created by AS 3.3 on 19-1-6.

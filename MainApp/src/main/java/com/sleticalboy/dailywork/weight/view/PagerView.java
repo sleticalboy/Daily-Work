@@ -3,8 +3,6 @@ package com.sleticalboy.dailywork.weight.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -15,10 +13,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.util.UIUtils;
 import com.sleticalboy.dailywork.weight.xrecycler.helper.PageScrollHelper;
 import com.sleticalboy.dailywork.weight.xrecycler.helper.PagerLayoutManager;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.sleticalboy.dailywork.R;
 
 /**
  * 使用 RecyclerView 实现的 ViewPager，支持单页翻动，支持自适应高度

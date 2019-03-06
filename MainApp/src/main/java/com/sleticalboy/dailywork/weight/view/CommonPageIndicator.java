@@ -4,15 +4,16 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Created on 18-3-15.
  *
- * @author sleticalboy
+ * @author leebin
  * @description 圆点页面指示器
  */
 public class CommonPageIndicator extends View implements PageIndicator {

@@ -14,7 +14,7 @@ import com.sleticalboy.dailywork.util.ImageUtils
 /**
  * Created on 18-9-26.
  *
- * @author sleticalboy
+ * @author leebin
  */
 class ImageConvertUI : BaseActivity() {
 

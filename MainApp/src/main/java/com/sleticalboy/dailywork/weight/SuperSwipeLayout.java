@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 /**
  * Created on 18-6-7.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class SuperSwipeLayout extends ViewGroup {

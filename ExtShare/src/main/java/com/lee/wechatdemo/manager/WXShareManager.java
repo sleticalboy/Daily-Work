@@ -17,7 +17,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 /**
  * Created on 18-4-8.
  *
- * @author sleticalboy
+ * @author leebin
  * @description WeChat share manager
  */
 public class WXShareManager {

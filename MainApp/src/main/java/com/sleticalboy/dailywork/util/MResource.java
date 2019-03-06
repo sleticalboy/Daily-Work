@@ -6,7 +6,7 @@ import android.util.Log;
 /**
  * Created on 18-4-2.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class MResource {
@@ -25,7 +25,7 @@ public class MResource {
             Class[] classes = r.getClasses();
             Class desireClass = null;
 
-            for(int i = 0; i < classes.length; ++i) {
+            for (int i = 0; i < classes.length; ++i) {
                 Log.d("MResource", classes[i].getName());
                 if (classes[i].getName().split("\\$")[1].equals(className)) {
                     desireClass = classes[i];

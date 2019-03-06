@@ -1,8 +1,6 @@
 package com.sleticalboy.dailywork.ui.activity;
 
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -13,7 +11,7 @@ import com.sleticalboy.dailywork.base.BaseActivity;
 /**
  * Created on 18-5-29.
  *
- * @author sleticalboy
+ * @author leebin
  * @description 控件透明度研究
  */
 public class AlphaActivity extends BaseActivity {
@@ -52,16 +50,13 @@ public class AlphaActivity extends BaseActivity {
                 Log.d(TAG, "onStopTrackingTouch() called with: seekBar = [" + seekBar + "]");
             }
         });
-        touchButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                touchButton.getLocationInWindow(mLocation);
-                Log.d(TAG, "mLocation[0]:" + mLocation[0]);
-                Log.d(TAG, "mLocation[1]:" + mLocation[1]);
-                Log.d(TAG, "touchButton.getMeasuredWidth():" + touchButton.getMeasuredWidth());
-                Log.d(TAG, "touchButton.getMeasuredHeight():" + touchButton.getMeasuredHeight());
-                return false;
-            }
+        touchButton.setOnTouchListener((v, event) -> {
+            touchButton.getLocationInWindow(mLocation);
+            Log.d(TAG, "mLocation[0]:" + mLocation[0]);
+            Log.d(TAG, "mLocation[1]:" + mLocation[1]);
+            Log.d(TAG, "touchButton.getMeasuredWidth():" + touchButton.getMeasuredWidth());
+            Log.d(TAG, "touchButton.getMeasuredHeight():" + touchButton.getMeasuredHeight());
+            return false;
         });
     }
 

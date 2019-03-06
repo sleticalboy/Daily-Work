@@ -2,8 +2,6 @@ package com.sleticalboy.dailywork.ui.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,10 +11,13 @@ import com.sleticalboy.dailywork.weight.view.PagerView;
 import com.sleticalboy.dailywork.weight.xrecycler.adapter.XBaseHolder;
 import com.sleticalboy.dailywork.weight.xrecycler.adapter.XRecyclerAdapter;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 /**
  * Created on 18-2-11.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description 测试 RecyclerView  分页效果
  */

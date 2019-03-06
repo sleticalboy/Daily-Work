@@ -1,6 +1,9 @@
 package com.sleticalboy.dailywork.weight.xrecycler.helper;
 
 import android.graphics.PointF;
+import android.util.DisplayMetrics;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,13 +11,11 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.OrientationHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
-import android.util.DisplayMetrics;
-import android.view.View;
 
 /**
  * Created on 18-2-8.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description 用于 Start 对齐的 SnapHelper
  */

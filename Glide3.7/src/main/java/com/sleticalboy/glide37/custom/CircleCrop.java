@@ -14,7 +14,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 /**
  * Created on 18-6-17.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class CircleCrop extends BitmapTransformation {

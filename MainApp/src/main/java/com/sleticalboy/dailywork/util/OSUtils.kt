@@ -8,7 +8,7 @@ import android.util.Log
 /**
  * Created on 18-5-17.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 object OSUtils {

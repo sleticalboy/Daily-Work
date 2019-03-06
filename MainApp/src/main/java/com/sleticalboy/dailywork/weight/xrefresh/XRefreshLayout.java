@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,10 +20,12 @@ import com.sleticalboy.dailywork.util.UIUtils;
 import com.sleticalboy.dailywork.weight.xrefresh.interfaces.IFooterView;
 import com.sleticalboy.dailywork.weight.xrefresh.interfaces.IHeaderView;
 
+import androidx.core.view.ViewCompat;
+
 /**
  * Created on 18-2-2.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description 提供下拉刷新和上拉加载的 layout
  */

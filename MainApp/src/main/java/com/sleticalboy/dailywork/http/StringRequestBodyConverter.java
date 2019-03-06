@@ -9,7 +9,7 @@ import retrofit2.Converter;
 /**
  * Created on 18-3-26.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class StringRequestBodyConverter<T> implements Converter<T, RequestBody> {

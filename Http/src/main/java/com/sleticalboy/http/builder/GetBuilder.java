@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created on 18-9-3.
  *
- * @author sleticalboy
+ * @author leebin
  */
 public final class GetBuilder extends RequestBuilder {
     

@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -14,14 +15,16 @@ import com.sleticalboy.dailywork.base.BaseActivity;
 import com.sleticalboy.dailywork.util.DevicesUtils;
 import com.sleticalboy.dailywork.util.TimeUtils;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Created on 18-5-11.
  *
- * @author sleticalboy
- * @description
+ * @author leebin
  */
 public class AlarmActivity extends BaseActivity {
 
+    private String mAction;
     private BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -30,14 +33,7 @@ public class AlarmActivity extends BaseActivity {
             }
         }
     };
-    private String mAction;
     private AlarmManager mAlarmManager;
-
-    @Override
-    protected void prepareWork() {
-        mAction = getPackageName() + ".TIMER_ATTEND";
-        mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-    }
 
     @Override
     protected int layoutResId() {
@@ -72,6 +68,12 @@ public class AlarmActivity extends BaseActivity {
         PendingIntent operation = PendingIntent.getBroadcast(this, 0, intent, 0);
         assert mAlarmManager != null;
         mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60000, operation);
+    }
+
+    @Override
+    protected void prepareWork(@Nullable Bundle savedInstanceState) {
+        mAction = getPackageName() + ".TIMER_ATTEND";
+        mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
     }
 
     @Override

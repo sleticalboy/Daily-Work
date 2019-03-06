@@ -1,20 +1,21 @@
 package com.sleticalboy.dailywork.weight.xrecycler.adapter;
 
 import android.content.Context;
-import androidx.annotation.IdRes;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.reflect.Field;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
  * Created on 18-2-7.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description
  */

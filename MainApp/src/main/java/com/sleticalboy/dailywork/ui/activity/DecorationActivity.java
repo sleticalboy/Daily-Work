@@ -1,19 +1,19 @@
 package com.sleticalboy.dailywork.ui.activity;
 
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
-
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
 import com.sleticalboy.dailywork.ui.adapter.ItemTouchAdapter;
 import com.sleticalboy.dailywork.weight.xrecycler.decoration.DividerGridItemDecoration;
 import com.sleticalboy.dailywork.weight.xrecycler.helper.SelectedItemDragItemTouchCallback;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
  * Created on 18-2-7.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description
  */

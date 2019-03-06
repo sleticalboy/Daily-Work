@@ -11,7 +11,7 @@ import android.widget.TextView
 /**
  * Created on 18-6-10.
  *
- * @author sleticalboy
+ * @author leebin
  * @description 自定义 View 相关知识
  */
 class CustomViewActivity : ListActivity() {

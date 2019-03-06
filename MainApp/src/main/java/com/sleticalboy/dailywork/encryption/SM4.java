@@ -230,6 +230,7 @@ public class SM4 {
 
     /**
      * 设置加密秘钥
+     *
      * @param ctx
      * @param key
      * @throws Exception
@@ -249,6 +250,7 @@ public class SM4 {
 
     /**
      * 设置解密秘钥
+     *
      * @param ctx
      * @param key
      * @throws Exception

@@ -10,16 +10,16 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.sleticalboy.dailywork.R;
+import androidx.annotation.Nullable;
 
+import com.sleticalboy.dailywork.R;
 /**
  * Created on 18-3-1.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description 绘图：Path 类练习使用
  */

@@ -17,7 +17,7 @@ import okhttp3.OkHttpClient;
 /**
  * Created on 18-6-17.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class MyGlideModule implements GlideModule {

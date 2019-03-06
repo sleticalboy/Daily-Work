@@ -9,7 +9,7 @@ import com.sina.weibo.sdk.auth.AuthInfo;
 /**
  * Created on 18-4-8.
  *
- * @author sleticalboy
+ * @author leebin
  * @description share manager for external share
  */
 public class ShareManager {

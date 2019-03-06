@@ -5,7 +5,7 @@ import androidx.viewpager.widget.ViewPager;
 /**
  * Created on 18-3-15.
  *
- * @author sleticalboy
+ * @author leebin
  * @description 页面指示器
  */
 public interface PageIndicator {

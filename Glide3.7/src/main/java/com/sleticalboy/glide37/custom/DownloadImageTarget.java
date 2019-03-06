@@ -12,7 +12,7 @@ import java.io.File;
 /**
  * Created on 18-6-17.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class DownloadImageTarget extends BaseTarget<File> {

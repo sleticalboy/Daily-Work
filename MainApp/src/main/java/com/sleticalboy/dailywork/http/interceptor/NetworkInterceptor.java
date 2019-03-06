@@ -6,7 +6,7 @@ import okhttp3.Response;
 /**
  * Created on 18-4-3.
  *
- * @author sleticalboy
+ * @author leebin
  * @description 网络拦截器
  */
 public final class NetworkInterceptor extends InterceptorImpl {

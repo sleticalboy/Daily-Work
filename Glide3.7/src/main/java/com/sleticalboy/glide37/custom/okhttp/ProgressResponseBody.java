@@ -19,7 +19,7 @@ import okio.Source;
 /**
  * Created on 18-6-17.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class ProgressResponseBody extends ResponseBody {

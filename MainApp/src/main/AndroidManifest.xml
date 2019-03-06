@@ -28,14 +28,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.SmsSenderActivity"/>
-        <activity android:name=".ui.activity.RefreshActivity"/>
         <activity android:name=".ui.activity.PullRefreshActivity"/>
         <activity android:name=".ui.activity.WheelRVActivity"/>
         <activity android:name=".ui.activity.DecorationActivity"/>
         <activity android:name=".ui.activity.PagerActivity"/>
         <activity android:name=".ui.activity.ClassifyActivity"/>
-        <activity android:name=".ui.activity.FaceActivity"/>
         <activity android:name=".ui.activity.LiveCameraActivity"/>
         <activity android:name=".ui.activity.PathActivity"/>
         <activity android:name=".ui.activity.AlarmActivity"/>
@@ -44,11 +41,6 @@
         <activity android:name=".ui.activity.CustomViewActivity"/>
         <activity android:name=".ui.activity.ScrollerActivity"/>
         <activity android:name=".ui.activity.ImageConvertUI"/>
-        <activity
-            android:name=".ui.activity.IntentCameraUI"
-            android:label="@string/title_activity_intent_camera_ui"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
         <activity
             android:name=".ui.activity.AutoSwitchUI"
             android:label="@string/title_activity_auto_switch_view"/>

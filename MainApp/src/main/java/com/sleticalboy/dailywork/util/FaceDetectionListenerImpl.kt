@@ -2,12 +2,11 @@ package com.sleticalboy.dailywork.util
 
 import android.hardware.Camera
 import android.os.Handler
-import android.os.Message
 
 /**
  * Created on 18-2-26.
  *
- * @author sleticalboy
+ * @author leebin
  * @version 1.0
  * @description
  */

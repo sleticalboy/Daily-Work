@@ -14,7 +14,7 @@ import com.lee.wechatdemo.ShareManager;
 /**
  * Created on 18-4-8.
  *
- * @author sleticalboy
+ * @author leebin
  * @description
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
