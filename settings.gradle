@@ -1,6 +1,6 @@
 include ':MainApp'
 include ':Http'
-include ':ObjectBox'
+// include ':ObjectBox'
 //include ':OkHttp2.5'
 //include ':Glide4.x'
 //include ':OkHttp3.x'
