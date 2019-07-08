@@ -35,12 +35,12 @@ public class HeaderActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+        AppBarLayout appBarLayout = findViewById(R.id.app_bar_layout);
         appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset)
                 -> Log.d("HeaderActivity", "verticalOffset:" + verticalOffset));
 
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(lm);
         recyclerView.setAdapter(new RecyclerAdapter());
@@ -48,7 +48,7 @@ public class HeaderActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 50; i++) {
             M_DATA_SET.add(String.valueOf(new Random().nextInt(Integer.MAX_VALUE)));
         }
     }
@@ -76,7 +76,7 @@ public class HeaderActivity extends BaseActivity {
 
             MyViewHolder(View itemView) {
                 super(itemView);
-                tvRecyclerItem = (TextView) itemView.findViewById(R.id.tv_recycler_item);
+                tvRecyclerItem = itemView.findViewById(R.id.tv_recycler_item);
             }
         }
     }

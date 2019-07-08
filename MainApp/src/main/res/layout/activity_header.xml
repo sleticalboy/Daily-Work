@@ -13,15 +13,56 @@
         android:layout_height="wrap_content"
         app:elevation="0dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@color/colorPrimary"
             android:gravity="center"
+            android:orientation="vertical"
             android:text="头部滚动部分"
             android:textColor="@android:color/white"
             android:textSize="28dp"
-            app:layout_scrollFlags="scroll"/>
+            app:layout_scrollFlags="scroll">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:text="头部滚动部分"
+                android:textColor="@android:color/white"
+                android:textSize="28dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/colorAccent"
+                android:gravity="center"
+                android:text="头部滚动部分"
+                android:textColor="@android:color/white"
+                android:textSize="28dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryDark"
+                android:gravity="center"
+                android:text="头部滚动部分"
+                android:textColor="@android:color/white"
+                android:textSize="28dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:text="头部滚动部分"
+                android:textColor="@android:color/white"
+                android:textSize="28dp" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -29,12 +70,12 @@
             android:background="@android:color/holo_green_dark"
             android:gravity="center"
             android:text="悬停部分"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
