@@ -1,4 +1,4 @@
-include ':MainApp'
+include ':MainApp', ':EmojiPanel'
 include ':Http'
 // include ':ObjectBox'
 //include ':OkHttp2.5'

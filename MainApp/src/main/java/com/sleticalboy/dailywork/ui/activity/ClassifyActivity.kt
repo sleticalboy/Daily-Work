@@ -102,9 +102,9 @@ class ClassifyActivity : BaseActivity() {
     }
 
     override fun initView() {
-        val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_view)
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
 
-        val layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 3)
+        val layoutManager = GridLayoutManager(this, 3)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -128,10 +128,9 @@ class ClassifyActivity : BaseActivity() {
         private var mInflater: LayoutInflater = LayoutInflater.from(mContext)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            if (viewType == TYPE_TITLE) {
-                return ClassifyHolder(mInflater.inflate(R.layout.item_classify_title, parent, false))
-            } else /*(viewType == TYPE_CHILD)*/ {
-                return AppInfoHolder(mInflater.inflate(R.layout.item_app_layout, parent, false))
+            return when (viewType) {
+                TYPE_TITLE -> ClassifyHolder(mInflater.inflate(R.layout.item_classify_title, parent, false)) /*(viewType == TYPE_CHILD)*/
+                else -> AppInfoHolder(mInflater.inflate(R.layout.item_app_layout, parent, false))
             }
         }
 

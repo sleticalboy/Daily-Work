@@ -6,5 +6,6 @@ captures/
 .DS_Store
 .externalNativeBuild
 *.properties
+gradle/
 MQTT/
 *.zip
