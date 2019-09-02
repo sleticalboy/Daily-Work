@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/recentlyUsed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/mx_dp_16"
+        android:paddingTop="@dimen/mx_dp_16"
+        android:paddingRight="@dimen/mx_dp_16"
+        android:paddingBottom="@dimen/mx_dp_12"
+        android:text="最近使用"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.binlee.emoji.ui.EmojiGridView
+        android:id="@+id/gridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:verticalSpacing="@dimen/mx_dp_12"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/recentlyDivider"
+        android:layout_width="@dimen/mx_dp_0_7"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/mx_dp_52"
+        android:layout_marginBottom="@dimen/mx_dp_44"
+        android:background="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="@+id/gridView"
+        app:layout_constraintLeft_toRightOf="@+id/gridView"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.ConstraintLayout>

@@ -1,3 +1,37 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="mx_dp_0_5">0.5dp</dimen>
+    <dimen name="mx_dp_0_7">0.7dp</dimen>
+    <dimen name="mx_dp_1">1dp</dimen>
+    <dimen name="mx_dp_2">2dp</dimen>
+    <dimen name="mx_dp_3">3dp</dimen>
+    <dimen name="mx_dp_4">4dp</dimen>
+    <dimen name="mx_dp_5">5dp</dimen>
+    <dimen name="mx_dp_6">6dp</dimen>
+    <dimen name="mx_dp_8">8dp</dimen>
+    <dimen name="mx_dp_10">10dp</dimen>
+    <dimen name="mx_dp_12">12dp</dimen>
+    <dimen name="mx_dp_13">13dp</dimen>
+    <dimen name="mx_dp_14">14dp</dimen>
+    <dimen name="mx_dp_16">16dp</dimen>
+    <dimen name="mx_dp_18">18dp</dimen>
+    <dimen name="mx_dp_20">20dp</dimen>
+    <dimen name="mx_dp_22">22dp</dimen>
+    <dimen name="mx_dp_24">24dp</dimen>
+    <dimen name="mx_dp_28">28dp</dimen>
+    <dimen name="mx_dp_30">30dp</dimen>
+    <dimen name="mx_dp_32">32dp</dimen>
+    <dimen name="mx_dp_35">35dp</dimen>
+    <dimen name="mx_dp_36">36dp</dimen>
+    <dimen name="mx_dp_40">40dp</dimen>
+    <dimen name="mx_dp_44">44dp</dimen>
+    <dimen name="mx_dp_46">46dp</dimen>
+    <dimen name="mx_dp_48">48dp</dimen>
+    <dimen name="mx_dp_52">52dp</dimen>
+    <dimen name="mx_dp_56">56dp</dimen>
+    <dimen name="mx_dp_64">64dp</dimen>
+    <dimen name="mx_dp_72">72dp</dimen>
+    <dimen name="mx_dp_75">75dp</dimen>
+    <dimen name="mx_dp_96">96dp</dimen>
+    <dimen name="mx_dp_80">80dp</dimen>
 </resources>

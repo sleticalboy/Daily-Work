@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="250dp">
+
+    <!--Emoji ViewPager-->
+    <com.binlee.emoji.ui.EmojiViewPager
+        android:id="@+id/childPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--此 View 需要自定义，并且要跟 emojiViewPager 做联动-->
+    <com.binlee.emoji.ui.EmojiIndicator
+        android:id="@+id/childIndicator"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/mx_dp_20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:background="@color/colorAccent" />
+</androidx.constraintlayout.ConstraintLayout>

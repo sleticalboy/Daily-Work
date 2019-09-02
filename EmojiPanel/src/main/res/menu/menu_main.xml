@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.binlee.emoji.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/emoji_panel"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/emoji_panel"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/http_service"
+        android:orderInCategory="100"
+        android:title="@string/http_service"
         app:showAsAction="never" />
 </menu>

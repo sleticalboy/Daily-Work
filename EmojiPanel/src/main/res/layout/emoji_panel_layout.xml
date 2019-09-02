@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.ConstraintLayout">
+
+    <androidx.core.view.ViewPager
+        android:id="@+id/parentPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/indicatorContainer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--只有在 im 页面的时候显示-->
+    <ImageButton
+        android:id="@+id/emojiStore"
+        android:layout_width="@dimen/mx_dp_48"
+        android:layout_height="@dimen/mx_dp_36"
+        android:background="@drawable/emoji_item_bg"
+        android:src="@drawable/ic_add_black_24dp"
+        android:tint="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <!--与 EmojiViewPager 做联动-->
+    <HorizontalScrollView
+        android:id="@+id/indicatorContainer"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/mx_dp_36"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/emojiStore"
+        app:layout_constraintRight_toLeftOf="@+id/myEmoji">
+
+        <LinearLayout
+            android:id="@+id/parentIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
+
+    <!--只有在 im 页面的时候显示-->
+    <ImageButton
+        android:id="@+id/myEmoji"
+        android:layout_width="@dimen/mx_dp_48"
+        android:layout_height="@dimen/mx_dp_36"
+        android:background="@drawable/emoji_item_bg"
+        android:src="@drawable/ic_settings_black_24dp"
+        android:tint="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+</merge>
