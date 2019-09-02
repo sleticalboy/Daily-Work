@@ -5,10 +5,14 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -40,16 +44,12 @@ public class MainActivity extends AppCompatActivity {
     private static final String BOOK_URL = "http://guolin.tech/book.png";
     private static final String MOTO = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1542288056&di=63b20bd559b7b779d72888d846c45aeb&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.newmotor.com.cn%2FUploadFiles%2Fimage%2F20170426%2F20170426123146114611.jpg";
     private static final String BIG_IMAGE_URL = "https://tse1-mm.cn.bing.net/th?id=OIP.lInnFNdwiuvp0OJlna1CmAHaEx&pid=Api";
-    private final ExecutorService singleThreadPool = new ThreadPoolExecutor(1, 1,
-            0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<Runnable>(1024),
-            new ThreadFactory() {
-                @Override
-                public Thread newThread(@NonNull Runnable r) {
-                    final Thread thread = new Thread(r);
-                    thread.setDaemon(true);
-                    return thread;
-                }
+    private final ExecutorService singleThreadPool = new ThreadPoolExecutor(1, 1, 0L,
+            TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(1024),
+            r -> {
+                final Thread thread = new Thread(r, "Glide");
+                thread.setDaemon(true);
+                return thread;
             },
             new ThreadPoolExecutor.AbortPolicy());
     RequestOptions mOptions;
@@ -80,12 +80,20 @@ public class MainActivity extends AppCompatActivity {
 
         btnShowImage = findViewById(R.id.btn_show_image);
         ivShow = findViewById(R.id.iv_show);
-//        btnShowImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showImage();
-//            }
-//        });
+        btnShowImage.setOnClickListener(v -> {
+            // showImage();
+            final ViewGroup.LayoutParams params = ivShow.getLayoutParams();
+            final RequestOptions options = new RequestOptions()
+                    .placeholder(R.drawable.girls)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .override(params.width, params.height)
+                    .circleCrop()
+                    .skipMemoryCache(true);
+            Glide.with(v.getContext())
+                    .load(BIG_IMAGE_URL)
+                    .apply(options)
+                    .into(ivShow);
+        });
         final String localPath = "/storage/sdcard0/DCIM/Camera/IMG_20170901_111633.jpg";
         final Uri errorUri = Uri.parse("file://" + localPath);
         final RequestBuilder<Drawable> errorRequest = Glide.with(this)
@@ -96,14 +104,9 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onLoadFailed(@Nullable GlideException e, Object model,
                                                 Target<Drawable> target, boolean isFirstResource) {
                         Log.d("MainActivity", "errorRequest fail callback model:" + model);
-                        new Handler(getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Glide.with(MainActivity.this).load(BOOK_URL)
-                                        .apply(cacheNone)
-                                        .into(ivShow);
-                            }
-                        });
+                        ivShow.post(() -> Glide.with(MainActivity.this).load(BOOK_URL)
+                                .apply(cacheNone)
+                                .into(ivShow));
                         return false;
                     }
 
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         Glide.with(this)
-                .load(BOOK_URL + "---")
+                .load(BOOK_URL)
                 .apply(cacheNone)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -134,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .error(errorRequest)
                 .into(ivShow);
+        Glide.with(ivShow).asGif().load(R.drawable.girls).into(ivShow);
     }
 
     @Override
@@ -166,31 +170,22 @@ public class MainActivity extends AppCompatActivity {
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("加载中...");
         mProgressDialog.show();
-        ProgressInterceptor.addListener(BIG_IMAGE_URL, new ProgressListener() {
-            @Override
-            public void onProgress(int progress) {
-                mProgressDialog.setProgress(progress);
-            }
+        ProgressInterceptor.addListener(BIG_IMAGE_URL, progress -> {
+            mProgressDialog.setProgress(progress);
         });
-        singleThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final File file = Glide.with(getApplicationContext())
-                            .asFile()
-                            .load(BIG_IMAGE_URL)
-                            .submit()
-                            .get();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MainActivity.this, "Image saved to \"" +
-                                    file.getAbsolutePath() + "\"", Toast.LENGTH_SHORT).show();
-                            mProgressDialog.dismiss();
-                        }
-                    });
-                } catch (Exception ignore) {
-                }
+        singleThreadPool.execute(() -> {
+            try {
+                final File file = Glide.with(getApplicationContext())
+                        .asFile()
+                        .load(BIG_IMAGE_URL)
+                        .submit()
+                        .get();
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "Image saved to \"" +
+                            file.getAbsolutePath() + "\"", Toast.LENGTH_SHORT).show();
+                    mProgressDialog.dismiss();
+                });
+            } catch (Exception ignore) {
             }
         });
     }
