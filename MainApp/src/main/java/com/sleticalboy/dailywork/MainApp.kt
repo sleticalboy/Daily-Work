@@ -13,16 +13,15 @@ import java.lang.ref.WeakReference
  */
 class MainApp : Application() {
 
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        mRefApp = WeakReference(base)
+    override fun onCreate() {
+        super.onCreate()
+        mApp = this
     }
 
     companion object {
 
-        private var mRefApp: Reference<Context>? = null
+        private var mApp: Application? = null
 
-        val app: Context?
-            get() = mRefApp!!.get()
+        val app: Context? get() = mApp
     }
 }
