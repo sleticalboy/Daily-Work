@@ -146,10 +146,11 @@ public final class DefaultHttpEngine extends HttpEngine<HttpURLConnection, HttpU
         }
         response.headers = new HashMap<>();
         final Map<String, List<String>> headerFields = conn.getHeaderFields();
-        // skip status line
-        headerFields.remove(null);
         for (String name : headerFields.keySet()) {
-            response.headers.put(name, toString(headerFields.get(name)));
+            // skip status line
+            if (name != null) {
+                response.headers.put(name, toString(headerFields.get(name)));
+            }
         }
         response.current = current;
         if (response.redirect()) {

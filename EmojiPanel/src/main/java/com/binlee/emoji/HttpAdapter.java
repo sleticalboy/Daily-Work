@@ -1,5 +1,6 @@
 package com.binlee.emoji;
 
+import com.binlee.emoji.compat.DefaultHttpEngine;
 import com.binlee.emoji.compat.HttpEngine;
 import com.binlee.emoji.third.OkHttpEngine;
 
