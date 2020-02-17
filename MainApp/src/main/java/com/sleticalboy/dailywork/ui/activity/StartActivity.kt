@@ -29,8 +29,7 @@ class StartActivity : ListActivity() {
             ItemHolder(ClassifyActivity::class.java, "RecyclerView 分类别显示"),
             ItemHolder(PagerActivity::class.java, "RecyclerView 分页"),
             ItemHolder(DecorationActivity::class.java, "RecyclerView 添加 item 分割线 / 拖拽排序"),
-            ItemHolder(WheelRVActivity::class.java, "RecyclerView 轮播"),
-            ItemHolder(PullRefreshActivity::class.java, "下拉刷新库测试")
+            ItemHolder(WheelRVActivity::class.java, "RecyclerView 轮播")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
