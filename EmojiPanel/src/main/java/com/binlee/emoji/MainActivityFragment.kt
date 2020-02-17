@@ -28,7 +28,7 @@ class MainActivityFragment : Fragment() {
         LogHelper.debug("Fragment", "setUserVisibleHint() -> $isVisibleToUser")
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         LogHelper.debug("Fragment", "onAttach() -> $context")
     }
