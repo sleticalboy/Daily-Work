@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sleticalboy.dailywork">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -43,10 +44,10 @@
         <activity
             android:name=".ui.activity.AutoSwitchUI"
             android:label="@string/title_activity_auto_switch_view" />
+        <!--转场动画-->
         <activity android:name=".ui.activity.TransitionUI" />
-
+        <!--设备管理-->
         <activity android:name=".devices.DeviceAdminUI" />
-
         <receiver
             android:name=".devices.DevicesReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
