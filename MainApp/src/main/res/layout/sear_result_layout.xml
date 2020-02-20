@@ -2,7 +2,7 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/transition_activity">
+    tools:showIn="@layout/activity_transition">
 
     <LinearLayout
         android:id="@+id/realSearch"

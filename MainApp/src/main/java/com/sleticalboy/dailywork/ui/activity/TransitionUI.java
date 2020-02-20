@@ -17,7 +17,7 @@ public class TransitionUI extends BaseActivity {
 
     @Override
     protected int layoutResId() {
-        return R.layout.transition_activity;
+        return R.layout.activity_transition;
     }
 
     @Override

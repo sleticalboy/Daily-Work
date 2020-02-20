@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
+import com.sleticalboy.dailywork.devices.DeviceAdminUI
 
 /**
  * Created on 18-1-29.
@@ -18,6 +19,7 @@ import android.widget.TextView
 class StartActivity : ListActivity() {
 
     private val dataList = arrayOf(
+            ItemHolder(DeviceAdminUI::class.java, "设备管理"),
             ItemHolder(TransitionUI::class.java, "转场动画"),
             ItemHolder(AutoSwitchUI::class.java, "自动切换View使用"),
             ItemHolder(ImageConvertUI::class.java, "图片和字符串相互转换"),
