@@ -31,4 +31,10 @@
     <string name="open_device_admin">Open Device Admin</string>
     <string name="settings_device_admin_desc">super device manager</string>
     <string name="stop_device_admin">Stop Device Admin</string>
+    <string name="active_device_admin">请激活设备管理器</string>
+    <string name="activated">已激活</string>
+    <string name="not_activated">未激活</string>
+    <string name="way_of_lock">Way Of Lock</string>
+    <string name="lock_now">Lock Now</string>
+    <string name="lock_delay">Lock Delay</string>
 </resources>

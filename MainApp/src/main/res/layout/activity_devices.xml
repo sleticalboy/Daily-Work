@@ -5,6 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--lock screen-->
+    <Button
+        android:id="@+id/wayOfLock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/way_of_lock"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/activeDeviceAdmin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/lockNow" />
+
+    <Button
+        android:id="@+id/lockNow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lock_now"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="@+id/wayOfLock"
+        app:layout_constraintLeft_toRightOf="@+id/wayOfLock"
+        app:layout_constraintRight_toLeftOf="@+id/lockDelay" />
+
+    <Button
+        android:id="@+id/lockDelay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lock_delay"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="@+id/wayOfLock"
+        app:layout_constraintLeft_toRightOf="@+id/lockNow"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!--activate and deactivate-->
     <Button
         android:id="@+id/activeDeviceAdmin"
         android:layout_width="wrap_content"
@@ -13,7 +45,7 @@
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toLeftOf="@+id/stopDeviceAdmin" />
 
     <Button
         android:id="@+id/stopDeviceAdmin"
@@ -21,7 +53,7 @@
         android:layout_height="wrap_content"
         android:text="@string/stop_device_admin"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@+id/activeDeviceAdmin"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/activeDeviceAdmin"
         app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
