@@ -28,6 +28,7 @@
     <string name="title_activity_intent_camera_ui">IntentCamera</string>
     <string name="title_activity_auto_switch_view">AutoSwitchView</string>
     <string name="hello_world">hello world</string>
+    <!--device admin-->
     <string name="open_device_admin">Open Device Admin</string>
     <string name="settings_device_admin_desc">super device manager</string>
     <string name="stop_device_admin">Stop Device Admin</string>
@@ -41,4 +42,6 @@
     <string name="forbid_using_camera">Forbid Using Camera</string>
     <string name="reset_password">Reset Password</string>
     <string name="encrypt_storage">Encrypt Storage</string>
+    <!--accounts-->
+    <string name="account_type">com.sleticalboy.dailywork.accounts</string>
 </resources>
