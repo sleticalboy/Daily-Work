@@ -37,4 +37,8 @@
     <string name="way_of_lock">Way Of Lock</string>
     <string name="lock_now">Lock Now</string>
     <string name="lock_delay">Lock Delay</string>
+    <string name="reset_device">Reset Device</string>
+    <string name="forbid_using_camera">Forbid Using Camera</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="encrypt_storage">Encrypt Storage</string>
 </resources>

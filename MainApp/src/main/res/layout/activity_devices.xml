@@ -5,6 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--wipe data(reset device), forbid using camera, reset password, encrypt storage-->
+    <Button
+        android:id="@+id/resetDevice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reset_device"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/resetPassword"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/forbidCamera" />
+
+    <Button
+        android:id="@+id/forbidCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/forbid_using_camera"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="@+id/resetDevice"
+        app:layout_constraintLeft_toRightOf="@+id/resetDevice"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/resetPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reset_password"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/wayOfLock"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/encryptStorage" />
+
+    <Button
+        android:id="@+id/encryptStorage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/encrypt_storage"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="@+id/resetPassword"
+        app:layout_constraintLeft_toRightOf="@+id/resetPassword"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <!--lock screen-->
     <Button
         android:id="@+id/wayOfLock"

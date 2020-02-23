@@ -4,6 +4,7 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.sleticalboy.dailywork.R;
@@ -84,5 +85,46 @@ public final class DevicesManager {
             return;
         }
         mMgr.setMaximumTimeToLock(mComponent, delay);
+    }
+
+    public void resetDevice() {
+        if (!isActive()) {
+            Toast.makeText(mContext, R.string.active_device_admin, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // mMgr.wipeData(DevicePolicyManager.WIPE_EXTERNAL_STORAGE);
+    }
+
+    public void forbidCamera() {
+        if (!isActive()) {
+            Toast.makeText(mContext, R.string.active_device_admin, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mMgr.setCameraDisabled(mComponent, true);
+    }
+
+    public void resetPassword() {
+        if (!isActive()) {
+            Toast.makeText(mContext, R.string.active_device_admin, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // 只能对未设置密码的设备重置密码, 若设备已有密码，则会抛出
+        // java.lang.SecurityException: Admin cannot change current password
+        try {
+            boolean ret = mMgr.resetPassword("2580",
+                    DevicePolicyManager.RESET_PASSWORD_REQUIRE_ENTRY);
+            Log.d("DevicesManager", "ret:" + ret);
+        } catch (Exception e) {
+            Log.w("DevicesManager", "reset password error", e);
+        }
+    }
+
+    public void encryptStorage() {
+        if (!isActive()) {
+            Toast.makeText(mContext, R.string.active_device_admin, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // final int result = mMgr.setStorageEncryption(mComponent, true);
+        // Log.d("DevicesManager", "result:" + result);
     }
 }

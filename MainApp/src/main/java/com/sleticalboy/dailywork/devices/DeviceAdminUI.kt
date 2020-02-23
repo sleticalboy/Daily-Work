@@ -30,5 +30,13 @@ class DeviceAdminUI : BaseActivity() {
         wayOfLock.setOnClickListener { mManager!!.setWayOfLock() }
         lockNow.setOnClickListener { mManager!!.lockScreenNow() }
         lockDelay.setOnClickListener { mManager!!.lockScreenDelay(6 * 1000) }
+        // reset device
+        resetDevice.setOnClickListener { mManager!!.resetDevice() }
+        // forbid using camera
+        forbidCamera.setOnClickListener { mManager!!.forbidCamera() }
+        // reset password
+        resetPassword.setOnClickListener { mManager!!.resetPassword() }
+        // encrypt storage
+        encryptStorage.setOnClickListener { mManager!!.encryptStorage() }
     }
 }
