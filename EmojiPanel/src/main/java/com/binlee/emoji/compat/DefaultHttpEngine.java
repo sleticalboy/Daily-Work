@@ -52,10 +52,10 @@ public final class DefaultHttpEngine extends HttpEngine<HttpURLConnection, HttpU
 
     @Override
     public BaseResponse request(@NonNull BaseRequest request) throws IOException {
-        if (mReauthenticating) {
-            synchronized (mConfig) {
+        while (mReauthenticating) {
+            synchronized (DefaultHttpEngine.this) {
                 try {
-                    mConfig.wait();
+                    DefaultHttpEngine.this.wait();
                 } catch (InterruptedException ignored) {
                 }
             }
@@ -80,15 +80,6 @@ public final class DefaultHttpEngine extends HttpEngine<HttpURLConnection, HttpU
 
     @Override
     protected HttpURLConnection adaptRequest(BaseRequest request) throws IOException {
-        return createConnection(request);
-    }
-
-    @Override
-    protected BaseResponse adaptResponse(HttpURLConnection raw, BaseRequest current) throws IOException {
-        return resolveConnection(raw, current);
-    }
-
-    private HttpURLConnection createConnection(BaseRequest request) throws IOException {
         final String url = buildUrl(request);
         final HttpURLConnection conn = openConnection(url, mConfig.proxy);
         setupClient(conn);
@@ -103,6 +94,11 @@ public final class DefaultHttpEngine extends HttpEngine<HttpURLConnection, HttpU
             conn.addRequestProperty(name, headers.get(name));
         }
         return conn;
+    }
+
+    @Override
+    protected BaseResponse adaptResponse(HttpURLConnection raw, BaseRequest current) throws IOException {
+        return resolveConnection(raw, current);
     }
 
     private HttpURLConnection openConnection(String url, Proxy proxy) throws IOException {
@@ -173,11 +169,11 @@ public final class DefaultHttpEngine extends HttpEngine<HttpURLConnection, HttpU
                 mReauthenticating = true;
                 final BaseResponse raw = request(mConfig.authenticate);
                 onReauthenticateResponse(raw);
-                synchronized (mConfig) {
+                synchronized (DefaultHttpEngine.this) {
                     mReauthenticating = false;
-                    mConfig.notifyAll();
+                    DefaultHttpEngine.this.notifyAll();
                 }
-                // 继续发送`发生重定向时`的请求
+                // 继续发送`发生重新认证`时的请求
                 return request(response.current);
             }
         }

@@ -80,7 +80,7 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_DISABLED" />
             </intent-filter>
         </receiver>
-        <!--  authenticator for account  -->
+        <!--authenticator for account-->
         <service
             android:name=".accounts.auth.AuthenticationService"
             android:enabled="true"
@@ -102,6 +102,15 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
+        <activity android:name=".ui.activity.ServicePractise" />
+        <!--service practice-->
+        <service android:name=".MyService" />
+        <receiver android:name=".GlobalReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

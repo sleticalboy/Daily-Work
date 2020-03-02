@@ -20,6 +20,7 @@ class StartActivity : ListActivity() {
 
     private val dataList = arrayOf(
             ItemHolder(DeviceAdminUI::class.java, "设备管理"),
+            ItemHolder(ServicePractise::class.java, "Service"),
             ItemHolder(TransitionUI::class.java, "转场动画"),
             ItemHolder(AutoSwitchUI::class.java, "自动切换View使用"),
             ItemHolder(ImageConvertUI::class.java, "图片和字符串相互转换"),
