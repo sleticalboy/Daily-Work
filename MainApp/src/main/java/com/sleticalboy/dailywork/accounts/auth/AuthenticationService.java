@@ -23,7 +23,7 @@ public final class AuthenticationService extends Service {
     @Override
     public void onCreate() {
         mAuthenticator = new Authenticator(this);
-        Log.d(TAG, "onCreate() called");
+        // Log.d(TAG, "onCreate() called");
     }
 
     @Nullable
@@ -36,6 +36,6 @@ public final class AuthenticationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy() called");
+        // Log.d(TAG, "onDestroy() called");
     }
 }
