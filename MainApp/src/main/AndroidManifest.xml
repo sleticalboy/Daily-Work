@@ -41,8 +41,8 @@
         <activity android:name=".devices.DeviceAdminUI" />
 
         <activity android:name=".ui.activity.ServicePractise" />
-        <activity android:name=".accounts.ui.login.LoginActivity" />
         <!-- authenticator for account -->
+        <activity android:name=".accounts.auth.AuthenticatorActivity" />
         <receiver
             android:name=".devices.DevicesReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">

@@ -3,16 +3,16 @@ package com.sleticalboy.dailywork.accounts.auth;
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
+import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 
-import com.sleticalboy.dailywork.accounts.ui.login.LoginActivity;
-import com.sleticalboy.dailywork.ui.activity.StartActivity;
-
-import java.util.HashSet;
+import com.sleticalboy.dailywork.accounts.Constants;
 
 /**
  * Created by AndroidStudio on 20-2-23.
@@ -32,13 +32,6 @@ public final class Authenticator extends AbstractAccountAuthenticator {
     }
 
     @Override
-    public Bundle editProperties(AccountAuthenticatorResponse response, String accountType) {
-        Log.d(TAG, "editProperties() called with: response = [" + response + "], accountType = ["
-                + accountType + "]");
-        return null;
-    }
-
-    @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType,
                              String authTokenType, String[] requiredFeatures, Bundle options)
             throws NetworkErrorException {
@@ -49,20 +42,11 @@ public final class Authenticator extends AbstractAccountAuthenticator {
                 Log.d(TAG, "addAccount: key = " + key + ", value = " + options.get(key));
             }
         }
+        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         final Bundle result = new Bundle();
-        final Intent intent = new Intent(mContext, LoginActivity.class);
-        result.putParcelable("intent", intent);
-        result.putString("account", "sleticalboy@gmail.com");
+        result.putParcelable(AccountManager.KEY_INTENT, intent);
         return result;
-    }
-
-    @Override
-    public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account,
-                                     Bundle options)
-            throws NetworkErrorException {
-        Log.d(TAG, "confirmCredentials() called with: response = [" + response + "], account = ["
-                + account + "], options = [" + options + "]");
-        return null;
     }
 
     @Override
@@ -72,9 +56,48 @@ public final class Authenticator extends AbstractAccountAuthenticator {
         Log.d(TAG, "getAuthToken() called with: response = [" + response + "], account = ["
                 + account + "], authTokenType = [" + authTokenType + "], options = ["
                 + options + "]");
+        if (!Constants.ACCOUNT_TYPE.equals(authTokenType)) {
+            final Bundle result = new Bundle();
+            result.putString(AccountManager.KEY_ERROR_MESSAGE, "invalid authTokenType");
+            return result;
+        }
+        final AccountManager am = AccountManager.get(mContext);
+        final String password = am.getPassword(account);
+        if (password != null) {
+            // pretend requesting auth token.
+            SystemClock.sleep(300L);
+            final String authToken = Constants.ACCOUNT_AUTH_TOKEN;
+            if (!TextUtils.isEmpty(authToken)) {
+                final Bundle result = new Bundle();
+                result.putString(AccountManager.KEY_ACCOUNT_NAME, Constants.ACCOUNT_NAME);
+                result.putString(AccountManager.KEY_ACCOUNT_TYPE, Constants.ACCOUNT_TYPE);
+                result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
+                return result;
+            }
+        }
+        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, account.name);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, authTokenType);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         final Bundle result = new Bundle();
-        result.putString("auth_token", "auth.token.sleticalboy");
+        result.putParcelable(AccountManager.KEY_INTENT, intent);
         return result;
+    }
+
+    @Override
+    public Bundle editProperties(AccountAuthenticatorResponse response, String accountType) {
+        Log.d(TAG, "editProperties() called with: response = [" + response + "], accountType = ["
+                + accountType + "]");
+        return null;
+    }
+
+    @Override
+    public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account,
+                                     Bundle options)
+            throws NetworkErrorException {
+        Log.d(TAG, "confirmCredentials() called with: response = [" + response + "], account = ["
+                + account + "], options = [" + options + "]");
+        return null;
     }
 
     @Override
