@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
+import com.squareup.leakcanary.LeakCanary
+import com.squareup.leakcanary.RefWatcher
 
 /**
  * Created on 18-3-5.
@@ -18,7 +20,14 @@ class MainApp : Application() {
     override fun onCreate() {
         super.onCreate()
         mApp = this
+        installLeakCanary();
         adaptAndroidO()
+    }
+
+    private fun installLeakCanary() {
+        if (!LeakCanary.isInAnalyzerProcess(this)) {
+            mRefWatcher = LeakCanary.install(this)
+        }
     }
 
     private fun adaptAndroidO() {
@@ -39,7 +48,10 @@ class MainApp : Application() {
     companion object {
 
         private var mApp: Application? = null
+        private var mRefWatcher: RefWatcher? = null
 
         val app: Context? get() = mApp
+
+        val refWatcher: RefWatcher? get() = mRefWatcher
     }
 }
