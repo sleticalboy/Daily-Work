@@ -19,7 +19,7 @@ import com.sleticalboy.dailywork.accounts.Constants;
  *
  * @author binlee
  */
-public final class Authenticator extends AbstractAccountAuthenticator {
+public final class Authenticator extends AbstractAccountAuthenticator implements Constants {
 
     private static final String TAG = "Authenticator";
 
@@ -56,7 +56,7 @@ public final class Authenticator extends AbstractAccountAuthenticator {
         Log.d(TAG, "getAuthToken() called with: response = [" + response + "], account = ["
                 + account + "], authTokenType = [" + authTokenType + "], options = ["
                 + options + "]");
-        if (!Constants.ACCOUNT_TYPE.equals(authTokenType)) {
+        if (!ACCOUNT_TYPE.equals(authTokenType)) {
             final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ERROR_MESSAGE, "invalid authTokenType");
             return result;
@@ -66,11 +66,11 @@ public final class Authenticator extends AbstractAccountAuthenticator {
         if (password != null) {
             // pretend requesting auth token.
             SystemClock.sleep(300L);
-            final String authToken = Constants.ACCOUNT_AUTH_TOKEN;
+            final String authToken = ACCOUNT_AUTH_TOKEN;
             if (!TextUtils.isEmpty(authToken)) {
                 final Bundle result = new Bundle();
-                result.putString(AccountManager.KEY_ACCOUNT_NAME, Constants.ACCOUNT_NAME);
-                result.putString(AccountManager.KEY_ACCOUNT_TYPE, Constants.ACCOUNT_TYPE);
+                result.putString(AccountManager.KEY_ACCOUNT_NAME, ACCOUNT_NAME);
+                result.putString(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
                 result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
                 return result;
             }

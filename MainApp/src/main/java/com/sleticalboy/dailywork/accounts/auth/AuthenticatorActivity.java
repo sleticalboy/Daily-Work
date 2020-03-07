@@ -20,13 +20,14 @@ import android.widget.Toast;
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.accounts.Constants;
 
-public class AuthenticatorActivity extends AccountAuthenticatorActivity {
+public class AuthenticatorActivity extends AccountAuthenticatorActivity implements Constants {
 
     private static final String TAG = "AuthenticatorActivity";
 
     private String mUsername, mPassword;
     private AccountManager mAccountManager;
     private boolean mRequestNewAccount = false;
+    private ProgressBar mLoading;
 
     @Override
     protected void onCreate(final Bundle icicle) {
@@ -41,7 +42,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     }
 
     private void initView() {
-        final ProgressBar loading = findViewById(R.id.loading);
+        mLoading = findViewById(R.id.loading);
         final Button loginBtn = findViewById(R.id.login);
         final EditText usernameEt = findViewById(R.id.username);
         final EditText passwordEt = findViewById(R.id.password);
@@ -65,20 +66,29 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         usernameEt.addTextChangedListener(watcher);
         passwordEt.addTextChangedListener(watcher);
         loginBtn.setOnClickListener(v -> {
-            loading.setVisibility(View.VISIBLE);
+            mLoading.setVisibility(View.VISIBLE);
             mUsername = usernameEt.getText().toString().trim();
             mPassword = passwordEt.getText().toString().trim();
-            loginBtn.postDelayed(() -> finishLogin(Constants.ACCOUNT_AUTH_TOKEN), 300L);
+            handleLogin(v);
         });
+    }
+
+    private void handleLogin(final View v) {
+        if (mUsername.startsWith(ACCOUNT_PREFIX) && mPassword.startsWith(ACCOUNT_PASSWORD)) {
+            v.postDelayed(() -> finishLogin(ACCOUNT_AUTH_TOKEN), 300L);
+        } else {
+            finishLogin(null);
+        }
     }
 
     private void finishLogin(String authToken) {
         Log.d(TAG, "finishLogin() called with: authToken = [" + authToken + "]");
         if (authToken == null || authToken.length() == 0) {
+            mLoading.setVisibility(View.GONE);
             Toast.makeText(this, R.string.login_failed, Toast.LENGTH_SHORT).show();
             return;
         }
-        final Account account = new Account(mUsername, Constants.ACCOUNT_TYPE);
+        final Account account = new Account(mUsername, ACCOUNT_TYPE);
         if (mRequestNewAccount) {
             mAccountManager.addAccountExplicitly(account, mPassword, null);
             // Set contacts sync for this account.
@@ -88,9 +98,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         }
         final Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
-        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ACCOUNT_TYPE);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
         setAccountAuthenticatorResult(intent.getExtras());
         setResult(RESULT_OK, intent);
+        mLoading.setVisibility(View.GONE);
         finish();
     }
 }

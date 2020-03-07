@@ -44,6 +44,7 @@
     <string name="encrypt_storage">Encrypt Storage</string>
     <!--accounts-->
     <string name="account_type">com.sleticalboy.dailywork.accounts</string>
+    <string name="content_authority">com.sleticalboy.dailywork.contacts</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

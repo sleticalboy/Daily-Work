@@ -3,11 +3,8 @@ package com.sleticalboy.dailywork.accounts.auth;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
-
-import com.sleticalboy.dailywork.accounts.auth.Authenticator;
 
 /**
  * Created by AndroidStudio on 20-2-23.
@@ -29,7 +26,7 @@ public final class AuthenticationService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "onBind() called with: intent = [" + intent + "]");
+        // Log.d(TAG, "onBind() called with: intent = [" + intent + "]");
         return mAuthenticator.getIBinder();
     }
 

@@ -30,7 +30,7 @@
 
 <sync-adapter
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accountType="com.sleticalboy.dailywork.accountsync"
-    android:contentAuthority="com.sleticalboy.dailywork.contacts"
+    android:accountType="@string/account_type"
+    android:contentAuthority="@string/content_authority"
     android:supportsUploading="false"
     android:userVisible="true" />
