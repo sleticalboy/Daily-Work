@@ -13,11 +13,11 @@ import android.util.Log
  */
 object OSUtils {
 
-    private val LOG_TAG = "OSUtils ->"
+    private const val LOG_TAG = "OSUtils ->"
 
     fun isMainProcess(context: Context): Boolean {
         val processName = getProcessName(context.applicationContext, android.os.Process.myPid())
-        Log.e(LOG_TAG, processName)
+        Log.e(LOG_TAG, "process: $processName")
         return !TextUtils.isEmpty(processName) && !processName!!.contains(":")
     }
 
