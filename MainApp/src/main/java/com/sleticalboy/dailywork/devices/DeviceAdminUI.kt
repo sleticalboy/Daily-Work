@@ -1,7 +1,6 @@
 package com.sleticalboy.dailywork.devices
 
 import android.os.Bundle
-import android.view.View
 import com.sleticalboy.dailywork.R
 import com.sleticalboy.dailywork.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_devices.*

@@ -49,6 +49,9 @@
                 someone who explicitly knows the class name
             -->
         </activity>
+        <!--activity for debug-->
+        <activity android:name=".debug.DebugUI" />
+
         <provider
             android:authorities="@string/content_authority"
             android:name=".accounts.ContactsProvider" />
