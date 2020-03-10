@@ -22,7 +22,6 @@ import com.sleticalboy.dailywork.accounts.Constants;
 public final class Authenticator extends AbstractAccountAuthenticator implements Constants {
 
     private static final String TAG = "Authenticator";
-
     private final Context mContext;
 
     public Authenticator(Context context) {
@@ -56,7 +55,7 @@ public final class Authenticator extends AbstractAccountAuthenticator implements
         Log.d(TAG, "getAuthToken() called with: response = [" + response + "], account = ["
                 + account + "], authTokenType = [" + authTokenType + "], options = ["
                 + options + "]");
-        if (!ACCOUNT_TYPE.equals(authTokenType)) {
+        if (!ACCOUNT_AUTH_TOKEN.equals(authTokenType)) {
             final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ERROR_MESSAGE, "invalid authTokenType");
             return result;

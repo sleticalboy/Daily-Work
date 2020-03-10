@@ -14,7 +14,7 @@
 -->
 <account-authenticator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accountType="@string/account_type"
+    android:accountType="@string/common_account_type"
     android:icon="@drawable/ic_account_box_24dp"
-    android:label="@string/account_type"
+    android:label="@string/authenticator_label"
     android:smallIcon="@drawable/ic_account_box_24dp" />

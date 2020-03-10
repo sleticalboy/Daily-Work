@@ -53,8 +53,13 @@
         <activity android:name=".debug.DebugUI" />
 
         <provider
-            android:authorities="@string/content_authority"
+            android:label="@string/contacts_provider_label"
+            android:authorities="@string/account_authority"
             android:name=".accounts.ContactsProvider" />
+        <provider
+            android:label="@string/routines_provider_label"
+            android:authorities="@string/routine_authority"
+            android:name=".accounts.RoutinesProvider" />
 
         <receiver
             android:name=".devices.DevicesReceiver"
@@ -87,17 +92,24 @@
                 android:resource="@xml/authenticator" />
         </service>
         <service
-            android:name=".accounts.sync.SyncService"
+            android:name=".accounts.sync.ContactsSyncService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
             <meta-data
                 android:name="android.content.SyncAdapter"
-                android:resource="@xml/syncadapter" />
-            <!--<meta-data-->
-            <!--    android:name="android.provider.CONTACTS_STRUCTURE"-->
-            <!--    android:resource="@xml/contacts" />-->
+                android:resource="@xml/sync_adapter_accounts" />
+        </service>
+        <service
+            android:name=".accounts.sync.RoutineSyncService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync_adapter_routines" />
         </service>
         <!-- service practice -->
         <service android:name=".MyService" />

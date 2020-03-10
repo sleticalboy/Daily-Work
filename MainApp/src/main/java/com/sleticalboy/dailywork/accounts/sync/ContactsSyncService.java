@@ -11,16 +11,16 @@ import androidx.annotation.Nullable;
  *
  * @author binlee
  */
-public final class SyncService extends Service {
+public final class ContactsSyncService extends Service {
 
-    private static final Object sSyncAdapterLock = new Object();
-    private static SyncAdapter sSyncAdapter = null;
+    private static final Object LOCK = new Object();
+    private static ContactsSyncAdapter sSyncAdapter;
 
     @Override
     public void onCreate() {
-        synchronized (sSyncAdapterLock) {
+        synchronized (LOCK) {
             if (sSyncAdapter == null) {
-                sSyncAdapter = new SyncAdapter(getApplicationContext(), true);
+                sSyncAdapter = new ContactsSyncAdapter(getApplicationContext());
             }
         }
     }
