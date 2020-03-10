@@ -1,7 +1,7 @@
 package com.sleticalboy.dailywork.accounts.auth;
 
 import android.accounts.Account;
-import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -19,29 +19,35 @@ import android.widget.Toast;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.accounts.Constants;
+import com.sleticalboy.dailywork.base.BaseActivity;
 
-public class AuthenticatorActivity extends AccountAuthenticatorActivity implements Constants {
+import org.jetbrains.annotations.Nullable;
+
+public class AuthenticatorActivity extends BaseActivity implements Constants {
 
     private static final String TAG = "AuthenticatorActivity";
 
+    private AccountAuthenticatorResponse mAccountAuthenticatorResponse;
+    private Bundle mResultBundle;
     private String mUsername, mPassword;
     private AccountManager mAccountManager;
     private boolean mRequestNewAccount = false;
     private ProgressBar mLoading;
 
     @Override
-    protected void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.activity_login);
-
+    protected void prepareWork(@Nullable final Bundle savedInstanceState) {
         mAccountManager = AccountManager.get(getApplication());
         mUsername = getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
         mRequestNewAccount = mUsername == null;
-
-        initView();
+        mAccountAuthenticatorResponse = getIntent().getParcelableExtra(
+                AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+        if (mAccountAuthenticatorResponse != null) {
+            mAccountAuthenticatorResponse.onRequestContinued();
+        }
     }
 
-    private void initView() {
+    @Override
+    public void initView() {
         mLoading = findViewById(R.id.loading);
         final Button loginBtn = findViewById(R.id.login);
         final EditText usernameEt = findViewById(R.id.username);
@@ -99,9 +105,29 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity implemen
         final Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
         intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
-        setAccountAuthenticatorResult(intent.getExtras());
+        mResultBundle = intent.getExtras();
         setResult(RESULT_OK, intent);
         mLoading.setVisibility(View.GONE);
         finish();
+    }
+
+    @Override
+    protected int layoutResId() {
+        return R.layout.activity_login;
+    }
+
+    @Override
+    public void finish() {
+        if (mAccountAuthenticatorResponse != null) {
+            // send the result bundle back if set, otherwise send an error.
+            if (mResultBundle != null) {
+                mAccountAuthenticatorResponse.onResult(mResultBundle);
+            } else {
+                mAccountAuthenticatorResponse.onError(AccountManager.ERROR_CODE_CANCELED,
+                        "canceled");
+            }
+            mAccountAuthenticatorResponse = null;
+        }
+        super.finish();
     }
 }
