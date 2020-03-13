@@ -1,18 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.3'
+    compileSdkVersion rootProject.ext.compile_version
+    buildToolsVersion rootProject.ext.build_version
 
     defaultConfig {
         applicationId "com.sleticalboy.glide4x"
-        minSdkVersion 16
-        targetSdkVersion 29
+        minSdkVersion rootProject.ext.min_version
+        targetSdkVersion rootProject.ext.target_version
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -40,8 +39,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.2.0-alpha03'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_version"
+
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -51,7 +51,7 @@ dependencies {
     }
     // annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     api 'jp.wasabeef:glide-transformations:3.3.0'
-    api 'com.squareup.okhttp3:okhttp:4.4.0'
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     // 官方替换方式
     // api 'com.github.bumptech.glide:okhttp3-integration:1.5.0@aar'
 }
