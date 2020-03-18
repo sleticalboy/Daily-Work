@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
+import com.sleticalboy.dailywork.bt.BluetoothUI
 import com.sleticalboy.dailywork.debug.DebugUI
 import com.sleticalboy.dailywork.devices.DeviceAdminUI
 
@@ -21,6 +22,7 @@ class StartActivity : ListActivity() {
 
     private val dataList = arrayOf(
             ItemHolder(DebugUI::class.java, "调试工具"),
+            ItemHolder(BluetoothUI::class.java, "蓝牙模块"),
             ItemHolder(DeviceAdminUI::class.java, "设备管理"),
             ItemHolder(ServicePractise::class.java, "Service"),
             ItemHolder(TransitionUI::class.java, "转场动画"),

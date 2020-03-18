@@ -51,6 +51,8 @@
         </activity>
         <!--activity for debug-->
         <activity android:name=".debug.DebugUI" />
+        <!--activity for bluetooth-->
+        <activity android:name=".bt.BluetoothUI" />
 
         <provider
             android:label="@string/contacts_provider_label"
