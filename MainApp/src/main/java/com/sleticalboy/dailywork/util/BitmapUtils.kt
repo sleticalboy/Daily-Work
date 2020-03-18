@@ -1,10 +1,39 @@
 package com.sleticalboy.dailywork.util
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.PixelFormat
+import android.graphics.drawable.Drawable
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 object BitmapUtils {
 
     private val IO_BUFFER_SIZE = 2 * 1024
+
+    fun drawable2Bitmap(drawable: Drawable?): Bitmap? {
+        if (drawable == null) {
+            return null
+        }
+        // 取 drawable 的长宽
+        val w = drawable.intrinsicWidth
+        val h = drawable.intrinsicHeight
+        // 取 drawable 的颜色格式
+        val config = if (drawable.opacity != PixelFormat.OPAQUE) {
+            Bitmap.Config.ARGB_8888
+        } else {
+            Bitmap.Config.RGB_565
+        }
+        // 建立对应 bitmap
+        val bitmap = Bitmap.createBitmap(w, h, config)
+        // 建立对应 bitmap 的画布
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, w, h)
+        // 把 drawable 内容画到画布中
+        drawable.draw(canvas)
+        return bitmap
+    }
 
     fun toBlur(originBitmap: Bitmap, scaleRatio: Int): Bitmap? {
         var scaleRatio = scaleRatio
@@ -63,7 +92,7 @@ object BitmapUtils {
         var yp: Int
         var yi: Int
         var yw: Int
-        val vmin = IntArray(Math.max(w, h))
+        val vmin = IntArray(max(w, h))
 
         var divsum = div + 1 shr 1
         divsum *= divsum
@@ -103,12 +132,12 @@ object BitmapUtils {
             rinsum = ginsum
             i = -radius
             while (i <= radius) {
-                p = pix[yi + Math.min(wm, Math.max(i, 0))]
+                p = pix[yi + min(wm, max(i, 0))]
                 sir = stack[i + radius]
                 sir[0] = p and 0xff0000 shr 16
                 sir[1] = p and 0x00ff00 shr 8
                 sir[2] = p and 0x0000ff
-                rbs = r1 - Math.abs(i)
+                rbs = r1 - abs(i)
                 rsum += sir[0] * rbs
                 gsum += sir[1] * rbs
                 bsum += sir[2] * rbs
@@ -144,7 +173,7 @@ object BitmapUtils {
                 boutsum -= sir[2]
 
                 if (y == 0) {
-                    vmin[x] = Math.min(x + radius + 1, wm)
+                    vmin[x] = min(x + radius + 1, wm)
                 }
                 p = pix[yw + vmin[x]]
 
@@ -191,7 +220,7 @@ object BitmapUtils {
             yp = -radius * w
             i = -radius
             while (i <= radius) {
-                yi = Math.max(0, yp) + x
+                yi = max(0, yp) + x
 
                 sir = stack[i + radius]
 
@@ -199,7 +228,7 @@ object BitmapUtils {
                 sir[1] = g[yi]
                 sir[2] = b[yi]
 
-                rbs = r1 - Math.abs(i)
+                rbs = r1 - abs(i)
 
                 rsum += r[yi] * rbs
                 gsum += g[yi] * rbs
@@ -239,7 +268,7 @@ object BitmapUtils {
                 boutsum -= sir[2]
 
                 if (x == 0) {
-                    vmin[y] = Math.min(y + r1, hm) * w
+                    vmin[y] = min(y + r1, hm) * w
                 }
                 p = x + vmin[y]
 
