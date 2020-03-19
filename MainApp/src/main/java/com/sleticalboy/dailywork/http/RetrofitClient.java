@@ -1,7 +1,6 @@
 package com.sleticalboy.dailywork.http;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import com.sleticalboy.dailywork.http.interceptor.HttpLoggingInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,8 +20,8 @@ public class RetrofitClient {
     private final Retrofit mRetrofit;
 
     private RetrofitClient() {
-        final HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor()
-                .setLevel(HttpLoggingInterceptor.Level.BODY);
+        final HttpLogInterceptor loggingInterceptor = new HttpLogInterceptor()
+                .setLevel(HttpLogInterceptor.Level.BODY);
         mOkHttpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(loggingInterceptor) // 打印网络请求日志
                 .connectTimeout(30, TimeUnit.SECONDS)
@@ -47,7 +46,7 @@ public class RetrofitClient {
                 .build();
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(Constants.LIVE_HOST)
-                .addConverterFactory(StringConverterFactory.create())
+                .addConverterFactory(StringConvertFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(mOkHttpClient)

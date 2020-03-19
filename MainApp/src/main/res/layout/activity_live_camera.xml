@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.sleticalboy.dailywork.weight.FaceContourView
+    <com.sleticalboy.weight.FaceContourView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

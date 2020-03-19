@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
+import com.sleticalboy.dailywork.components.GlobalReceiver
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 
@@ -20,7 +21,7 @@ class MainApp : Application() {
     override fun onCreate() {
         super.onCreate()
         mApp = this
-        installLeakCanary();
+        installLeakCanary()
         adaptAndroidO()
     }
 
@@ -51,7 +52,5 @@ class MainApp : Application() {
         private var mRefWatcher: RefWatcher? = null
 
         val app: Context? get() = mApp
-
-        val refWatcher: RefWatcher? get() = mRefWatcher
     }
 }

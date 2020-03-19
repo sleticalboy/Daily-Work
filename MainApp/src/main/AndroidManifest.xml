@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".ui.activity.StartActivity">
+        <activity android:name=".IndexActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -19,27 +19,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.WheelRVActivity" />
-        <activity android:name=".ui.activity.DecorationActivity" />
-        <activity android:name=".ui.activity.PagerActivity" />
-        <activity android:name=".ui.activity.ClassifyActivity" />
-        <activity android:name=".ui.activity.LiveCameraActivity" />
-        <activity android:name=".ui.activity.PathActivity" />
-        <activity android:name=".ui.activity.AlarmActivity" />
-        <activity android:name=".ui.activity.AlphaActivity" />
-        <activity android:name=".ui.activity.HeaderActivity" />
-        <activity android:name=".ui.activity.CustomViewActivity" />
-        <activity android:name=".ui.activity.ScrollerActivity" />
-        <activity android:name=".ui.activity.ImageConvertUI" />
+        <activity android:name=".rv.WheelRVActivity" />
+        <activity android:name=".rv.DecorationActivity" />
+        <activity android:name=".rv.PagerActivity" />
+        <activity android:name=".rv.ClassifyActivity" />
+        <activity android:name=".camera.LiveCameraActivity" />
+        <activity android:name=".csv.PathActivity" />
+        <activity android:name=".others.AlarmActivity" />
+        <activity android:name=".csv.AlphaActivity" />
+        <activity android:name=".csv.HeaderActivity" />
+        <activity android:name=".csv.CustomViewActivity" />
+        <activity android:name=".csv.ScrollerActivity" />
+        <activity android:name=".others.ImageConvertUI" />
         <activity
-            android:name=".ui.activity.AutoSwitchUI"
+            android:name=".csv.AutoSwitchUI"
             android:label="@string/title_activity_auto_switch_view" />
         <!-- 转场动画 -->
-        <activity android:name=".ui.activity.TransitionUI" />
+        <activity android:name=".anims.TransitionUI" />
         <!-- 设备管理 -->
         <activity android:name=".devices.DeviceAdminUI" />
 
-        <activity android:name=".ui.activity.ServicePractise" />
+        <activity android:name=".components.ServicePractise" />
         <!-- authenticator for account -->
         <activity
             android:name=".accounts.auth.AuthenticatorActivity"
@@ -75,7 +75,7 @@
                 android:name="android.app.device_admin"
                 android:resource="@xml/devices_admin" />
         </receiver>
-        <receiver android:name=".GlobalReceiver">
+        <receiver android:name=".components.GlobalReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.SCREEN_ON" />
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -114,7 +114,7 @@
                 android:resource="@xml/sync_adapter_routines" />
         </service>
         <!-- service practice -->
-        <service android:name=".MyService" />
+        <service android:name=".components.MyService" />
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />

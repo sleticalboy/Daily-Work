@@ -42,7 +42,7 @@ object ListUtils {
     }
 
     fun <E> isEmpty(source: List<E>?): Boolean {
-        return source == null || source.size == 0
+        return source == null || source.isEmpty()
     }
 
     fun <E> relocation(source: MutableList<E>, from: Int, to: Int) {
