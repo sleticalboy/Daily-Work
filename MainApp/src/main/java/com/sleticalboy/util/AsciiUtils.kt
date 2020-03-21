@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.util
+package com.sleticalboy.util
 
 object AsciiUtils {
 

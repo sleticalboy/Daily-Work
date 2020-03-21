@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.http;
+package com.sleticalboy.http;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.util
+package com.sleticalboy.util
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.http;
+package com.sleticalboy.http;
 
 /**
  * Created on 18-3-26.

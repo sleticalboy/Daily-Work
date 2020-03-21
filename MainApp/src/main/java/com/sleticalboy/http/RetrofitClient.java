@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.http;
+package com.sleticalboy.http;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 

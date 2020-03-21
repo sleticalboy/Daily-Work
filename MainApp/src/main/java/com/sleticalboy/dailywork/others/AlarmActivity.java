@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
-import com.sleticalboy.dailywork.util.DevicesUtils;
-import com.sleticalboy.dailywork.util.TimeUtils;
+import com.sleticalboy.util.DevicesUtils;
+import com.sleticalboy.util.TimeUtils;
 
 import org.jetbrains.annotations.Nullable;
 

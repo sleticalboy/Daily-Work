@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sleticalboy.dailywork.R;
-import com.sleticalboy.dailywork.util.UIUtils;
+import com.sleticalboy.util.UIUtils;
 import com.sleticalboy.weight.xrecycler.helper.PageScrollHelper;
 import com.sleticalboy.weight.xrecycler.helper.PagerLayoutManager;
 
@@ -194,7 +194,7 @@ public class PagerView extends LinearLayout {
         if (indicatorSize < INDICATOR_SIZE) {
             mIndicatorSize = (int) INDICATOR_SIZE;
         } else {
-            mIndicatorSize = UIUtils.INSTANCE.dp2px(getContext(), indicatorSize);
+            mIndicatorSize = UIUtils.dp2px(getContext(), indicatorSize);
         }
     }
 

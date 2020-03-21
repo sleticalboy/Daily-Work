@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.sleticalboy.dailywork.util.CameraUtils;
+import com.sleticalboy.util.CameraUtils;
 
 /**
  * Created on 18-2-24.

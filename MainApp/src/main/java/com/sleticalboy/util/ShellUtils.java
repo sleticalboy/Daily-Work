@@ -1,9 +1,10 @@
-package com.sleticalboy.dailywork.util;
+package com.sleticalboy.util;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -70,9 +71,9 @@ public final class ShellUtils {
                 successMsg = new StringBuilder();
                 errorMsg = new StringBuilder();
                 successResult = new BufferedReader(new InputStreamReader(process.getInputStream(),
-                        "UTF-8"));
+                        StandardCharsets.UTF_8));
                 errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream(),
-                        "UTF-8"));
+                        StandardCharsets.UTF_8));
                 String line;
                 if ((line = successResult.readLine()) != null) {
                     successMsg.append(line);

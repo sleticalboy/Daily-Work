@@ -9,7 +9,7 @@ import android.widget.TextView
 
 import com.sleticalboy.dailywork.R
 import com.sleticalboy.dailywork.base.BaseActivity
-import com.sleticalboy.dailywork.util.ImageUtils
+import com.sleticalboy.util.ImageUtils
 
 /**
  * Created on 18-9-26.

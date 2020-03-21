@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.sleticalboy.dailywork.R;
-import com.sleticalboy.dailywork.util.ListUtils;
+import com.sleticalboy.util.ListUtils;
 import com.sleticalboy.weight.xrecycler.adapter.XBaseHolder;
 import com.sleticalboy.weight.xrecycler.adapter.XRecyclerAdapter;
 import com.sleticalboy.weight.xrecycler.helper.ItemTouchDragAdapter;

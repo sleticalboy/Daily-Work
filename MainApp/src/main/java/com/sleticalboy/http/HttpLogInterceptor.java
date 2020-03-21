@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.http;
+package com.sleticalboy.http;
 /*
  * Copyright (C) 2015 Square, Inc.
  *

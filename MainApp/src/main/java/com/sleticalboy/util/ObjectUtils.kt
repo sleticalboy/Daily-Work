@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.util
+package com.sleticalboy.util
 
 /**
  * Created on 18-2-7.

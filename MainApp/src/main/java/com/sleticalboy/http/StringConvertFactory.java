@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.http;
+package com.sleticalboy.http;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

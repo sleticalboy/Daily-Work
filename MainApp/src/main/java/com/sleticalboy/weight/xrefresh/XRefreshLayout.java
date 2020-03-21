@@ -18,7 +18,7 @@ import android.widget.Scroller;
 
 import androidx.core.view.ViewCompat;
 
-import com.sleticalboy.dailywork.util.UIUtils;
+import com.sleticalboy.util.UIUtils;
 import com.sleticalboy.weight.xrefresh.interfaces.IFooterView;
 import com.sleticalboy.weight.xrefresh.interfaces.IHeaderView;
 
@@ -389,11 +389,11 @@ public class XRefreshLayout extends FrameLayout {
     }
 
     public void setHeaderHeight(int headerHeight) {
-        mHeaderHeight = UIUtils.INSTANCE.dp2px(getContext(), headerHeight);
+        mHeaderHeight = UIUtils.dp2px(getContext(), headerHeight);
     }
 
     public void setFooterHeight(int footerHeight) {
-        mFooterHeight = UIUtils.INSTANCE.dp2px(getContext(), footerHeight);
+        mFooterHeight = UIUtils.dp2px(getContext(), footerHeight);
     }
 
     public boolean isCanPullDown() {
