@@ -7,7 +7,7 @@ import com.sleticalboy.dailywork.debug.DebugUI
 class IndexActivity : BaseActivity() {
 
     private val modules = listOf(
-            ModuleItem("调试工具", DebugUI::class.java.name, null)
+            ModuleItem("调试工具", DebugUI::class.java)
     )
 
     override fun layoutResId(): Int = R.layout.activity_index
