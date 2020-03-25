@@ -5,7 +5,7 @@ build/
 captures/
 .DS_Store
 .externalNativeBuild
-*.properties
+local.properties
 gradle/
 MQTT/
 *.zip
