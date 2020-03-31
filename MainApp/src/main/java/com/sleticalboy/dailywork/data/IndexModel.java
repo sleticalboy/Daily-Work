@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class IndexModel {
 
-    private final MutableLiveData<List<ModuleItem>> mModuleSource;
+    private final MutableLiveData<Result<List<ModuleItem>>> mModuleSource;
     // private RemoteTask mRemoteTask;
     // private LocalTask mLocalTask;
 
@@ -40,14 +40,12 @@ public class IndexModel {
         mModuleSource = new MutableLiveData<>();
     }
 
-    public LiveData<List<ModuleItem>> getModuleSource() {
-        if (mModuleSource.getValue() == null || mModuleSource.getValue().size() == 0) {
-            initAndSetData();
-        }
+    public LiveData<Result<List<ModuleItem>>> getModuleSource() {
+        mModuleSource.setValue(getTasks());
         return mModuleSource;
     }
 
-    private void initAndSetData() {
+    private Result<List<ModuleItem>> getTasks() {
         final ModuleItem[] array = {
                 // debug tools
                 new ModuleItem("调试工具", DebugUI.class),
@@ -76,7 +74,6 @@ public class IndexModel {
                 new ModuleItem("RecyclerView 添加 item 分割线 / 拖拽排序", DecorationActivity.class),
                 new ModuleItem("RecyclerView 轮播", WheelRVActivity.class)
         };
-        final List<ModuleItem> items = new ArrayList<>(Arrays.asList(array));
-        mModuleSource.setValue(items);
+        return new Result.Success<>(new ArrayList<>(Arrays.asList(array)));
     }
 }
