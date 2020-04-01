@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sleticalboy.dailywork.base.BaseActivity
 import com.sleticalboy.dailywork.bean.ModuleItem
 import com.sleticalboy.dailywork.data.DataEngine
+import com.sleticalboy.dailywork.data.Result
 import kotlinx.android.synthetic.main.activity_index.*
 
 const val TAG = "IndexActivity"
@@ -24,10 +25,20 @@ class IndexActivity : BaseActivity() {
     override fun initView() {
         val adapter = DataAdapter()
         DataEngine.get().indexModel().moduleSource.observe(this, Observer {
-            Log.d(TAG, "items: $it")
-            dataSet.clear()
-            dataSet.addAll(it)
-            adapter.notifyDataSetChanged()
+            when (it) {
+                is Result.Loading -> {
+                    Log.d(TAG, "initView() loading data: $it")
+                }
+                is Result.Error -> {
+                    Log.d(TAG, "initView() load data error: $it")
+                }
+                else -> {
+                    Log.d(TAG, "initView() load data success: $it")
+                    dataSet.clear()
+                    dataSet.addAll((it as Result.Success).data)
+                    adapter.notifyDataSetChanged()
+                }
+            }
         })
         recyclerView.adapter = adapter
     }
