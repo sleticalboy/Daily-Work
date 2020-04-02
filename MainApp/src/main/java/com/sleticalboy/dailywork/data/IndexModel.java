@@ -16,6 +16,7 @@ import com.sleticalboy.dailywork.debug.DebugUI;
 import com.sleticalboy.dailywork.devices.DeviceAdminUI;
 import com.sleticalboy.dailywork.others.AlarmActivity;
 import com.sleticalboy.dailywork.others.ImageConvertUI;
+import com.sleticalboy.dailywork.others.NotificationsUI;
 import com.sleticalboy.dailywork.rv.ClassifyActivity;
 import com.sleticalboy.dailywork.rv.DecorationActivity;
 import com.sleticalboy.dailywork.rv.PagerActivity;
@@ -72,7 +73,9 @@ public class IndexModel {
                 new ModuleItem("RecyclerView 分类别显示", ClassifyActivity.class),
                 new ModuleItem("RecyclerView 分页", PagerActivity.class),
                 new ModuleItem("RecyclerView 添加 item 分割线 / 拖拽排序", DecorationActivity.class),
-                new ModuleItem("RecyclerView 轮播", WheelRVActivity.class)
+                new ModuleItem("RecyclerView 轮播", WheelRVActivity.class),
+                // notifications
+                new ModuleItem("通知呼吸灯闪烁", NotificationsUI.class)
         };
         return new Result.Success<>(new ArrayList<>(Arrays.asList(array)));
     }

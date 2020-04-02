@@ -62,4 +62,5 @@
     <!--debug-->
     <string name="open_settings">Open Settings</string>
     <string name="layout_bounds">Open Layout Bounds</string>
+    <string name="notify_delay_with_light">Notify Delay With Light</string>
 </resources>

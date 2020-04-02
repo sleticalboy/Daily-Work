@@ -3,6 +3,7 @@ package com.sleticalboy.util;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -43,7 +44,11 @@ public final class NotificationHelper {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private static NotificationChannel messageChannel() {
-        return new NotificationChannel(SPECIAL_TAG, SPECIAL_TAG, NotificationManager.IMPORTANCE_DEFAULT);
+        final NotificationChannel channel = new NotificationChannel(SPECIAL_TAG, SPECIAL_TAG,
+                NotificationManager.IMPORTANCE_DEFAULT);
+        channel.enableLights(true);
+        channel.setLightColor(Color.BLUE);
+        return channel;
     }
 
     private static void ensureManager(final Context context) {

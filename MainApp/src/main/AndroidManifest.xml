@@ -53,6 +53,7 @@
         <activity android:name=".debug.DebugUI" />
         <!--activity for bluetooth-->
         <activity android:name=".bt.BluetoothUI" />
+        <activity android:name=".others.NotificationsUI" />
 
         <provider
             android:label="@string/contacts_provider_label"
