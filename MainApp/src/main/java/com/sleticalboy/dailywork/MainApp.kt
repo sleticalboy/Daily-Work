@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
 import com.sleticalboy.dailywork.components.GlobalReceiver
+import com.sleticalboy.util.NotificationHelper
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 
@@ -37,6 +38,7 @@ class MainApp : Application() {
         }
         Log.d("MainApp", "adapt android O")
         registerReceivers()
+        NotificationHelper.createAllChannels(this)
     }
 
     private fun registerReceivers() {
