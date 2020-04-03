@@ -42,6 +42,8 @@
     <string name="forbid_using_camera">Forbid Using Camera</string>
     <string name="reset_password">Reset Password</string>
     <string name="encrypt_storage">Encrypt Storage</string>
+    <string name="disable_camera">Disable Camera</string>
+    <string name="enable_camera">Enable Camera</string>
     <!--accounts-->
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>

@@ -100,7 +100,15 @@ public final class DevicesManager {
             Toast.makeText(mContext, R.string.active_device_admin, Toast.LENGTH_SHORT).show();
             return;
         }
-        mMgr.setCameraDisabled(mComponent, true);
+        final boolean disabled = mMgr.getCameraDisabled(mComponent);
+        Log.d("DevicesManager", "old state: " + disabled);
+        final int res = disabled ? R.string.enable_camera : R.string.disable_camera;
+        try {
+            mMgr.setCameraDisabled(mComponent, !disabled);
+            Toast.makeText(mContext, res, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.d("DevicesManager", "forbidCamera() error." + e);
+        }
     }
 
     public void resetPassword() {
