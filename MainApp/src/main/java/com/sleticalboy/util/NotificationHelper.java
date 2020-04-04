@@ -47,7 +47,7 @@ public final class NotificationHelper {
         final NotificationChannel channel = new NotificationChannel(SPECIAL_TAG, SPECIAL_TAG,
                 NotificationManager.IMPORTANCE_DEFAULT);
         channel.enableLights(true);
-        channel.setLightColor(Color.BLUE);
+        channel.setLightColor(Color.RED);
         return channel;
     }
 

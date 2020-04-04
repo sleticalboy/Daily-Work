@@ -48,8 +48,13 @@ public class NotificationsUI extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder.setChannelId(NotificationHelper.SPECIAL_TAG);
         }
+        builder.setDefaults(Notification.DEFAULT_ALL);
+        final Notification not = builder.build();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            not.color = color;
+        }
         ThreadHelper.runOnMain(() -> {
-            mManager.notify(NotificationHelper.SPECIAL_TAG, -1, builder.build());
+            mManager.notify(NotificationHelper.SPECIAL_TAG, -1, not);
         }, delay);
     }
 }
