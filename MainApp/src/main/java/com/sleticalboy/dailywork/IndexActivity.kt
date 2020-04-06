@@ -46,7 +46,9 @@ class IndexActivity : BaseActivity() {
     inner class DataAdapter : RecyclerView.Adapter<ItemHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
-            return ItemHolder(TextView(parent.context))
+            val itemView = TextView(parent.context)
+            itemView.setBackgroundResource(R.drawable.module_item_bg)
+            return ItemHolder(itemView)
         }
 
         override fun getItemCount(): Int = dataSet.size
