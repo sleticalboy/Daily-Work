@@ -65,4 +65,7 @@
     <string name="open_settings">Open Settings</string>
     <string name="layout_bounds">Open Layout Bounds</string>
     <string name="notify_delay_with_light">Notify Delay With Light</string>
+    <!-- bluetooth -->
+    <string name="bt_start_scan">Start Scan</string>
+    <string name="bt_stop_scan">Stop Scan</string>
 </resources>

@@ -7,9 +7,30 @@
 
     <Button
         android:id="@+id/startScan"
+        android:text="@string/bt_start_scan"
+        android:textAllCaps="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/stopScan" />
+
+    <Button
+        android:id="@+id/stopScan"
+        android:text="@string/bt_stop_scan"
+        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/startScan"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/btDevicesRv"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/startScan"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
