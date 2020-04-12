@@ -24,6 +24,7 @@ class IndexActivity : BaseActivity() {
 
     override fun initView() {
         val adapter = DataAdapter()
+        val start = System.currentTimeMillis()
         DataEngine.get().indexModel().moduleSource.observe(this, Observer {
             when (it) {
                 is Result.Loading -> {
@@ -37,6 +38,8 @@ class IndexActivity : BaseActivity() {
                     dataSet.clear()
                     dataSet.addAll((it as Result.Success).data)
                     adapter.notifyDataSetChanged()
+                    val cost = System.currentTimeMillis() - start
+                    Log.d(TAG, "show UI cost: $cost ms")
                 }
             }
         })
