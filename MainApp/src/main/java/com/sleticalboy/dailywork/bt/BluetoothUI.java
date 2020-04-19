@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
+import com.sleticalboy.util.ThreadHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,11 +58,17 @@ public class BluetoothUI extends BaseActivity {
                     @Override
                     public void onScanResult(final int callbackType, final ScanResult result) {
                         Log.d(TAG, "onScanResult() called with: callbackType = [" + callbackType + "], result = [" + result + "]");
+                        ThreadHelper.runOnMain(() -> onDeviceScanned(result));
                     }
 
                     @Override
                     public void onBatchScanResults(final List<ScanResult> results) {
                         Log.d(TAG, "onBatchScanResults() called with: results = [" + results + "]");
+                        if (results != null) {
+                            for (final ScanResult result : results) {
+                                ThreadHelper.runOnMain(() -> onDeviceScanned(result));
+                            }
+                        }
                     }
 
                     @Override
@@ -81,6 +88,15 @@ public class BluetoothUI extends BaseActivity {
         }
     }
 
+    private void onDeviceScanned(final ScanResult result) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP
+                || result == null || result.getDevice() == null) {
+            return;
+        }
+        final BluetoothDevice device = result.getDevice();
+        Log.d(TAG, "onDeviceScanned() called with: result = [" + result + "]");
+    }
+
     private void stopBtScan() {
         final BluetoothManager manager = ((BluetoothManager) getSystemService(BLUETOOTH_SERVICE));
         if (!manager.getAdapter().isEnabled()) {
@@ -96,7 +112,8 @@ public class BluetoothUI extends BaseActivity {
 
     private final class DevicesAdapter extends RecyclerView.Adapter<DeviceHolder> {
 
-        private List<BluetoothDevice> mDataSet = new ArrayList<>();
+        private final List<BluetoothDevice> mDataSet = new ArrayList<>();
+        private final List<BluetoothDevice> mDataCopy = new ArrayList<>();
 
         @NonNull
         @Override
@@ -114,8 +131,10 @@ public class BluetoothUI extends BaseActivity {
             return mDataSet.size();
         }
 
-        public List<BluetoothDevice> getAll() {
-            return new ArrayList<>(mDataSet);
+        public List<BluetoothDevice> getData() {
+            mDataCopy.clear();
+            mDataCopy.addAll(mDataSet);
+            return mDataCopy;
         }
     }
 
