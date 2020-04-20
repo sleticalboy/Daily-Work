@@ -1,5 +1,6 @@
 package com.sleticalboy.dailywork.bt;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -9,6 +10,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -95,6 +97,7 @@ public class BluetoothUI extends BaseActivity {
         }
         final BluetoothDevice device = result.getDevice();
         Log.d(TAG, "onDeviceScanned() called with: result = [" + result + "]");
+        mAdapter.addDevice(device);
     }
 
     private void stopBtScan() {
@@ -118,12 +121,15 @@ public class BluetoothUI extends BaseActivity {
         @NonNull
         @Override
         public DeviceHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
-            return null;
+            return new DeviceHolder(getLayoutInflater().inflate(
+                    R.layout.item_recycler, parent, false));
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         public void onBindViewHolder(@NonNull final DeviceHolder holder, final int position) {
-
+            final BluetoothDevice device = mDataSet.get(position);
+            holder.mBt.setText(device.getName() + " " + device.getAddress());
         }
 
         @Override
@@ -136,12 +142,25 @@ public class BluetoothUI extends BaseActivity {
             mDataCopy.addAll(mDataSet);
             return mDataCopy;
         }
+
+        public void addDevice(BluetoothDevice device) {
+            final int index = mDataSet.indexOf(device);
+            if (index < 0) {
+                mDataSet.add(device);
+            } else {
+                mDataSet.set(index, device);
+            }
+            notifyItemChanged(index < 0 ? mDataSet.size() - 1 : index);
+        }
     }
 
     private static final class DeviceHolder extends RecyclerView.ViewHolder {
 
+        final TextView mBt;
+
         public DeviceHolder(@NonNull final View itemView) {
             super(itemView);
+            mBt = ((TextView) itemView);
         }
     }
 }
