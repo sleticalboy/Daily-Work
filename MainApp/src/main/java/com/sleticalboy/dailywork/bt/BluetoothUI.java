@@ -1,5 +1,6 @@
 package com.sleticalboy.dailywork.bt;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -20,6 +21,8 @@ import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
 import com.sleticalboy.util.ThreadHelper;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,21 @@ public class BluetoothUI extends BaseActivity {
     @Override
     protected int layoutResId() {
         return R.layout.activity_bluetooth;
+    }
+
+    @NotNull
+    @Override
+    protected String[] requiredPermissions() {
+        return new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == getRequestCode()) {
+            //
+        }
     }
 
     @Override
