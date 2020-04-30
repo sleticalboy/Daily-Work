@@ -35,7 +35,14 @@ public final class ThreadHelper {
     }
 
     private static void exec(boolean main, Runnable task, long delay) {
+        if (task == null) {
+            return;
+        }
         if (main) {
+            if (Looper.getMainLooper() == Looper.myLooper()) {
+                task.run();
+                return;
+            }
             ensureMain();
         } else {
             ensureWorker();

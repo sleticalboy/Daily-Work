@@ -6,8 +6,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.os.Build;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,7 @@ import com.sleticalboy.util.ThreadHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BluetoothUI extends BaseActivity {
@@ -76,13 +80,14 @@ public class BluetoothUI extends BaseActivity {
                 mScanCallback = new ScanCallback() {
                     @Override
                     public void onScanResult(final int callbackType, final ScanResult result) {
-                        Log.d(TAG, "onScanResult() called with: callbackType = [" + callbackType + "], result = [" + result + "]");
+                        // Log.d(TAG, "onScanResult() called with: callbackType: " + callbackType
+                        //         + " " + Thread.currentThread());
                         ThreadHelper.runOnMain(() -> onDeviceScanned(result));
                     }
 
                     @Override
                     public void onBatchScanResults(final List<ScanResult> results) {
-                        Log.d(TAG, "onBatchScanResults() called with: results = [" + results + "]");
+                        // Log.d(TAG, "onBatchScanResults() thread: " + Thread.currentThread());
                         if (results != null) {
                             for (final ScanResult result : results) {
                                 ThreadHelper.runOnMain(() -> onDeviceScanned(result));
@@ -96,11 +101,17 @@ public class BluetoothUI extends BaseActivity {
                     }
                 };
             }
-            manager.getAdapter().getBluetoothLeScanner().startScan(mScanCallback);
+            final ScanFilter filter = new ScanFilter.Builder().build();
+            final ScanSettings settings = new ScanSettings.Builder()
+                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                    .build();
+            manager.getAdapter().getBluetoothLeScanner()
+                    .startScan(Collections.singletonList(filter), settings, mScanCallback);
         } else {
             if (mLeScanCallback == null) {
                 mLeScanCallback = (device, rssi, scanRecord) -> {
-                    Log.d(TAG, "onLeScan() called with: device = [" + device + "], rssi = [" + rssi + "], scanRecord = [" + scanRecord + "]");
+                    Log.d(TAG, "onLeScan()  rssi: " + rssi + ", thread: " + Thread.currentThread());
+                    mAdapter.addDevice(device);
                 };
             }
             manager.getAdapter().startLeScan(mLeScanCallback);
@@ -112,9 +123,7 @@ public class BluetoothUI extends BaseActivity {
                 || result == null || result.getDevice() == null) {
             return;
         }
-        final BluetoothDevice device = result.getDevice();
-        Log.d(TAG, "onDeviceScanned() called with: result = [" + result + "]");
-        mAdapter.addDevice(device);
+        mAdapter.addDevice(result.getDevice());
     }
 
     private void stopBtScan() {
@@ -146,7 +155,8 @@ public class BluetoothUI extends BaseActivity {
         @Override
         public void onBindViewHolder(@NonNull final DeviceHolder holder, final int position) {
             final BluetoothDevice device = mDataSet.get(position);
-            holder.mBt.setText(device.getName() + " " + device.getAddress());
+            holder.mBt.setText(Html.fromHtml("<font color='red'>" + device.getName()
+                    + "</font>  <font color='blue'>" + device.getAddress()));
         }
 
         @Override
@@ -167,6 +177,7 @@ public class BluetoothUI extends BaseActivity {
             } else {
                 mDataSet.set(index, device);
             }
+            Log.d(TAG, "onDeviceScanned() index: " + index + ", device: " + device);
             notifyItemChanged(index < 0 ? mDataSet.size() - 1 : index);
         }
     }
@@ -178,6 +189,7 @@ public class BluetoothUI extends BaseActivity {
         public DeviceHolder(@NonNull final View itemView) {
             super(itemView);
             mBt = ((TextView) itemView);
+            mBt.setTextSize(36);
         }
     }
 }
