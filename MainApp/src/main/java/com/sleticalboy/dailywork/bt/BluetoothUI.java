@@ -123,6 +123,13 @@ public class BluetoothUI extends BaseActivity {
                 || result == null || result.getDevice() == null) {
             return;
         }
+        final boolean connectable;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            connectable = result.isConnectable();
+        } else {
+            connectable = true;
+        }
+        Log.d(TAG, "onDeviceScanned() " + result.getDevice() + ", connectable = [" + connectable);
         mAdapter.addDevice(result.getDevice());
     }
 
