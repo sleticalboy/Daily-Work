@@ -1,7 +1,6 @@
 package com.sleticalboy.dailywork.bt;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,7 +35,6 @@ public class BluetoothUI extends BaseActivity {
     private static final String TAG = "BluetoothUI";
     private BluetoothAdapter.LeScanCallback mLeScanCallback;
     private ScanCallback mScanCallback;
-    private RecyclerView mDevicesRv;
     private DevicesAdapter mAdapter;
 
     @Override
@@ -63,7 +62,7 @@ public class BluetoothUI extends BaseActivity {
         findViewById(R.id.startScan).setOnClickListener(v -> startBtScan());
         findViewById(R.id.stopScan).setOnClickListener(v -> stopBtScan());
 
-        mDevicesRv = findViewById(R.id.btDevicesRv);
+        RecyclerView mDevicesRv = findViewById(R.id.btDevicesRv);
         mDevicesRv.setLayoutManager(new LinearLayoutManager(this));
         mDevicesRv.setAdapter(mAdapter = new DevicesAdapter());
     }
@@ -111,7 +110,7 @@ public class BluetoothUI extends BaseActivity {
             if (mLeScanCallback == null) {
                 mLeScanCallback = (device, rssi, scanRecord) -> {
                     Log.d(TAG, "onLeScan()  rssi: " + rssi + ", thread: " + Thread.currentThread());
-                    mAdapter.addDevice(device);
+//                    mAdapter.addDevice(device);
                 };
             }
             manager.getAdapter().startLeScan(mLeScanCallback);
@@ -130,7 +129,7 @@ public class BluetoothUI extends BaseActivity {
             connectable = true;
         }
         Log.d(TAG, "onDeviceScanned() " + result.getDevice() + ", connectable = [" + connectable);
-        mAdapter.addDevice(result.getDevice());
+        mAdapter.addDevice(result);
     }
 
     private void stopBtScan() {
@@ -148,22 +147,32 @@ public class BluetoothUI extends BaseActivity {
 
     private final class DevicesAdapter extends RecyclerView.Adapter<DeviceHolder> {
 
-        private final List<BluetoothDevice> mDataSet = new ArrayList<>();
-        private final List<BluetoothDevice> mDataCopy = new ArrayList<>();
+        private final List<ScanResult> mDataSet = new ArrayList<>();
+        private final List<ScanResult> mDataCopy = new ArrayList<>();
 
         @NonNull
         @Override
         public DeviceHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
             return new DeviceHolder(getLayoutInflater().inflate(
-                    R.layout.item_recycler, parent, false));
+                    R.layout.item_ble_recycler, parent, false));
         }
 
-        @SuppressLint("SetTextI18n")
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onBindViewHolder(@NonNull final DeviceHolder holder, final int position) {
-            final BluetoothDevice device = mDataSet.get(position);
-            holder.mBt.setText(Html.fromHtml("<font color='red'>" + device.getName()
+            final ScanResult result = mDataSet.get(position);
+            final BluetoothDevice device = result.getDevice();
+            holder.tvName.setText(Html.fromHtml("<font color='red'>" + device.getName()
                     + "</font>  <font color='blue'>" + device.getAddress()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                holder.btnConnect.setEnabled(result.isConnectable());
+            } else {
+                holder.btnConnect.setEnabled(true);
+            }
+            holder.btnConnect.setOnClickListener(v -> {
+                // connect to device
+                Log.d(TAG, "connect to " + device);
+            });
         }
 
         @Override
@@ -171,13 +180,13 @@ public class BluetoothUI extends BaseActivity {
             return mDataSet.size();
         }
 
-        public List<BluetoothDevice> getData() {
+        public List<ScanResult> getData() {
             mDataCopy.clear();
             mDataCopy.addAll(mDataSet);
             return mDataCopy;
         }
 
-        public void addDevice(BluetoothDevice device) {
+        public void addDevice(ScanResult device) {
             final int index = mDataSet.indexOf(device);
             if (index < 0) {
                 mDataSet.add(device);
@@ -191,12 +200,13 @@ public class BluetoothUI extends BaseActivity {
 
     private static final class DeviceHolder extends RecyclerView.ViewHolder {
 
-        final TextView mBt;
+        final TextView tvName;
+        final TextView btnConnect;
 
         public DeviceHolder(@NonNull final View itemView) {
             super(itemView);
-            mBt = ((TextView) itemView);
-            mBt.setTextSize(36);
+            tvName = itemView.findViewById(R.id.tv_ble_name);
+            btnConnect = itemView.findViewById(R.id.btn_connect);
         }
     }
 }
