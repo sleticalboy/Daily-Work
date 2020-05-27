@@ -18,11 +18,13 @@ class ServicePractise : BaseActivity() {
     private val connection = object : ServiceConnection {
 
         override fun onServiceDisconnected(name: ComponentName?) {
+            tvBindProgress.text = "Not bonded..."
             mService = null
         }
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            mService = (service as LocalService.LocalBinder).service;
+            tvBindProgress.text = "Bonded..."
+            mService = (service as LocalService.LocalBinder).service
         }
     }
 
@@ -34,6 +36,16 @@ class ServicePractise : BaseActivity() {
         }
         btnStop.setOnClickListener {
             stopService(getService())
+        }
+
+        tvBindProgress.text = "Idle..."
+        btnBind.setOnClickListener {
+            tvBindProgress.text = "Binding..."
+            doBindService()
+        }
+        btnUnbind.setOnClickListener {
+            tvBindProgress.text = "Unbinding..."
+            doUnbindService()
         }
     }
 

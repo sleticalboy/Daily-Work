@@ -1,47 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/btnStart"
-        android:textSize="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="startService" />
-
-    <TextView
-        android:id="@+id/btnStartFg"
+        android:text="startService"
         android:textSize="24dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="startFgService" />
-
-    <TextView
-        android:id="@+id/btnBind"
-        android:textSize="24dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="bindService" />
-
-
-    <TextView
-        android:id="@+id/btnBindStart"
-        android:textSize="24dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="startBindService" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btnStop"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/btnStop"
-        android:textSize="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="stopService" />
-</LinearLayout>
+        android:text="stopService"
+        android:textSize="24dp"
+        app:layout_constraintLeft_toRightOf="@+id/btnStart"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvBindProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="bind progress..."
+        android:textSize="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnStart" />
+
+    <TextView
+        android:id="@+id/btnBind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="bind"
+        android:textSize="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btnUnbind"
+        app:layout_constraintTop_toBottomOf="@+id/tvBindProgress" />
+
+
+    <TextView
+        android:id="@+id/btnUnbind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="unbind"
+        android:textSize="24dp"
+        app:layout_constraintLeft_toRightOf="@+id/btnBind"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBindProgress" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
