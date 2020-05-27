@@ -1,9 +1,11 @@
-package com.sleticalboy.dailywork.components;
+package com.sleticalboy.dailywork.components.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import com.sleticalboy.dailywork.components.service.MyService;
 
 public class GlobalReceiver extends BroadcastReceiver {
 

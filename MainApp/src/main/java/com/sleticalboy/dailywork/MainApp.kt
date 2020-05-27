@@ -6,7 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
-import com.sleticalboy.dailywork.components.GlobalReceiver
+import com.sleticalboy.dailywork.components.receiver.GlobalReceiver
 import com.sleticalboy.util.NotificationHelper
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher

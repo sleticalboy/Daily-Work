@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.components;
+package com.sleticalboy.dailywork.components.service;
 
 import android.app.Service;
 import android.content.Intent;

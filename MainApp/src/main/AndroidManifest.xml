@@ -105,7 +105,7 @@
                 android:name="android.app.device_admin"
                 android:resource="@xml/devices_admin" />
         </receiver>
-        <receiver android:name=".components.GlobalReceiver">
+        <receiver android:name=".components.receiver.GlobalReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.SCREEN_ON" />
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -144,7 +144,7 @@
                 android:resource="@xml/sync_adapter_routines" />
         </service>
         <!-- service practice -->
-        <service android:name=".components.MyService" />
+        <service android:name=".components.service.MyService" />
     </application>
 
 </manifest>
