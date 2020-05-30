@@ -145,6 +145,7 @@
         </service>
         <!-- service practice -->
         <service android:name=".components.service.MyService" />
+        <service android:name=".components.service.LocalService" />
     </application>
 
 </manifest>

@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/btnStart"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="startService"
@@ -19,7 +19,7 @@
 
     <TextView
         android:id="@+id/btnStop"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="stopService"
@@ -40,7 +40,7 @@
 
     <TextView
         android:id="@+id/btnBind"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="bind"
@@ -52,7 +52,7 @@
 
     <TextView
         android:id="@+id/btnUnbind"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="unbind"
