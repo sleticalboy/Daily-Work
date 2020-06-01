@@ -17,12 +17,12 @@ public class MyService extends Service {
         super.onCreate();
         Log.d(TAG, "onCreate() called");
         new Thread(() -> {
-            while (mCount < 120) {
-                Log.d(TAG, "mCount++:" + mCount++);
+            while (mCount < 30) {
+                Log.d(TAG, "count: " + mCount++);
                 try {
                     Thread.sleep(1000L);
                 } catch (InterruptedException e) {
-                    Log.e(TAG, "onStartCommand: error", e);
+                    Log.e(TAG, "thread loop error", e);
                 }
             }
         }).start();

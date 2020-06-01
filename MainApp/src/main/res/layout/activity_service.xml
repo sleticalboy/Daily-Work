@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="startService"
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btnStop"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="stopService"
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintLeft_toRightOf="@+id/btnStart"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -33,8 +33,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="bind progress..."
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/serviceFoo"
+        app:layout_constraintTop_toBottomOf="@+id/btnStart" />
+
+    <TextView
+        android:id="@+id/serviceFoo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="service method"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toRightOf="@+id/tvBindProgress"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnStart" />
 
@@ -44,7 +54,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="bind"
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btnUnbind"
         app:layout_constraintTop_toBottomOf="@+id/tvBindProgress" />
@@ -56,7 +66,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="unbind"
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintLeft_toRightOf="@+id/btnBind"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvBindProgress" />

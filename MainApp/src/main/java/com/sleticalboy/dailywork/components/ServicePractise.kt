@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.activity_service.*
 
 class ServicePractise : BaseActivity() {
 
-    private var service: Intent? = null
     private var mService: LocalService? = null
     private val connection = object : ServiceConnection {
 
@@ -23,7 +22,7 @@ class ServicePractise : BaseActivity() {
         }
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            tvBindProgress.text = "Bonded"
+            tvBindProgress.text = "Connected"
             mService = (service as LocalService.LocalBinder).service
         }
     }
@@ -32,33 +31,29 @@ class ServicePractise : BaseActivity() {
 
     override fun initView() {
         btnStart.setOnClickListener {
-            startService(getService())
+            startService(Intent(this, MyService::class.java))
         }
         btnStop.setOnClickListener {
-            stopService(getService())
+            stopService(Intent(this, MyService::class.java))
         }
 
         tvBindProgress.text = "Idle"
         btnBind.setOnClickListener {
-            tvBindProgress.text = "Binding..."
+            tvBindProgress.text = "Connecting..."
             doBindService()
         }
         btnUnbind.setOnClickListener {
-            tvBindProgress.text = "Unbinding..."
+            tvBindProgress.text = "Disconnecting..."
             doUnbindService()
         }
-    }
-
-    private fun getService(): Intent? {
-        if (service == null) {
-            service = Intent(applicationContext, MyService::class.java)
+        serviceFoo.setOnClickListener {
+            mService?.foo { tvBindProgress.text = "Unbind called" }
         }
-        return service
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        stopService(getService())
+        stopService(Intent(this, MyService::class.java))
     }
 
     private fun doBindService() {
