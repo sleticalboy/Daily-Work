@@ -13,7 +13,6 @@ public class LocalService extends Service {
     private static final String TAG = "LocalService";
 
     private LocalBinder mBinder;
-    private OnUnbindCallback mUnbindCallback;
 
     @Override
     public void onCreate() {
@@ -40,9 +39,6 @@ public class LocalService extends Service {
     @Override
     public boolean onUnbind(Intent intent) {
         Log.d(TAG, "onUnbind() called with intent: " + intent);
-        if (mUnbindCallback != null) {
-            mUnbindCallback.onServiceUnbind();
-        }
         return super.onUnbind(intent);
     }
 
@@ -50,11 +46,6 @@ public class LocalService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
-    }
-
-    public void foo(OnUnbindCallback callback) {
-        Log.d(TAG, "foo() called");
-        mUnbindCallback = callback;
     }
 
     public static class LocalBinder extends Binder {

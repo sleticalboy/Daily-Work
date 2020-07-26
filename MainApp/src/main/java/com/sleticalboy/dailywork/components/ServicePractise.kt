@@ -47,7 +47,6 @@ class ServicePractise : BaseActivity() {
             doUnbindService()
         }
         serviceFoo.setOnClickListener {
-            mService?.foo { tvBindProgress.text = "Unbind called" }
         }
     }
 
