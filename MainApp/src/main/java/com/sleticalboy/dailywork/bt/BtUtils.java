@@ -1,6 +1,13 @@
 package com.sleticalboy.dailywork.bt;
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
+import android.os.Build;
+
+import androidx.annotation.NonNull;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Created on 20-5-4.
@@ -114,6 +121,49 @@ public final class BtUtils {
                 return "257(Too many open connections)";
             default:
                 return "Unknown status " + status;
+        }
+    }
+
+    public static boolean createBond(@NonNull BluetoothDevice bt) {
+        if (bt.getBondState() == BluetoothDevice.BOND_NONE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                final Object ret = invoke(bt, BluetoothDevice.class, "createBond", BluetoothDevice.TRANSPORT_LE);
+                return ret instanceof Boolean && ((Boolean) ret);
+            } else {
+                return bt.createBond();
+            }
+        }
+        return false;
+    }
+
+    public static boolean removeBond(@NonNull BluetoothDevice bt) {
+        final int state = bt.getBondState();
+        if (state == BluetoothDevice.BOND_BONDING) {
+            invoke(bt, BluetoothDevice.class, "cancelBondProcess");
+        } else if (state == BluetoothDevice.BOND_BONDED) {
+            final Object ret = invoke(bt, BluetoothDevice.class, "removeBond");
+            return ret instanceof Boolean && (Boolean) ret;
+        }
+        return false;
+    }
+
+    public static Object invoke(Object obj, Class<?> clazz, String method, Object... args) {
+        try {
+            final Class<?>[] parameterTypes;
+            if (args != null) {
+                parameterTypes = new Class[args == null ? 0 : args.length];
+                for (int i = 0; i < args.length; i++) {
+                    parameterTypes[i] = args[i].getClass();
+                }
+            } else {
+                parameterTypes = null;
+            }
+            final Method m = clazz.getDeclaredMethod(method, parameterTypes);
+            m.setAccessible(true);
+            return m.invoke(obj, args);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
