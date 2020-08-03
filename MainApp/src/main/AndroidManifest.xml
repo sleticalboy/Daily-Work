@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sleticalboy.dailywork">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -85,13 +86,18 @@
         <activity android:name=".others.NotificationsUI" />
 
         <provider
-            android:label="@string/contacts_provider_label"
+            android:name=".accounts.ContactsProvider"
             android:authorities="@string/account_authority"
-            android:name=".accounts.ContactsProvider" />
+            android:label="@string/contacts_provider_label" />
         <provider
-            android:label="@string/routines_provider_label"
+            android:name=".accounts.RoutinesProvider"
             android:authorities="@string/routine_authority"
-            android:name=".accounts.RoutinesProvider" />
+            android:label="@string/routines_provider_label" />
+        <provider
+            android:name=".components.provider.StoreProvider"
+            android:authorities="com.sleticalboy.dailywork.store"
+            android:enabled="true"
+            android:exported="false" />
 
         <receiver
             android:name=".devices.DevicesReceiver"
