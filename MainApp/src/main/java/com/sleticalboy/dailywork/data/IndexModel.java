@@ -7,6 +7,7 @@ import com.sleticalboy.dailywork.anims.TransitionUI;
 import com.sleticalboy.dailywork.bean.ModuleItem;
 import com.sleticalboy.dailywork.bt.BluetoothUI;
 import com.sleticalboy.dailywork.camera.LiveCameraActivity;
+import com.sleticalboy.dailywork.components.ProviderPractise;
 import com.sleticalboy.dailywork.components.ServicePractise;
 import com.sleticalboy.dailywork.csv.AlphaActivity;
 import com.sleticalboy.dailywork.csv.AutoSwitchUI;
@@ -56,6 +57,7 @@ public class IndexModel {
                 new ModuleItem("设备管理", DeviceAdminUI.class),
                 // components
                 new ModuleItem("Service", ServicePractise.class),
+                new ModuleItem("ContentProvider", ProviderPractise.class),
                 // animations
                 new ModuleItem("转场动画", TransitionUI.class),
                 // custom View & // special effects of View

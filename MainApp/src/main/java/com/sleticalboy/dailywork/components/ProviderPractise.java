@@ -1,17 +1,16 @@
-package com.sleticalboy.example.remoteclient;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.sleticalboy.dailywork.components;
 
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.sleticalboy.dailywork.R;
+import com.sleticalboy.dailywork.base.BaseActivity;
+
+public class ProviderPractise extends BaseActivity {
 
     private static final String TAG = "MainActivity";
     private static final String BASE_URI = "com.sleticalboy.dailywork.store";
@@ -19,14 +18,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView mResult;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        initView();
+    protected int layoutResId() {
+        return R.layout.activity_provider;
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         mResult = findViewById(R.id.queryResult);
         final EditText table = findViewById(R.id.etTable);
 
