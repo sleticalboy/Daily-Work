@@ -1,8 +1,6 @@
 package com.sleticalboy.dailywork.bt;
 
 import android.Manifest;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.ScanResult;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -16,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,26 +24,22 @@ import com.sleticalboy.dailywork.base.BaseActivity;
 import com.sleticalboy.dailywork.bt.core.BleScanner;
 import com.sleticalboy.dailywork.bt.core.BleService;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class BluetoothUI extends BaseActivity {
 
-    private static final String TAG = "BluetoothUI";
     private BleService.LeBinder mService;
     private final ServiceConnection mConn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d(TAG, "onServiceConnected() name: " + name + ", service: " + service);
+            Log.d(getTag(), "onServiceConnected() name: " + name + ", service: " + service);
             mService = ((BleService.LeBinder) service);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "onServiceDisconnected() name:" + name);
+            Log.d(getTag(), "onServiceDisconnected() name:" + name);
             mService = null;
         }
     };
@@ -63,12 +58,18 @@ public class BluetoothUI extends BaseActivity {
         unbindService(mConn);
     }
 
+    @NonNull
+    @Override
+    protected String getTag() {
+        return "BluetoothUI";
+    }
+
     @Override
     protected int layoutResId() {
         return R.layout.activity_bluetooth;
     }
 
-    @NotNull
+    @NonNull
     @Override
     protected String[] requiredPermissions() {
         return new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
@@ -101,7 +102,7 @@ public class BluetoothUI extends BaseActivity {
         request.mCallback = new BleScanner.Callback() {
             @Override
             public void onScanResult(BleScanner.Result result) {
-                Log.d(TAG, "onDeviceScanned() " + result.mDevice
+                Log.d(getTag(), "onDeviceScanned() " + result.mDevice
                         + ", connectable: " + result.mConnectable + ", rssi: " + result.mRssi);
                 mAdapter.addDevice(result);
             }
@@ -141,7 +142,7 @@ public class BluetoothUI extends BaseActivity {
             holder.btnConnect.setEnabled(result.mConnectable);
             holder.btnConnect.setOnClickListener(v -> {
                 // connect to device
-                Log.d(TAG, "connect to " + result.mDevice);
+                Log.d(getTag(), "connect to " + result.mDevice);
             });
         }
 
@@ -163,7 +164,7 @@ public class BluetoothUI extends BaseActivity {
             } else {
                 mDataSet.set(index, result);
             }
-            Log.d(TAG, "onDeviceScanned() index: " + index + ", device: " + result);
+            Log.d(getTag(), "onDeviceScanned() index: " + index + ", device: " + result);
             notifyItemChanged(index < 0 ? mDataSet.size() - 1 : index);
         }
     }

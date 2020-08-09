@@ -14,8 +14,6 @@ import com.sleticalboy.dailywork.data.DataEngine
 import com.sleticalboy.dailywork.data.Result
 import kotlinx.android.synthetic.main.activity_index.*
 
-const val TAG = "IndexActivity"
-
 class IndexActivity : BaseActivity() {
 
     val dataSet = arrayListOf<ModuleItem>()
@@ -28,23 +26,25 @@ class IndexActivity : BaseActivity() {
         DataEngine.get().indexModel().moduleSource.observe(this, Observer {
             when (it) {
                 is Result.Loading -> {
-                    Log.d(TAG, "initView() loading data: $it")
+                    Log.d(getTag(), "initView() loading data: $it")
                 }
                 is Result.Error -> {
-                    Log.d(TAG, "initView() load data error: $it")
+                    Log.d(getTag(), "initView() load data error: $it")
                 }
                 else -> {
-                    Log.d(TAG, "initView() load data success: $it")
+                    Log.d(getTag(), "initView() load data success: $it")
                     dataSet.clear()
                     dataSet.addAll((it as Result.Success).data)
                     adapter.notifyDataSetChanged()
                     val cost = System.currentTimeMillis() - start
-                    Log.d(TAG, "show UI cost: $cost ms")
+                    Log.d(getTag(), "show UI cost: $cost ms")
                 }
             }
         })
         recyclerView.adapter = adapter
     }
+
+    override fun getTag(): String = "IndexActivity"
 
     inner class DataAdapter : RecyclerView.Adapter<ItemHolder>() {
 
@@ -60,7 +60,7 @@ class IndexActivity : BaseActivity() {
             val item = dataSet[position]
             holder.textView.text = item.title
             holder.textView.setOnClickListener {
-                Log.d(TAG, "item click with: ${item.clazz}")
+                Log.d(getTag(), "item click with: ${item.clazz}")
                 startActivity(Intent(this@IndexActivity, item.clazz))
             }
             holder.textView.setPadding(32, 16, 32, 16)

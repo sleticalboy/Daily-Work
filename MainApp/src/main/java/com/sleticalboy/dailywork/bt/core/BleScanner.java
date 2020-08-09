@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 public class BleScanner {
 
@@ -41,54 +42,63 @@ public class BleScanner {
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            final ScanCallback rawCallback = new ScanCallback() {
-                @Override
-                public void onScanResult(int callbackType, ScanResult result) {
-                    Log.d(TAG, "onScanResult() called with: callbackType = [" + callbackType + "], result = [" + result + "]");
-                    final ScanRecord record = result.getScanRecord();
-                    if (record != null && request.mCallback.filter(record.getBytes())) {
-                        boolean connectable = true;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            connectable = result.isConnectable();
-                        }
-                        final Result rst = Result.obtain();
-                        rst.mDevice = result.getDevice();
-                        rst.mRssi = result.getRssi();
-                        rst.mConnectable = connectable;
-                        request.mCallback.onScanResult(rst);
-                        rst.recycle();
-                    }
-                }
-
-                @Override
-                public void onScanFailed(int errorCode) {
-                    request.mCallback.onScanFailed(errorCode);
-                }
-            };
-//            final ScanFilter filter = new ScanFilter.Builder().build();
-//            final ScanSettings settings = new ScanSettings.Builder()
-//                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-//                    .build();
-            mAdapter.getBluetoothLeScanner().startScan(rawCallback);
-            mRawCallback = rawCallback;
+            startAfterLL(request);
         } else {
-            final BluetoothAdapter.LeScanCallback rawCallback = (device, rssi, scanRecord) -> {
-                if (request.mCallback.filter(scanRecord)) {
-                    final Result rst = Result.obtain();
-                    rst.mDevice = device;
-                    rst.mRssi = rssi;
-                    rst.mConnectable = true;
-                    request.mCallback.onScanResult(rst);
-                    rst.recycle();
-                }
-            };
-            mAdapter.startLeScan(rawCallback);
-            mRawCallback = rawCallback;
+            startBeforeLL(request);
         }
         mStarted = true;
         if (request.mDuration > 0) {
             mHandler.postDelayed(this::stopScan, request.mDuration);
         }
+    }
+
+    private void startBeforeLL(Request request) {
+        final BluetoothAdapter.LeScanCallback rawCallback = (device, rssi, scanRecord) -> {
+            if (request.mCallback.filter(scanRecord)) {
+                final Result rst = Result.obtain();
+                rst.mDevice = device;
+                rst.mRssi = rssi;
+                rst.mConnectable = true;
+                request.mCallback.onScanResult(rst);
+                rst.recycle();
+            }
+        };
+        mAdapter.startLeScan(rawCallback);
+        mRawCallback = rawCallback;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void startAfterLL(Request request) {
+        final ScanCallback rawCallback = new ScanCallback() {
+            @Override
+            public void onScanResult(int callbackType, ScanResult result) {
+                Log.d(TAG, "onScanResult() callbackType: " + callbackType + ", result: " + result);
+                final ScanRecord record = result.getScanRecord();
+                if (record != null && request.mCallback.filter(record.getBytes())) {
+                    boolean connectable = true;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        connectable = result.isConnectable();
+                    }
+                    final Result rst = Result.obtain();
+                    rst.mDevice = result.getDevice();
+                    rst.mRssi = result.getRssi();
+                    rst.mConnectable = connectable;
+                    request.mCallback.onScanResult(rst);
+                    rst.recycle();
+                }
+            }
+
+            @Override
+            public void onScanFailed(int errorCode) {
+                request.mCallback.onScanFailed(errorCode);
+            }
+        };
+//            final ScanFilter filter = new ScanFilter.Builder().build();
+//            final ScanSettings settings = new ScanSettings.Builder()
+//                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+//                    .build();
+        mAdapter.getBluetoothLeScanner().startScan(rawCallback);
+        mRawCallback = rawCallback;
     }
 
     public void stopScan() {

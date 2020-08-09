@@ -14,7 +14,6 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 abstract class BaseActivity : AppCompatActivity() {
 
     protected val requestCode = 0x12;
-
     protected var rxPerm: RxPermissions? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,5 +47,7 @@ abstract class BaseActivity : AppCompatActivity() {
     protected open fun initData() {}
 
     protected open fun prepareWork(savedInstanceState: Bundle?) {}
+
+    protected open fun getTag(): String = "BaseActivity"
 
 }

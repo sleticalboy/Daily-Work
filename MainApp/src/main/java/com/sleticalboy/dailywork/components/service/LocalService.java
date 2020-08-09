@@ -60,9 +60,4 @@ public class LocalService extends Service {
             return mService;
         }
     }
-
-    public interface OnUnbindCallback {
-
-        void onServiceUnbind();
-    }
 }

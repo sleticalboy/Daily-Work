@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
+import android.util.Log
 import com.sleticalboy.dailywork.R
 import com.sleticalboy.dailywork.base.BaseActivity
 import com.sleticalboy.dailywork.components.service.LocalService
-import com.sleticalboy.dailywork.components.service.MyService
 import kotlinx.android.synthetic.main.activity_service.*
 
 class ServicePractise : BaseActivity() {
@@ -31,10 +31,10 @@ class ServicePractise : BaseActivity() {
 
     override fun initView() {
         btnStart.setOnClickListener {
-            startService(Intent(this, MyService::class.java))
+            Log.d(getTag(), "start service")
         }
         btnStop.setOnClickListener {
-            stopService(Intent(this, MyService::class.java))
+            Log.d(getTag(), "stop service")
         }
 
         tvBindProgress.text = "Idle"
@@ -48,11 +48,6 @@ class ServicePractise : BaseActivity() {
         }
         serviceFoo.setOnClickListener {
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopService(Intent(this, MyService::class.java))
     }
 
     private fun doBindService() {
