@@ -44,7 +44,18 @@ public final class BtUtils {
     //     return reason + " " + context.getResources().getString(errorMsg, name);
     // }
 
-    public static String gattStateToString(int state) {
+    public static String bleTypeToString(int type) {
+        if (type == BluetoothDevice.DEVICE_TYPE_DUAL) {
+            return "Dual Mode - BR/EDR/LE(3)";
+        } else if (type == BluetoothDevice.DEVICE_TYPE_LE) {
+            return "Low Energy - LE-only(2)";
+        } else if (type == BluetoothDevice.DEVICE_TYPE_CLASSIC) {
+            return "Classic - BR/EDR devices(1)";
+        }
+        return "Unknown(0)";
+    }
+
+    public static String profileStateToString(int state) {
         if (state == BluetoothProfile.STATE_DISCONNECTED) {
             return "0 DISCONNECTED";
         } else if (state == BluetoothProfile.STATE_CONNECTING) {

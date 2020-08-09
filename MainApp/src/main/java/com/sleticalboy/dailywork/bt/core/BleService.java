@@ -50,12 +50,16 @@ public class BleService extends Service {
             mService = service;
         }
 
-        public void startScan(BleScanner.Callback callback) {
-            mService.mScanner.startScan(callback);
-        }
-
         public Handler getHandler() {
             return mService.mCoreHandler;
+        }
+
+        public void startScan(BleScanner.Request request) {
+            mService.mScanner.startScan(request);
+        }
+
+        public void stopScan() {
+            mService.mScanner.stopScan();
         }
     }
 }
