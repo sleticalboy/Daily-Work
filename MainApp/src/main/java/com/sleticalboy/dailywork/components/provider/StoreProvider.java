@@ -6,6 +6,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.os.storage.StorageManager;
 import android.util.Log;
 
 public class StoreProvider extends ContentProvider {
@@ -40,7 +41,9 @@ public class StoreProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        Log.d(TAG, "onCreate() returned true.");
+        // 此方法会比 Application 的 onCreate() 方法先执行
+        Log.d(TAG, "onCreate() start --->");
+        StoreManager.init(getContext());
         return true;
     }
 
@@ -50,10 +53,19 @@ public class StoreProvider extends ContentProvider {
         final MatrixCursor cursor = new MatrixCursor(projection);
         int value = 0;
         final String table = uri.getLastPathSegment();
+        String sql = "select mac from device_list where mac=? and status";
         if ("cache".equals(table)) {
-            value = 1;
+            sql += "=0";
         } else if ("pair".equals(table)) {
-            value = 1;
+            sql += ">=3";
+        } else {
+            cursor.addRow(new Object[]{value});
+            return cursor;
+        }
+        final Cursor c = StoreManager.get().readableDb().rawQuery(sql, projection);
+        if (c != null) {
+            value = c.getCount() != 0 ? 1 : 0;
+            c.close();
         }
         cursor.addRow(new Object[]{value});
         return cursor;
