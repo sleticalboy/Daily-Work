@@ -23,6 +23,7 @@ public class BleScanner {
     private final BluetoothAdapter mAdapter;
     private volatile boolean mStarted = false;
     private Object mRawCallback;
+    private Request mRequest;
 
     public BleScanner(@SuppressWarnings("usuesd") Context context, Handler handler) {
         mHandler = handler;
@@ -46,6 +47,7 @@ public class BleScanner {
         } else {
             startBeforeLL(request);
         }
+        mRequest = request;
         mStarted = true;
         if (request.mDuration > 0) {
             mHandler.postDelayed(this::stopScan, request.mDuration);
@@ -72,7 +74,7 @@ public class BleScanner {
         final ScanCallback rawCallback = new ScanCallback() {
             @Override
             public void onScanResult(int callbackType, ScanResult result) {
-                Log.d(TAG, "onScanResult() callbackType: " + callbackType + ", result: " + result);
+                // Log.d(TAG, "onScanResult() callbackType: " + callbackType + ", result: " + result);
                 final ScanRecord record = result.getScanRecord();
                 if (record != null && request.mCallback.filter(record.getBytes())) {
                     boolean connectable = true;
@@ -93,10 +95,10 @@ public class BleScanner {
                 request.mCallback.onScanFailed(errorCode);
             }
         };
-//            final ScanFilter filter = new ScanFilter.Builder().build();
-//            final ScanSettings settings = new ScanSettings.Builder()
-//                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-//                    .build();
+        // final ScanFilter filter = new ScanFilter.Builder().build();
+        // final ScanSettings settings = new ScanSettings.Builder()
+        //         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+        //         .build();
         mAdapter.getBluetoothLeScanner().startScan(rawCallback);
         mRawCallback = rawCallback;
     }
@@ -110,6 +112,9 @@ public class BleScanner {
         } else {
             mAdapter.stopLeScan((BluetoothAdapter.LeScanCallback) mRawCallback);
         }
+        mRequest.mCallback = null;
+        mRequest = null;
+        mRawCallback = null;
         mStarted = false;
     }
 
@@ -127,7 +132,6 @@ public class BleScanner {
     }
 
     public static class Request {
-        @NonNull
         public Callback mCallback;
         public long mDuration;
     }

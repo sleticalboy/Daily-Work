@@ -55,6 +55,7 @@ public class BluetoothUI extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopBtScan();
         unbindService(mConn);
     }
 
@@ -102,8 +103,7 @@ public class BluetoothUI extends BaseActivity {
         request.mCallback = new BleScanner.Callback() {
             @Override
             public void onScanResult(BleScanner.Result result) {
-                Log.d(getTag(), "onDeviceScanned() " + result.mDevice
-                        + ", connectable: " + result.mConnectable + ", rssi: " + result.mRssi);
+                // Log.d(getTag(), "onDeviceScanned() " + result);
                 mAdapter.addDevice(result);
             }
 
@@ -143,6 +143,9 @@ public class BluetoothUI extends BaseActivity {
             holder.btnConnect.setOnClickListener(v -> {
                 // connect to device
                 Log.d(getTag(), "connect to " + result.mDevice);
+                if (mService != null) {
+                    mService.connectGatt(result.mDevice);
+                }
             });
         }
 

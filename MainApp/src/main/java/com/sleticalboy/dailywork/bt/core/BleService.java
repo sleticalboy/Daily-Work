@@ -1,15 +1,24 @@
 package com.sleticalboy.dailywork.bt.core;
 
 import android.app.Service;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Message;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class BleService extends Service {
+public class BleService extends Service implements Handler.Callback {
+
+    private static final int MSG_START_SCAN = 0x20;
+    private static final int MSG_STOP_SCAN = 0x22;
+    private static final int MSG_CONNECT_GATT = 0x23;
 
     private LeBinder mBinder;
     private Handler mCoreHandler;
@@ -19,7 +28,7 @@ public class BleService extends Service {
     public void onCreate() {
         final HandlerThread thread = new HandlerThread("BleCoreThread");
         thread.start();
-        mCoreHandler = new Handler(thread.getLooper());
+        mCoreHandler = new Handler(thread.getLooper(), this);
         mScanner = new BleScanner(this, mCoreHandler);
     }
 
@@ -42,6 +51,27 @@ public class BleService extends Service {
         super.onDestroy();
     }
 
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        if (msg.what == MSG_START_SCAN) {
+            mScanner.startScan(((BleScanner.Request) msg.obj));
+        } else if (msg.what == MSG_STOP_SCAN) {
+            mScanner.stopScan();
+        } else if (msg.what == MSG_CONNECT_GATT) {
+            connectGatt(((BluetoothDevice) msg.obj));
+        }
+        return true;
+    }
+
+    private void connectGatt(BluetoothDevice device) {
+        device.connectGatt(this, false, new BluetoothGattCallback() {
+            @Override
+            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                //
+            }
+        });
+    }
+
     public static class LeBinder extends Binder {
 
         private final BleService mService;
@@ -56,10 +86,21 @@ public class BleService extends Service {
 
         public void startScan(BleScanner.Request request) {
             mService.mScanner.startScan(request);
+            final Message msg = Message.obtain();
+            msg.obj = request;
+            msg.what = MSG_START_SCAN;
+            getHandler().sendMessage(msg);
         }
 
         public void stopScan() {
-            mService.mScanner.stopScan();
+            getHandler().sendEmptyMessage(MSG_STOP_SCAN);
+        }
+
+        public void connectGatt(BluetoothDevice device) {
+            final Message msg = Message.obtain();
+            msg.obj = device;
+            msg.what = MSG_CONNECT_GATT;
+            getHandler().sendMessage(msg);
         }
     }
 }
