@@ -67,6 +67,7 @@
     <!-- bluetooth -->
     <string name="bt_start_scan">Start Scan</string>
     <string name="bt_stop_scan">Stop Scan</string>
+    <string name="bt_connect">Connect</string>
     <!-- notification -->
     <string name="notify_with_progress">Notify With Progress</string>
     <string name="notify_delay_with_light">Notify Delay With Light</string>
