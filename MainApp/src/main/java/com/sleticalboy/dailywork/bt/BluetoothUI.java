@@ -1,6 +1,7 @@
 package com.sleticalboy.dailywork.bt;
 
 import android.Manifest;
+import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -21,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
+import com.sleticalboy.dailywork.bt.connection.Connection;
+import com.sleticalboy.dailywork.bt.connection.IConnectCallback;
 import com.sleticalboy.dailywork.bt.core.BleScanner;
 import com.sleticalboy.dailywork.bt.core.BleService;
 
@@ -121,9 +124,26 @@ public class BluetoothUI extends BaseActivity {
         }
     }
 
+    private void doConnectGatt(BleScanner.Result result) {
+        if (mService != null) {
+            mService.connectGatt(result.mDevice, new IConnectCallback() {
+                @Override
+                public void onFailure(Connection connection) {
+                    //
+                }
+
+                @Override
+                public void onSuccess(Connection connection) {
+                    //
+                }
+            });
+        }
+    }
+
     private final class DevicesAdapter extends RecyclerView.Adapter<DeviceHolder> {
 
         private final List<BleScanner.Result> mDataSet = new ArrayList<>();
+
         private final List<BleScanner.Result> mDataCopy = new ArrayList<>();
 
         @NonNull
@@ -143,9 +163,7 @@ public class BluetoothUI extends BaseActivity {
             holder.btnConnect.setOnClickListener(v -> {
                 // connect to device
                 Log.d(getTag(), "connect to " + result.mDevice);
-                if (mService != null) {
-                    mService.connectGatt(result.mDevice);
-                }
+                doConnectGatt(result);
             });
         }
 
@@ -159,7 +177,6 @@ public class BluetoothUI extends BaseActivity {
             mDataCopy.addAll(mDataSet);
             return mDataCopy;
         }
-
         public void addDevice(BleScanner.Result result) {
             final int index = mDataSet.indexOf(result);
             if (index < 0) {
@@ -170,6 +187,7 @@ public class BluetoothUI extends BaseActivity {
             Log.d(getTag(), "onDeviceScanned() index: " + index + ", device: " + result);
             notifyItemChanged(index < 0 ? mDataSet.size() - 1 : index);
         }
+
     }
 
     private static final class DeviceHolder extends RecyclerView.ViewHolder {

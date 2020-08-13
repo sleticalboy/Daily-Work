@@ -1,9 +1,9 @@
 package com.sleticalboy.dailywork.bt.core;
 
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
@@ -14,6 +14,10 @@ import android.os.Message;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.sleticalboy.dailywork.bt.connection.Connection;
+import com.sleticalboy.dailywork.bt.connection.Dispatcher;
+import com.sleticalboy.dailywork.bt.connection.IConnectCallback;
+
 public class BleService extends Service implements Handler.Callback {
 
     private static final int MSG_START_SCAN = 0x20;
@@ -23,6 +27,7 @@ public class BleService extends Service implements Handler.Callback {
     private LeBinder mBinder;
     private Handler mCoreHandler;
     private BleScanner mScanner;
+    private Dispatcher mDispatcher;
 
     @Override
     public void onCreate() {
@@ -30,11 +35,27 @@ public class BleService extends Service implements Handler.Callback {
         thread.start();
         mCoreHandler = new Handler(thread.getLooper(), this);
         mScanner = new BleScanner(this, mCoreHandler);
+        mDispatcher = new Dispatcher(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void foo() {
+        final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        adapter.getProfileProxy(this, new BluetoothProfile.ServiceListener() {
+            @Override
+            public void onServiceConnected(int profile, BluetoothProfile proxy) {
+                mDispatcher.setHidHost(proxy);
+            }
+
+            @Override
+            public void onServiceDisconnected(int profile) {
+                mDispatcher.setHidHost(null);
+            }
+        }, 4/*BluetoothProfile.HID_HOST*/);
     }
 
     @Nullable
@@ -58,18 +79,9 @@ public class BleService extends Service implements Handler.Callback {
         } else if (msg.what == MSG_STOP_SCAN) {
             mScanner.stopScan();
         } else if (msg.what == MSG_CONNECT_GATT) {
-            connectGatt(((BluetoothDevice) msg.obj));
+            mDispatcher.enqueue((Connection) msg.obj);
         }
         return true;
-    }
-
-    private void connectGatt(BluetoothDevice device) {
-        device.connectGatt(this, false, new BluetoothGattCallback() {
-            @Override
-            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                //
-            }
-        });
     }
 
     public static class LeBinder extends Binder {
@@ -85,7 +97,6 @@ public class BleService extends Service implements Handler.Callback {
         }
 
         public void startScan(BleScanner.Request request) {
-            mService.mScanner.startScan(request);
             final Message msg = Message.obtain();
             msg.obj = request;
             msg.what = MSG_START_SCAN;
@@ -96,9 +107,9 @@ public class BleService extends Service implements Handler.Callback {
             getHandler().sendEmptyMessage(MSG_STOP_SCAN);
         }
 
-        public void connectGatt(BluetoothDevice device) {
+        public void connectGatt(BluetoothDevice device, IConnectCallback callback) {
             final Message msg = Message.obtain();
-            msg.obj = device;
+            msg.obj = new Connection(device, callback);
             msg.what = MSG_CONNECT_GATT;
             getHandler().sendMessage(msg);
         }
