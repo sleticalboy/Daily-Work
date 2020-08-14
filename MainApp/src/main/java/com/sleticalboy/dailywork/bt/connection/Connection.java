@@ -12,6 +12,7 @@ import com.sleticalboy.dailywork.bt.BtUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -31,10 +32,6 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
     public Connection(BluetoothDevice device, IConnectCallback callback) {
         mDevice = device;
         mCallback = callback;
-    }
-
-    void setDispatcher(Dispatcher dispatcher) {
-        mDispatcher = dispatcher;
     }
 
     @Override
@@ -88,6 +85,32 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
         }
     }
 
+    public void cancel() {
+        mCallback = null;
+        mCanceled = true;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Connection)) return false;
+        final Connection that = (Connection) o;
+        return mDevice.equals(that.mDevice);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mDevice);
+    }
+
+    void setDispatcher(Dispatcher dispatcher) {
+        mDispatcher = dispatcher;
+    }
+
+    BluetoothDevice getDevice() {
+        return mDevice;
+    }
+
     void executeOn(ExecutorService service) {
         boolean success = false;
         try {
@@ -105,12 +128,12 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
 
     private void execute() {
         // 1、绑定蓝牙
-        if (!BtUtils.createBond(mDevice)) {
+        if (!mCanceled && !BtUtils.createBond(mDevice)) {
             // 发起绑定失败
             mCallback.onFailure(this);
             return;
         }
-        while (mDevice.getBondState() != BluetoothDevice.BOND_BONDED) {
+        while (!mCanceled && !isBonded(mDevice)) {
             try {
                 wait(2000L);
             } catch (InterruptedException e) {
@@ -121,12 +144,12 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
         }
         // 2、连接 profile
         final BluetoothProfile hidHost = mDispatcher.getHidHost();
-        if (!connectProfile(hidHost, mDevice)) {
+        if (!mCanceled && !connectProfile(hidHost, mDevice)) {
             // 发起 profile 连接失败
             mCallback.onFailure(this);
             return;
         }
-        while (getConnectionState(hidHost, mDevice) != BluetoothProfile.STATE_CONNECTED) {
+        while (!mCanceled && !isConnected(hidHost, mDevice)) {
             try {
                 wait(2000L);
             } catch (InterruptedException e) {
@@ -137,17 +160,18 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
         }
         // 3、gatt 操作
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mDevice.connectGatt(mDispatcher.context(), false, this, BluetoothDevice.TRANSPORT_LE);
+            mDevice.connectGatt(mDispatcher.getContext(), false, this, BluetoothDevice.TRANSPORT_LE);
         } else {
-            mDevice.connectGatt(mDispatcher.context(), false, this);
+            mDevice.connectGatt(mDispatcher.getContext(), false, this);
         }
     }
 
-    private int getConnectionState(BluetoothProfile proxy, BluetoothDevice device) {
-        if (proxy != null) {
-            return proxy.getConnectionState(device);
-        }
-        return BluetoothProfile.STATE_DISCONNECTED;
+    private boolean isBonded(BluetoothDevice device) {
+        return device.getBondState() == BluetoothDevice.BOND_BONDED;
+    }
+
+    private boolean isConnected(BluetoothProfile proxy, BluetoothDevice device) {
+        return proxy.getConnectionState(device) == BluetoothProfile.STATE_CONNECTED;
     }
 
     private boolean connectProfile(BluetoothProfile proxy, BluetoothDevice device) {
@@ -167,10 +191,5 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
             return obj instanceof Boolean && (Boolean) obj;
         }
         return false;
-    }
-
-    public void cancel() {
-        mCallback = null;
-        mCanceled = true;
     }
 }

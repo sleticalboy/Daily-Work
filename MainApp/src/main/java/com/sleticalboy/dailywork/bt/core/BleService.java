@@ -23,6 +23,7 @@ public class BleService extends Service implements Handler.Callback {
     private static final int MSG_START_SCAN = 0x20;
     private static final int MSG_STOP_SCAN = 0x22;
     private static final int MSG_CONNECT_GATT = 0x23;
+    private static final int MSG_DISCONNECT_GATT = 0x24;
 
     private LeBinder mBinder;
     private Handler mCoreHandler;
@@ -87,6 +88,8 @@ public class BleService extends Service implements Handler.Callback {
             mScanner.stopScan();
         } else if (msg.what == MSG_CONNECT_GATT) {
             mDispatcher.enqueue((Connection) msg.obj);
+        } else if (msg.what == MSG_DISCONNECT_GATT) {
+            mDispatcher.cancel(((BluetoothDevice) msg.obj));
         }
         return true;
     }
@@ -118,6 +121,13 @@ public class BleService extends Service implements Handler.Callback {
             final Message msg = Message.obtain();
             msg.obj = new Connection(device, callback);
             msg.what = MSG_CONNECT_GATT;
+            getHandler().sendMessage(msg);
+        }
+
+        public void disconnectGatt(BluetoothDevice device) {
+            final Message msg = Message.obtain();
+            msg.what = MSG_DISCONNECT_GATT;
+            msg.obj = device;
             getHandler().sendMessage(msg);
         }
     }

@@ -1,6 +1,6 @@
 package com.sleticalboy.dailywork.bt.connection;
 
-import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -38,7 +39,7 @@ public final class Dispatcher {
         synchronized (this) {
             for (Iterator<Connection> it = mReadyConns.iterator(); it.hasNext(); ) {
                 final Connection conn = it.next();
-                if (mRunningConns.size() > mMaxRequest) {
+                if (mRunningConns.size() >= mMaxRequest) {
                     break;
                 }
                 it.remove();
@@ -67,16 +68,21 @@ public final class Dispatcher {
         promoteAndExecute();
     }
 
-    public BluetoothProfile getHidHost() {
-        return mHidHost;
-    }
-
-    Context context() {
+    Context getContext() {
         return mContext;
     }
 
     public void setHidHost(BluetoothProfile hidHost) {
         mHidHost = hidHost;
+    }
+
+    public BluetoothProfile getHidHost() {
+        return mHidHost;
+    }
+
+    public void setMaxRequest(final int maxRequest) {
+        mMaxRequest = maxRequest;
+        promoteAndExecute();
     }
 
     public void enqueue(Connection connection) {
@@ -87,16 +93,25 @@ public final class Dispatcher {
         promoteAndExecute();
     }
 
-    public void cancel(Connection connection) {
-        connection.cancel();
+    public void cancel(BluetoothDevice device) {
+        for (final Connection conn : mReadyConns) {
+            if (Objects.equals(device, conn.getDevice())) {
+                conn.cancel();
+            }
+        }
+        for (final Connection conn : mRunningConns) {
+            if (Objects.equals(device, conn.getDevice())) {
+                conn.cancel();
+            }
+        }
     }
 
     public void cancelAll() {
         for (Connection connection : mReadyConns) {
-            cancel(connection);
+            connection.cancel();
         }
         for (Connection connection : mRunningConns) {
-            cancel(connection);
+            connection.cancel();
         }
     }
 }
