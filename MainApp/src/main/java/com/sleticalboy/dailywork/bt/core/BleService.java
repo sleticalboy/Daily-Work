@@ -36,26 +36,12 @@ public class BleService extends Service implements Handler.Callback {
         mCoreHandler = new Handler(thread.getLooper(), this);
         mScanner = new BleScanner(this, mCoreHandler);
         mDispatcher = new Dispatcher(this);
+        bindHidProxy();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
-    }
-
-    private void foo() {
-        final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        adapter.getProfileProxy(this, new BluetoothProfile.ServiceListener() {
-            @Override
-            public void onServiceConnected(int profile, BluetoothProfile proxy) {
-                mDispatcher.setHidHost(proxy);
-            }
-
-            @Override
-            public void onServiceDisconnected(int profile) {
-                mDispatcher.setHidHost(null);
-            }
-        }, 4/*BluetoothProfile.HID_HOST*/);
     }
 
     @Nullable
@@ -70,6 +56,27 @@ public class BleService extends Service implements Handler.Callback {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unbindHidProxy();
+    }
+
+    private void bindHidProxy() {
+        final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        adapter.getProfileProxy(this, new BluetoothProfile.ServiceListener() {
+            @Override
+            public void onServiceConnected(int profile, BluetoothProfile proxy) {
+                mDispatcher.setHidHost(proxy);
+            }
+
+            @Override
+            public void onServiceDisconnected(int profile) {
+                mDispatcher.setHidHost(null);
+            }
+        }, 4/*BluetoothProfile.HID_HOST*/);
+    }
+
+    private void unbindHidProxy() {
+        final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        adapter.closeProfileProxy(4/*BluetoothProfile.HID_HOST*/, mDispatcher.getHidHost());
     }
 
     @Override
