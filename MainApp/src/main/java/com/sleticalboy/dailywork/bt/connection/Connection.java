@@ -111,6 +111,10 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
         return mDevice;
     }
 
+    public void notifyStateChange() {
+        this.notifyAll();
+    }
+
     void executeOn(ExecutorService service) {
         boolean success = false;
         try {

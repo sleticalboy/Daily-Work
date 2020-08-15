@@ -72,6 +72,16 @@ public final class Dispatcher {
         return mContext;
     }
 
+    void notifyConnectionState(BluetoothDevice device) {
+        synchronized (this) {
+            for (final Connection conn : mRunningConns) {
+                if (Objects.equals(device, conn.getDevice())) {
+                    conn.notifyStateChange();
+                }
+            }
+        }
+    }
+
     public void setHidHost(BluetoothProfile hidHost) {
         mHidHost = hidHost;
     }
