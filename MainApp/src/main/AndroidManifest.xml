@@ -151,7 +151,7 @@
         </service>
         <!-- service practice -->
         <service android:name=".components.service.LocalService" />
-        <service android:name=".bt.core.BleService" />
+        <service android:name=".bt.ble.BleService" />
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.bt.core;
+package com.sleticalboy.dailywork.bt.ble;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

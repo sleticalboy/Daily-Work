@@ -1,10 +1,13 @@
-package com.sleticalboy.dailywork.bt.core;
+package com.sleticalboy.dailywork.bt.ble;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -14,21 +17,34 @@ import android.os.Message;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sleticalboy.dailywork.bt.connection.Connection;
-import com.sleticalboy.dailywork.bt.connection.Dispatcher;
-import com.sleticalboy.dailywork.bt.connection.IConnectCallback;
+public final class BleService extends Service implements Handler.Callback {
 
-public class BleService extends Service implements Handler.Callback {
+    public static final String ACTION_HID_CONNECTION_STATE_CHANGED =
+            "android.bluetooth.input.profile.action.CONNECTION_STATE_CHANGED";
 
     private static final int MSG_START_SCAN = 0x20;
     private static final int MSG_STOP_SCAN = 0x22;
-    private static final int MSG_CONNECT_GATT = 0x23;
-    private static final int MSG_DISCONNECT_GATT = 0x24;
+    private static final int MSG_START_CONNECT = 0x23;
+    private static final int MSG_CANCEL_CONNECT = 0x24;
 
     private LeBinder mBinder;
     private Handler mCoreHandler;
     private BleScanner mScanner;
     private Dispatcher mDispatcher;
+    private final BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            // mCoreHandler thread
+            final String action = intent.getAction();
+            final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE);
+                mDispatcher.notifyConnectionState(device);
+            } else if (ACTION_HID_CONNECTION_STATE_CHANGED.equals(action)) {
+                mDispatcher.notifyConnectionState(device);
+            }
+        }
+    };
 
     @Override
     public void onCreate() {
@@ -38,6 +54,7 @@ public class BleService extends Service implements Handler.Callback {
         mScanner = new BleScanner(this, mCoreHandler);
         mDispatcher = new Dispatcher(this);
         bindHidProxy();
+        registerBtReceiver();
     }
 
     @Override
@@ -58,6 +75,7 @@ public class BleService extends Service implements Handler.Callback {
     public void onDestroy() {
         super.onDestroy();
         unbindHidProxy();
+        unregisterBtReceiver();
     }
 
     private void bindHidProxy() {
@@ -80,16 +98,31 @@ public class BleService extends Service implements Handler.Callback {
         adapter.closeProfileProxy(4/*BluetoothProfile.HID_HOST*/, mDispatcher.getHidHost());
     }
 
+    private void registerBtReceiver() {
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        filter.addAction(ACTION_HID_CONNECTION_STATE_CHANGED);
+        registerReceiver(mBtReceiver, filter, null, mCoreHandler);
+    }
+
+    private void unregisterBtReceiver() {
+        unregisterReceiver(mBtReceiver);
+    }
+
     @Override
     public boolean handleMessage(@NonNull Message msg) {
         if (msg.what == MSG_START_SCAN) {
             mScanner.startScan(((BleScanner.Request) msg.obj));
         } else if (msg.what == MSG_STOP_SCAN) {
             mScanner.stopScan();
-        } else if (msg.what == MSG_CONNECT_GATT) {
+        } else if (msg.what == MSG_START_CONNECT) {
             mDispatcher.enqueue((Connection) msg.obj);
-        } else if (msg.what == MSG_DISCONNECT_GATT) {
-            mDispatcher.cancel(((BluetoothDevice) msg.obj));
+        } else if (msg.what == MSG_CANCEL_CONNECT) {
+            if (msg.obj instanceof BluetoothDevice) {
+                mDispatcher.cancel(((BluetoothDevice) msg.obj));
+            } else {
+                mDispatcher.cancelAll();
+            }
         }
         return true;
     }
@@ -117,16 +150,16 @@ public class BleService extends Service implements Handler.Callback {
             getHandler().sendEmptyMessage(MSG_STOP_SCAN);
         }
 
-        public void connectGatt(BluetoothDevice device, IConnectCallback callback) {
+        public void connect(BluetoothDevice device, IConnectCallback callback) {
             final Message msg = Message.obtain();
             msg.obj = new Connection(device, callback);
-            msg.what = MSG_CONNECT_GATT;
+            msg.what = MSG_START_CONNECT;
             getHandler().sendMessage(msg);
         }
 
-        public void disconnectGatt(BluetoothDevice device) {
+        public void cancel(BluetoothDevice device) {
             final Message msg = Message.obtain();
-            msg.what = MSG_DISCONNECT_GATT;
+            msg.what = MSG_CANCEL_CONNECT;
             msg.obj = device;
             getHandler().sendMessage(msg);
         }

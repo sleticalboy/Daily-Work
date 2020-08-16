@@ -1,4 +1,4 @@
-package com.sleticalboy.dailywork.bt.connection;
+package com.sleticalboy.dailywork.bt.ble;
 
 /**
  * Created on 20-8-13.

@@ -22,10 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sleticalboy.dailywork.R;
 import com.sleticalboy.dailywork.base.BaseActivity;
-import com.sleticalboy.dailywork.bt.connection.Connection;
-import com.sleticalboy.dailywork.bt.connection.IConnectCallback;
-import com.sleticalboy.dailywork.bt.core.BleScanner;
-import com.sleticalboy.dailywork.bt.core.BleService;
+import com.sleticalboy.dailywork.bt.ble.Connection;
+import com.sleticalboy.dailywork.bt.ble.IConnectCallback;
+import com.sleticalboy.dailywork.bt.ble.BleScanner;
+import com.sleticalboy.dailywork.bt.ble.BleService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,13 +53,6 @@ public class BluetoothUI extends BaseActivity {
         final Intent intent = new Intent(this, BleService.class);
         bindService(intent, mConn, BIND_AUTO_CREATE);
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopBtScan();
-        unbindService(mConn);
     }
 
     @NonNull
@@ -124,9 +117,10 @@ public class BluetoothUI extends BaseActivity {
         }
     }
 
-    private void doConnectGatt(BleScanner.Result result) {
+    private void doConnect(BluetoothDevice device) {
+        Log.d(getTag(), "connect to " + device);
         if (mService != null) {
-            mService.connectGatt(result.mDevice, new IConnectCallback() {
+            mService.connect(device, new IConnectCallback() {
                 @Override
                 public void onFailure(Connection connection) {
                     //
@@ -138,6 +132,20 @@ public class BluetoothUI extends BaseActivity {
                 }
             });
         }
+    }
+
+    private void doCancel(BluetoothDevice device) {
+        if (mService != null) {
+            mService.cancel(device);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopBtScan();
+        doCancel(null);
+        unbindService(mConn);
     }
 
     private final class DevicesAdapter extends RecyclerView.Adapter<DeviceHolder> {
@@ -160,11 +168,7 @@ public class BluetoothUI extends BaseActivity {
             holder.tvName.setText(Html.fromHtml("<font color='red'>" + result.mDevice.getName()
                     + "</font>  <font color='blue'>" + result.mDevice.getAddress()));
             holder.btnConnect.setEnabled(result.mConnectable);
-            holder.btnConnect.setOnClickListener(v -> {
-                // connect to device
-                Log.d(getTag(), "connect to " + result.mDevice);
-                doConnectGatt(result);
-            });
+            holder.btnConnect.setOnClickListener(v -> doConnect(result.mDevice));
         }
 
         @Override
