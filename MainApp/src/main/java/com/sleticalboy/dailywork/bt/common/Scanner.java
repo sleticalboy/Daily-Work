@@ -14,6 +14,7 @@ import android.content.IntentFilter;
  */
 final class Scanner {
 
+    private final Context mContext;
     private Callback mCallback;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -51,6 +52,7 @@ final class Scanner {
         filters.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filters.addAction(BluetoothDevice.ACTION_FOUND);
         context.registerReceiver(mReceiver, filters);
+        mContext = context.getApplicationContext();
     }
 
     boolean startScan(Callback callback) {
@@ -69,6 +71,10 @@ final class Scanner {
 
     boolean stopScan() {
         return BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+    }
+
+    void destroy() {
+        mContext.unregisterReceiver(mReceiver);
     }
 
     public interface Callback {
