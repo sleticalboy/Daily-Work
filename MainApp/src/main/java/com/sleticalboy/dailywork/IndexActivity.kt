@@ -26,25 +26,25 @@ class IndexActivity : BaseActivity() {
         DataEngine.get().indexModel().moduleSource.observe(this, Observer {
             when (it) {
                 is Result.Loading -> {
-                    Log.d(getTag(), "initView() loading data: $it")
+                    Log.d(logTag(), "initView() loading data: $it")
                 }
                 is Result.Error -> {
-                    Log.d(getTag(), "initView() load data error: $it")
+                    Log.d(logTag(), "initView() load data error: $it")
                 }
                 else -> {
-                    Log.d(getTag(), "initView() load data success: $it")
+                    Log.d(logTag(), "initView() load data success: $it")
                     dataSet.clear()
                     dataSet.addAll((it as Result.Success).data)
                     adapter.notifyDataSetChanged()
                     val cost = System.currentTimeMillis() - start
-                    Log.d(getTag(), "show UI cost: $cost ms")
+                    Log.d(logTag(), "show UI cost: $cost ms")
                 }
             }
         })
         recyclerView.adapter = adapter
     }
 
-    override fun getTag(): String = "IndexActivity"
+    override fun logTag(): String = "IndexActivity"
 
     inner class DataAdapter : RecyclerView.Adapter<ItemHolder>() {
 
@@ -60,7 +60,7 @@ class IndexActivity : BaseActivity() {
             val item = dataSet[position]
             holder.textView.text = item.title
             holder.textView.setOnClickListener {
-                Log.d(getTag(), "item click with: ${item.clazz}")
+                Log.d(logTag(), "item click with: ${item.clazz}")
                 startActivity(Intent(this@IndexActivity, item.clazz))
             }
             holder.textView.setPadding(32, 16, 32, 16)

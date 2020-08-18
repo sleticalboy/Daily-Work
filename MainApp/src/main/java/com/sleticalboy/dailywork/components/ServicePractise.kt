@@ -31,10 +31,10 @@ class ServicePractise : BaseActivity() {
 
     override fun initView() {
         btnStart.setOnClickListener {
-            Log.d(getTag(), "start service")
+            Log.d(logTag(), "start service")
         }
         btnStop.setOnClickListener {
-            Log.d(getTag(), "stop service")
+            Log.d(logTag(), "stop service")
         }
 
         tvBindProgress.text = "Idle"

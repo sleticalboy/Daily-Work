@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 /**
  * Created on 20-8-17.
@@ -13,6 +14,8 @@ import android.content.IntentFilter;
  * @author Ben binli@grandstream.cn
  */
 final class Scanner {
+
+    private static final String TAG = "BtScanner";
 
     private final Context mContext;
     private Callback mCallback;
@@ -24,13 +27,16 @@ final class Scanner {
             if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.STATE_OFF);
-                if (state == BluetoothAdapter.STATE_ON) {
+                if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF)
+                        == BluetoothAdapter.STATE_ON) {
                     startScan(mCallback);
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 // discovery started
+                Log.d(TAG, "discovery started");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 // discovery finished
+                Log.d(TAG, "discovery finished");
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // bt device found
                 if (mCallback != null) {

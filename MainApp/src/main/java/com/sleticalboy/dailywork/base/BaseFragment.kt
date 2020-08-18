@@ -18,6 +18,14 @@ abstract class BaseFragment : Fragment() {
         return content
     }
 
+    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initView();
+    }
+
+    abstract fun initView()
+
     @LayoutRes
     abstract fun layout(): Int
+
+    protected open fun logTag(): String = "BaseFragment"
 }
