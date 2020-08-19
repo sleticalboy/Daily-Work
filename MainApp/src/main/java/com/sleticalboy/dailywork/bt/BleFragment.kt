@@ -65,11 +65,12 @@ class BleFragment : BaseFragment() {
         val request = BleScanner.Request()
         request.mCallback = object : BleScanner.Callback() {
             override fun onScanResult(result: BleScanner.Result) {
-                // Log.d(logTag(), "onDeviceScanned() " + result);
                 mAdapter!!.addDevice(result)
             }
 
-            override fun onScanFailed(errorCode: Int) {}
+            override fun onScanFailed(errorCode: Int) {
+                Log.d(logTag(), "onScanFailed() errorCode = $errorCode")
+            }
         }
         request.mDuration = 10000L
         mService!!.startScan(request)
@@ -86,9 +87,11 @@ class BleFragment : BaseFragment() {
         if (mService != null) {
             mService!!.connect(device, object : IConnectCallback {
                 override fun onFailure(connection: Connection) {
+                    Log.d(logTag(), "onFailure() connection = $connection")
                 }
 
                 override fun onSuccess(connection: Connection) {
+                    Log.d(logTag(), "onSuccess() connection = $connection")
                 }
             })
         }
@@ -108,8 +111,10 @@ class BleFragment : BaseFragment() {
     override fun logTag(): String = "BleFragment"
 
     private inner class DevicesAdapter : RecyclerView.Adapter<DeviceHolder>() {
+
         private val mDataSet: MutableList<BleScanner.Result> = ArrayList()
         private val mDataCopy: MutableList<BleScanner.Result> = ArrayList()
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceHolder {
             return DeviceHolder(layoutInflater.inflate(
                     R.layout.item_ble_recycler, parent, false))

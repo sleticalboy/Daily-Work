@@ -25,28 +25,28 @@ class BluetoothUI : BaseActivity() {
     }
 
     override fun initView() {
-
-        val transaction = supportFragmentManager.beginTransaction()
         btCommon.setOnClickListener {
             // open common fragment
-            val tag = CommonBtFragment::javaClass.name
-            val f = supportFragmentManager.findFragmentByTag(tag)
-            if (f != null) {
-                transaction.show(f)
-            } else {
-                transaction.add(R.id.fragmentRoot, CommonBtFragment(), tag)
-            }
+            showFragment(CommonBtFragment::class.java.name)
         }
         ble.setOnClickListener {
             // open ble fragment
-            val tag = BleFragment::javaClass.name
-            val f = supportFragmentManager.findFragmentByTag(tag)
-            if (f == null) {
-                transaction.add(R.id.fragmentRoot, BleFragment(), tag)
-            } else {
+            showFragment(BleFragment::class.java.name)
+        }
+    }
+
+    private fun showFragment(tag: String) {
+        val transaction = supportFragmentManager.beginTransaction()
+        var f = supportFragmentManager.findFragmentByTag(tag)
+        if (f == null) {
+            f = supportFragmentManager.fragmentFactory.instantiate(classLoader, tag)
+            transaction.replace(R.id.fragmentRoot, f, tag)
+        } else {
+            if (f.isAdded) {
                 transaction.show(f)
             }
         }
-        transaction.commit()
+        transaction.commitAllowingStateLoss()
+        supportFragmentManager.executePendingTransactions()
     }
 }
