@@ -73,11 +73,9 @@ public final class Dispatcher {
     }
 
     void notifyConnectionState(BluetoothDevice device) {
-        synchronized (this) {
-            for (final Connection conn : mRunningConns) {
-                if (Objects.equals(device, conn.getDevice())) {
-                    conn.notifyStateChange();
-                }
+        for (final Connection conn : mRunningConns) {
+            if (Objects.equals(device, conn.getDevice())) {
+                conn.notifyStateChange();
             }
         }
     }

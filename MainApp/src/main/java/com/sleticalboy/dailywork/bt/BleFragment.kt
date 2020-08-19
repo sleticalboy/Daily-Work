@@ -15,10 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sleticalboy.dailywork.R
 import com.sleticalboy.dailywork.base.BaseFragment
-import com.sleticalboy.dailywork.bt.ble.BleScanner
-import com.sleticalboy.dailywork.bt.ble.BleService
-import com.sleticalboy.dailywork.bt.ble.Connection
-import com.sleticalboy.dailywork.bt.ble.IConnectCallback
+import com.sleticalboy.dailywork.bt.ble.*
 import kotlinx.android.synthetic.main.fragment_bt_ble.*
 import java.util.*
 
@@ -86,8 +83,8 @@ class BleFragment : BaseFragment() {
         Log.d(logTag(), "connect to $device")
         if (mService != null) {
             mService!!.connect(device, object : IConnectCallback {
-                override fun onFailure(connection: Connection) {
-                    Log.d(logTag(), "onFailure() connection = $connection")
+                override fun onFailure(connection: Connection, e: BleException) {
+                    Log.d(logTag(), "onFailure() connection = $connection error: $e")
                 }
 
                 override fun onSuccess(connection: Connection) {
@@ -107,7 +104,7 @@ class BleFragment : BaseFragment() {
         doCancel(null)
         context?.unbindService(mConn)
     }
-    
+
     override fun logTag(): String = "BleFragment"
 
     private inner class DevicesAdapter : RecyclerView.Adapter<DeviceHolder>() {

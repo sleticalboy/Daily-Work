@@ -16,6 +16,9 @@ import java.lang.reflect.Method;
  */
 public final class BtUtils {
 
+    private BtUtils() {
+    }
+
     // public static CharSequence errorReason(Context context, String name, int reason) {
     //     int errorMsg;
     //     switch(reason) {
@@ -138,7 +141,7 @@ public final class BtUtils {
     public static boolean createBond(@NonNull BluetoothDevice bt) {
         if (bt.getBondState() == BluetoothDevice.BOND_NONE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                final Object ret = invoke(bt, BluetoothDevice.class, "createBond", BluetoothDevice.TRANSPORT_LE);
+                final Object ret = invoke(bt, bt.getClass(), "createBond", BluetoothDevice.TRANSPORT_LE);
                 return ret instanceof Boolean && ((Boolean) ret);
             } else {
                 return bt.createBond();
@@ -150,25 +153,37 @@ public final class BtUtils {
     public static boolean removeBond(@NonNull BluetoothDevice bt) {
         final int state = bt.getBondState();
         if (state == BluetoothDevice.BOND_BONDING) {
-            invoke(bt, BluetoothDevice.class, "cancelBondProcess");
+            invoke(bt, bt.getClass(), "cancelBondProcess");
+            return true;
         } else if (state == BluetoothDevice.BOND_BONDED) {
-            final Object ret = invoke(bt, BluetoothDevice.class, "removeBond");
+            final Object ret = invoke(bt, bt.getClass(), "removeBond");
             return ret instanceof Boolean && (Boolean) ret;
         }
         return false;
     }
 
-    public static Object invoke(Object obj, Class<?> clazz, String method, Object... args) {
+    public static boolean connectProfile(BluetoothProfile proxy, BluetoothDevice device) {
+        final Object ret = invoke(proxy, proxy.getClass(), "connect", device);
+        return ret instanceof Boolean && ((Boolean) ret);
+    }
+
+    public static boolean isConnected(BluetoothDevice device) {
+        final Object ret = invoke(device, device.getClass(), "isConnected");
+        return ret instanceof Boolean && ((Boolean) ret);
+    }
+
+    private static Object invoke(Object obj, Class<?> clazz, String method, Object... args) {
         try {
             final Class<?>[] parameterTypes;
-            if (args != null) {
-                parameterTypes = new Class[args == null ? 0 : args.length];
-                for (int i = 0; i < args.length; i++) {
-                    parameterTypes[i] = args[i].getClass();
-                }
-            } else {
+            if (args == null || args.length == 0) {
                 parameterTypes = null;
+            } else {
+                parameterTypes = new Class[args.length];
+                for (int i = 0; i < args.length; i++) {
+                    parameterTypes[i] = getObjClass(args[i]);
+                }
             }
+            // 如果参数是 int，则必须是 int.class
             final Method m = clazz.getDeclaredMethod(method, parameterTypes);
             m.setAccessible(true);
             return m.invoke(obj, args);
@@ -176,5 +191,32 @@ public final class BtUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private static Class<?> getObjClass(Object obj) {
+        if (obj instanceof Class) {
+            return ((Class<?>) obj);
+        } else if (obj instanceof Boolean) {
+            return boolean.class;
+        } else if (obj instanceof Character) {
+            return char.class;
+        } else if (obj instanceof Byte) {
+            return byte.class;
+        } else if (obj instanceof Short) {
+            return short.class;
+        } else if (obj instanceof Integer) {
+            return int.class;
+        } else if (obj instanceof Long) {
+            return long.class;
+        } else if (obj instanceof Float) {
+            return float.class;
+        } else if (obj instanceof Double) {
+            return double.class;
+        } else if (obj instanceof Void) {
+            return void.class;
+        } else if (obj != null) {
+            return obj.getClass();
+        }
+        return null;
     }
 }

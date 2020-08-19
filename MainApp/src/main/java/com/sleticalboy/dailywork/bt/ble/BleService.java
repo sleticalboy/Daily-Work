@@ -13,11 +13,13 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public final class BleService extends Service implements Handler.Callback {
+
+    private static final String TAG = "BleService";
 
     public static final String ACTION_HID_CONNECTION_STATE_CHANGED =
             "android.bluetooth.input.profile.action.CONNECTION_STATE_CHANGED";
@@ -34,14 +36,18 @@ public final class BleService extends Service implements Handler.Callback {
     private final BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            // mCoreHandler thread
+            // all logic is handled in mCoreHandler thread
             final String action = intent.getAction();
             final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
-                intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE);
-                mDispatcher.notifyConnectionState(device);
+                if (intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE,
+                        BluetoothDevice.BOND_NONE) == BluetoothDevice.BOND_BONDED) {
+                    Log.e(TAG, "receive action: " + action + " start notify connection state.");
+                    mDispatcher.notifyConnectionState(device);
+                }
             } else if (ACTION_HID_CONNECTION_STATE_CHANGED.equals(action)) {
-                mDispatcher.notifyConnectionState(device);
+                Log.e(TAG, "receive action: " + action + " will notify connection state.");
+                // mDispatcher.notifyConnectionState(device);
             }
         }
     };
@@ -62,7 +68,7 @@ public final class BleService extends Service implements Handler.Callback {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    @Nullable
+    @NonNull
     @Override
     public IBinder onBind(Intent intent) {
         if (mBinder == null) {

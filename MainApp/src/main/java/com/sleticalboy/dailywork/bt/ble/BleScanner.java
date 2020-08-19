@@ -56,6 +56,9 @@ public class BleScanner {
 
     private void startBeforeLL(Request request) {
         final BluetoothAdapter.LeScanCallback rawCallback = (device, rssi, scanRecord) -> {
+            if (request == null || request.mCallback == null) {
+                return;
+            }
             if (request.mCallback.filter(scanRecord)) {
                 final Result rst = Result.obtain();
                 rst.mDevice = device;
@@ -76,7 +79,10 @@ public class BleScanner {
             public void onScanResult(int callbackType, ScanResult result) {
                 // Log.d(TAG, "onScanResult() callbackType: " + callbackType + ", result: " + result);
                 final ScanRecord record = result.getScanRecord();
-                if (record != null && request.mCallback.filter(record.getBytes())) {
+                if (request == null || request.mCallback == null || record == null) {
+                    return;
+                }
+                if (request.mCallback.filter(record.getBytes())) {
                     boolean connectable = true;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         connectable = result.isConnectable();
@@ -92,7 +98,9 @@ public class BleScanner {
 
             @Override
             public void onScanFailed(int errorCode) {
-                request.mCallback.onScanFailed(errorCode);
+                if (request != null && request.mCallback != null) {
+                    request.mCallback.onScanFailed(errorCode);
+                }
             }
         };
         // final ScanFilter filter = new ScanFilter.Builder().build();
@@ -118,10 +126,9 @@ public class BleScanner {
         mStarted = false;
     }
 
-    public static class Callback {
+    public static abstract class Callback {
 
-        public void onScanResult(Result result) {
-        }
+        public abstract void onScanResult(Result result);
 
         public void onScanFailed(int errorCode) {
         }
@@ -151,6 +158,23 @@ public class BleScanner {
         private Result() {
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            return mDevice.equals(((Result) o).mDevice);
+        }
+
+        @Override
+        public int hashCode() {
+            return mDevice.hashCode();
+        }
+
+        @NonNull
         @Override
         public String toString() {
             return "{device=" + mDevice + ", rssi=" + mRssi + ", connectable=" + mConnectable + '}';

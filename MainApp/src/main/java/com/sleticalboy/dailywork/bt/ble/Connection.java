@@ -5,13 +5,11 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothProfile;
 import android.os.Build;
+import android.util.Log;
 
 import com.sleticalboy.dailywork.bt.BtUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
@@ -23,7 +21,8 @@ import java.util.concurrent.RejectedExecutionException;
  */
 public final class Connection extends BluetoothGattCallback implements Runnable {
 
-    private static Method sConnectMethod;
+    private static final String TAG = "Connection";
+
     private final BluetoothDevice mDevice;
     private IConnectCallback mCallback;
     private boolean mCanceled = false;
@@ -36,10 +35,19 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+        Log.d(TAG, "onConnectionStateChange() status = [" + status + "], newState = [" + newState + "]");
+        if (status == 0 && mDevice.equals(gatt.getDevice())) {
+            final boolean started = gatt.discoverServices();
+            Log.d(TAG, "onConnectionStateChange() -> start search services: " + started);
+        }
     }
 
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+        Log.d(TAG, "onServicesDiscovered() status = [" + status + "]");
+        if (status == 0 && mDevice.equals(gatt.getDevice())) {
+            Log.d(TAG, "onServicesDiscovered() start resolve all services...");
+        }
     }
 
     @Override
@@ -68,10 +76,12 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
 
     @Override
     public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+        Log.d(TAG, "onReadRemoteRssi() rssi = [" + rssi + "], status = [" + status + "]");
     }
 
     @Override
     public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+        Log.d(TAG, "onMtuChanged() mtu = [" + mtu + "], status = [" + status + "]");
     }
 
     @Override
@@ -112,7 +122,9 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
     }
 
     public void notifyStateChange() {
-        this.notifyAll();
+        synchronized (this) {
+            notifyAll();
+        }
     }
 
     void executeOn(ExecutorService service) {
@@ -122,7 +134,7 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
             success = true;
             mCallback.onSuccess(this);
         } catch (RejectedExecutionException e) {
-            mCallback.onFailure(this);
+            mCallback.onFailure(this, new BleException("", e));
         } finally {
             if (!success) {
                 mDispatcher.finish(this);
@@ -132,68 +144,32 @@ public final class Connection extends BluetoothGattCallback implements Runnable 
 
     private void execute() {
         // 1、绑定蓝牙
-        if (!mCanceled && !BtUtils.createBond(mDevice)) {
-            // 发起绑定失败
-            mCallback.onFailure(this);
+        if (mCanceled) {
+            mCallback.onFailure(this, new BleException("Canceled."));
             return;
         }
-        while (!mCanceled && !isBonded(mDevice)) {
+        if (!BtUtils.createBond(mDevice)) {
+            // 发起绑定失败
+            mCallback.onFailure(this, new BleException("Create bond failed."));
+            return;
+        } else {
             try {
-                wait(2000L);
+                // java.lang.IllegalMonitorStateException: object not locked by thread before wait()
+                synchronized (this) {
+                    wait(2000L);
+                }
             } catch (InterruptedException e) {
                 // 绑定超时
-                mCallback.onFailure(this);
+                mCallback.onFailure(this, new BleException("Bond timeout.", e));
                 return;
             }
         }
-        // 2、连接 profile
-        final BluetoothProfile hidHost = mDispatcher.getHidHost();
-        if (!mCanceled && !connectProfile(hidHost, mDevice)) {
-            // 发起 profile 连接失败
-            mCallback.onFailure(this);
-            return;
-        }
-        while (!mCanceled && !isConnected(hidHost, mDevice)) {
-            try {
-                wait(2000L);
-            } catch (InterruptedException e) {
-                // profile 连接超时
-                mCallback.onFailure(this);
-                return;
-            }
-        }
-        // 3、gatt 操作
+        // 2、gatt 操作, 回调方法默认是在主线程执行的，请勿执行耗时操作
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mDevice.connectGatt(mDispatcher.getContext(), false, this, BluetoothDevice.TRANSPORT_LE);
         } else {
             mDevice.connectGatt(mDispatcher.getContext(), false, this);
         }
-    }
-
-    private boolean isBonded(BluetoothDevice device) {
-        return device.getBondState() == BluetoothDevice.BOND_BONDED;
-    }
-
-    private boolean isConnected(BluetoothProfile proxy, BluetoothDevice device) {
-        return proxy.getConnectionState(device) == BluetoothProfile.STATE_CONNECTED;
-    }
-
-    private boolean connectProfile(BluetoothProfile proxy, BluetoothDevice device) {
-        if (sConnectMethod == null) {
-            try {
-                sConnectMethod = proxy.getClass().getDeclaredMethod("connect", device.getClass());
-            } catch (NoSuchMethodException e) {
-                return false;
-            }
-        } else {
-            final Object obj;
-            try {
-                obj = sConnectMethod.invoke(proxy, device);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                return false;
-            }
-            return obj instanceof Boolean && (Boolean) obj;
-        }
-        return false;
+        // BtUtils.isConnected(device)
     }
 }

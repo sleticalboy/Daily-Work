@@ -7,7 +7,7 @@ package com.sleticalboy.dailywork.bt.ble;
  */
 public interface IConnectCallback {
 
-    void onFailure(Connection connection);
+    void onFailure(Connection connection, BleException e);
 
     void onSuccess(Connection connection);
 }
