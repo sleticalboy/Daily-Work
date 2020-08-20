@@ -13,7 +13,7 @@ import android.util.Log;
  *
  * @author Ben binli@grandstream.cn
  */
-final class Scanner {
+public final class BtScanner {
 
     private static final String TAG = "BtScanner";
 
@@ -51,7 +51,7 @@ final class Scanner {
         }
     };
 
-    public Scanner(Context context) {
+    public BtScanner(Context context) {
         final IntentFilter filters = new IntentFilter();
         filters.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filters.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
@@ -61,7 +61,7 @@ final class Scanner {
         mContext = context.getApplicationContext();
     }
 
-    boolean startScan(Callback callback) {
+    public boolean startScan(Callback callback) {
         if (callback == null) {
             throw new IllegalArgumentException("callback is null.");
         }
@@ -75,11 +75,11 @@ final class Scanner {
         return false;
     }
 
-    boolean stopScan() {
+    public boolean stopScan() {
         return BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
     }
 
-    void destroy() {
+    public void destroy() {
         mContext.unregisterReceiver(mReceiver);
     }
 
