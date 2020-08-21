@@ -33,15 +33,16 @@ public final class BtScanner {
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 // discovery started
-                Log.d(TAG, "discovery started");
+                Log.d(TAG, "receive action: " + action + ", discovery started");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 // discovery finished
-                Log.d(TAG, "discovery finished");
+                Log.d(TAG, "receive action: " + action + ", discovery finished");
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // bt device found
                 if (mCallback != null) {
-                    final int rssi = intent.getIntExtra(BluetoothDevice.EXTRA_RSSI, 0);
-                    mCallback.onDeviceFound(getDevice(intent), rssi);
+                    mCallback.onDeviceFound(getDevice(intent),
+                            intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, (short) 0)
+                    );
                 }
             }
         }
@@ -80,6 +81,8 @@ public final class BtScanner {
     }
 
     public void destroy() {
+        stopScan();
+        mCallback = null;
         mContext.unregisterReceiver(mReceiver);
     }
 
