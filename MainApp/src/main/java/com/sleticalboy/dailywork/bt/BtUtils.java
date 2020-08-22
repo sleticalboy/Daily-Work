@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 /**
  * Created on 20-5-4.
@@ -47,6 +48,17 @@ public final class BtUtils {
     //     return reason + " " + context.getResources().getString(errorMsg, name);
     // }
 
+    public static String bondStr(final int state) {
+        if (state == BluetoothDevice.BOND_NONE) {
+            return "NONE(10)";
+        } else if (state == BluetoothDevice.BOND_BONDING) {
+            return "BONDING(11)";
+        } else if (state == BluetoothDevice.BOND_BONDED) {
+            return "BONDEd(12)";
+        }
+        return String.format(Locale.US, "Unknown state(%d)", state);
+    }
+
     public static String bleTypeToString(int type) {
         if (type == BluetoothDevice.DEVICE_TYPE_DUAL) {
             return "Dual Mode - BR/EDR/LE(3)";
@@ -58,7 +70,7 @@ public final class BtUtils {
         return "Unknown(0)";
     }
 
-    public static String profileStateToString(int state) {
+    public static String profileState(int state) {
         if (state == BluetoothProfile.STATE_DISCONNECTED) {
             return "0 DISCONNECTED";
         } else if (state == BluetoothProfile.STATE_CONNECTING) {

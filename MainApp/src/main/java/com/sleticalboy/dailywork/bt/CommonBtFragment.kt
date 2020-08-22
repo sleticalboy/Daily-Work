@@ -1,7 +1,10 @@
 package com.sleticalboy.dailywork.bt
 
 import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.text.Html
 import android.util.Log
 import android.view.View
@@ -24,10 +27,25 @@ class CommonBtFragment : BaseFragment() {
 
     private var mScanner: BtScanner? = null
     private var mAdapter: DevicesAdapter? = null
+    private val mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val device = intent?.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
+            val state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE)
+            if (state == BluetoothDevice.BOND_BONDED) {
+                //
+            }
+            Log.d(logTag(),"receive action: " + intent.action + ", " + device + ", " + BtUtils.bondStr(state) )
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mScanner = BtScanner(context)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        context?.registerReceiver(mReceiver, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED))
     }
 
     override fun layout(): Int = R.layout.fragment_bt_common
@@ -51,6 +69,11 @@ class CommonBtFragment : BaseFragment() {
             Log.d(logTag(), "onDeviceFound() called with: device = $device, rssi = $rssi")
             mAdapter?.addDevice(device)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        context?.unregisterReceiver(mReceiver)
     }
 
     override fun onDetach() {
