@@ -9,21 +9,22 @@ import android.text.Html
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.sleticalboy.dailywork.R
-import com.sleticalboy.dailywork.base.BaseFragment
+import com.sleticalboy.dailywork.base.BaseListFragment
+import com.sleticalboy.dailywork.base.BaseRVAdapter
+import com.sleticalboy.dailywork.base.BaseRVAdapter.IRVHolderCreator
+import com.sleticalboy.dailywork.base.BaseRVHolder
 import com.sleticalboy.dailywork.bt.common.BtScanner
 import kotlinx.android.synthetic.main.fragment_bt_common.*
-import java.util.*
 
 /**
  * Created on 20-8-18.
  *
  * @author Ben binli@grandstream.cn
  */
-class CommonBtFragment : BaseFragment() {
+class CommonBtFragment : BaseListFragment<BluetoothDevice>() {
 
     private var mScanner: BtScanner? = null
     private var mAdapter: DevicesAdapter? = null
@@ -34,7 +35,7 @@ class CommonBtFragment : BaseFragment() {
             if (state == BluetoothDevice.BOND_BONDED) {
                 //
             }
-            Log.d(logTag(),"receive action: " + intent.action + ", " + device + ", " + BtUtils.bondStr(state) )
+            Log.d(logTag(), "receive action: " + intent.action + ", " + device + ", " + BtUtils.bondStr(state))
         }
     }
 
@@ -48,16 +49,15 @@ class CommonBtFragment : BaseFragment() {
         context?.registerReceiver(mReceiver, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED))
     }
 
-    override fun layout(): Int = R.layout.fragment_bt_common
-
     override fun logTag(): String = "CommonBtFragment"
 
-    override fun initView() {
+    override fun initHeader(headerContainer: FrameLayout) {
         startScan.setOnClickListener { doStart() }
         stopScan.setOnClickListener { doStop() }
+    }
 
-        btDevicesRv.layoutManager = LinearLayoutManager(context)
-        btDevicesRv.adapter = DevicesAdapter().also { mAdapter = it }
+    override fun createAdapter(): BaseRVAdapter<BluetoothDevice> {
+        return DevicesAdapter()
     }
 
     private fun doStop() {
@@ -95,51 +95,37 @@ class CommonBtFragment : BaseFragment() {
         }
     }
 
-    private inner class DevicesAdapter : RecyclerView.Adapter<DeviceHolder>() {
-
-        private val mDataSet: MutableList<BluetoothDevice> = ArrayList()
-        private val mDataCopy: MutableList<BluetoothDevice> = ArrayList()
+    private inner class DevicesAdapter : BaseRVAdapter<BluetoothDevice>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceHolder {
             return DeviceHolder(layoutInflater.inflate(
                     R.layout.item_ble_recycler, parent, false))
         }
 
-        override fun onBindViewHolder(holder: DeviceHolder, position: Int) {
-            val device = mDataSet[position]
-            holder.tvName.text = Html.fromHtml("<font color='red'>" + device.name
-                    + "</font>  <font color='blue'>" + device.address)
-            holder.btnConnect.isEnabled = true
-            holder.btnConnect.setOnClickListener {
-                doConnect(device)
-            }
-        }
-
-        override fun getItemCount(): Int {
-            return mDataSet.size
-        }
-
-        val data: List<BluetoothDevice>
-            get() {
-                mDataCopy.clear()
-                mDataCopy.addAll(mDataSet)
-                return mDataCopy
-            }
-
         fun addDevice(device: BluetoothDevice) {
-            val index = mDataSet.indexOf(device)
+            val index = mData.indexOf(device)
             if (index < 0) {
-                mDataSet.add(device)
+                mData.add(device)
             } else {
-                mDataSet[index] = device
+                mData[index] = device
             }
             Log.d(logTag(), "onDeviceScanned() index: $index, device: $device")
-            notifyItemChanged(if (index < 0) mDataSet.size - 1 else index)
+            notifyItemChanged(if (index < 0) mData.size - 1 else index)
         }
     }
 
-    private class DeviceHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private inner class DeviceHolder(itemView: View) : BaseRVHolder<BluetoothDevice>(itemView) {
+
         val tvName: TextView = itemView.findViewById(R.id.tv_ble_name)
         val btnConnect: TextView = itemView.findViewById(R.id.btn_connect)
+
+        override fun bindData(data: BluetoothDevice, position: Int) {
+            tvName.text = Html.fromHtml("<font color='red'>" + data.name
+                    + "</font>  <font color='blue'>" + data.address)
+            btnConnect.isEnabled = true
+            btnConnect.setOnClickListener {
+                doConnect(data)
+            }
+        }
     }
 }
