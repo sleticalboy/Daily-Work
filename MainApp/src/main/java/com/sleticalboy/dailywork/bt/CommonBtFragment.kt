@@ -14,7 +14,6 @@ import android.widget.TextView
 import com.sleticalboy.dailywork.R
 import com.sleticalboy.dailywork.base.BaseListFragment
 import com.sleticalboy.dailywork.base.BaseRVAdapter
-import com.sleticalboy.dailywork.base.BaseRVAdapter.IRVHolderCreator
 import com.sleticalboy.dailywork.base.BaseRVHolder
 import com.sleticalboy.dailywork.bt.common.BtScanner
 import kotlinx.android.synthetic.main.fragment_bt_common.*
