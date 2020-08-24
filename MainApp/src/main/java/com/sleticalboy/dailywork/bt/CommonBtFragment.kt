@@ -55,9 +55,7 @@ class CommonBtFragment : BaseListFragment<BluetoothDevice>() {
         stopScan.setOnClickListener { doStop() }
     }
 
-    override fun createAdapter(): BaseRVAdapter<BluetoothDevice> {
-        return DevicesAdapter()
-    }
+    override fun createAdapter(): BaseRVAdapter<BluetoothDevice> = DevicesAdapter()
 
     private fun doStop() {
         mScanner?.stopScan()

@@ -10,24 +10,23 @@ import android.text.Html
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.sleticalboy.dailywork.R
-import com.sleticalboy.dailywork.base.BaseFragment
+import com.sleticalboy.dailywork.base.BaseListFragment
+import com.sleticalboy.dailywork.base.BaseRVAdapter
+import com.sleticalboy.dailywork.base.BaseRVHolder
 import com.sleticalboy.dailywork.bt.ble.*
-import kotlinx.android.synthetic.main.fragment_bt_ble.*
-import java.util.*
+import kotlinx.android.synthetic.main.bt_common_header.*
 
 /**
  * Created on 20-8-18.
  *
  * @author Ben binli@grandstream.cn
  */
-class BleFragment : BaseFragment() {
+class BleFragment : BaseListFragment<BleScanner.Result>() {
 
     private var mService: BleService.LeBinder? = null
-    private var mAdapter: DevicesAdapter? = null
     private val mConn: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             Log.d(logTag(), "onServiceConnected() name: $name, service: $service")
@@ -46,13 +45,12 @@ class BleFragment : BaseFragment() {
         context.bindService(intent, mConn, Context.BIND_AUTO_CREATE)
     }
 
-    override fun layout(): Int = R.layout.fragment_bt_ble
+    override fun createAdapter(): BaseRVAdapter<BleScanner.Result> = DevicesAdapter()
 
-    override fun initView() {
+    override fun initHeader(headerContainer: FrameLayout) {
+        layoutInflater.inflate(R.layout.bt_common_header, headerContainer, true)
         startScan.setOnClickListener { startBtScan() }
         stopScan.setOnClickListener { stopBtScan() }
-        btDevicesRv.layoutManager = LinearLayoutManager(context)
-        btDevicesRv.adapter = DevicesAdapter().also { mAdapter = it }
     }
 
     private fun startBtScan() {
@@ -62,7 +60,8 @@ class BleFragment : BaseFragment() {
         val request = BleScanner.Request()
         request.mCallback = object : BleScanner.Callback() {
             override fun onScanResult(result: BleScanner.Result) {
-                mAdapter!!.addDevice(result)
+                val position = getAdapter().addData(result)
+                Log.d(logTag(), "onDeviceScanned() device: $result, index: $position")
             }
 
             override fun onScanFailed(errorCode: Int) {
@@ -107,49 +106,24 @@ class BleFragment : BaseFragment() {
 
     override fun logTag(): String = "BleFragment"
 
-    private inner class DevicesAdapter : RecyclerView.Adapter<DeviceHolder>() {
-
-        private val mDataSet: MutableList<BleScanner.Result> = ArrayList()
-        private val mDataCopy: MutableList<BleScanner.Result> = ArrayList()
+    private inner class DevicesAdapter : BaseRVAdapter<BleScanner.Result>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceHolder {
             return DeviceHolder(layoutInflater.inflate(
                     R.layout.item_ble_recycler, parent, false))
         }
-
-        override fun onBindViewHolder(holder: DeviceHolder, position: Int) {
-            val result = mDataSet[position]
-            holder.tvName.text = Html.fromHtml("<font color='red'>" + result.mDevice.name
-                    + "</font>  <font color='blue'>" + result.mDevice.address)
-            holder.btnConnect.isEnabled = result.mConnectable
-            holder.btnConnect.setOnClickListener { doConnect(result.mDevice) }
-        }
-
-        override fun getItemCount(): Int {
-            return mDataSet.size
-        }
-
-        val data: List<BleScanner.Result>
-            get() {
-                mDataCopy.clear()
-                mDataCopy.addAll(mDataSet)
-                return mDataCopy
-            }
-
-        fun addDevice(result: BleScanner.Result) {
-            val index = mDataSet.indexOf(result)
-            if (index < 0) {
-                mDataSet.add(result)
-            } else {
-                mDataSet[index] = result
-            }
-            Log.d(logTag(), "onDeviceScanned() index: $index, device: $result")
-            notifyItemChanged(if (index < 0) mDataSet.size - 1 else index)
-        }
     }
 
-    private class DeviceHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private inner class DeviceHolder(itemView: View) : BaseRVHolder<BleScanner.Result>(itemView) {
+
         val tvName: TextView = itemView.findViewById(R.id.tv_ble_name)
         val btnConnect: TextView = itemView.findViewById(R.id.btn_connect)
+
+        override fun bindData(result: BleScanner.Result, position: Int) {
+            tvName.text = Html.fromHtml("<font color='red'>" + result.mDevice.name
+                    + "</font>  <font color='blue'>" + result.mDevice.address)
+            btnConnect.isEnabled = result.mConnectable
+            btnConnect.setOnClickListener { doConnect(result.mDevice) }
+        }
     }
 }
