@@ -14,7 +14,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars"/>
+        tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/textView"
@@ -27,7 +27,7 @@
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="@+id/imageView2"
-        tools:text="@tools:sample/full_names"/>
+        tools:text="@tools:sample/full_names" />
 
     <TextView
         android:id="@+id/textView2"
@@ -39,7 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.050"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
-        tools:text="@tools:sample/lorem[4:10]"/>
+        tools:text="@tools:sample/lorem[4:10]" />
 
     <TextView
         android:id="@+id/textView3"
@@ -48,5 +48,5 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView2"
-        tools:text="@tools:sample/date/hhmm"/>
+        tools:text="@tools:sample/date/hhmm" />
 </androidx.constraintlayout.widget.ConstraintLayout>

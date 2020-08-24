@@ -12,13 +12,13 @@
         android:padding="8dp"
         android:text="timer task"
         android:textSize="24sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 
 </LinearLayout>

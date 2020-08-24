@@ -15,14 +15,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="imageToString"
-            android:text="to text"/>
+            android:text="to text" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="stringToImage"
-            android:text="to image"/>
+            android:text="to image" />
     </LinearLayout>
 
 
@@ -34,7 +34,7 @@
         <ImageView
             android:id="@+id/image_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
             <TextView
                 android:id="@+id/tv_image_str"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </ScrollView>
 
     </LinearLayout>

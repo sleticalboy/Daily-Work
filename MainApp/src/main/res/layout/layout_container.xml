@@ -10,17 +10,17 @@
         android:id="@+id/layout_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusable="true"/>
+        android:focusable="true" />
 
     <FrameLayout
         android:id="@+id/layout_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusable="true"/>
+        android:focusable="true" />
 
     <FrameLayout
         android:id="@+id/layout_progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusable="true"/>
+        android:focusable="true" />
 </FrameLayout>

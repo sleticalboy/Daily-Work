@@ -22,13 +22,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_refresh_arrow"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ProgressBar
                 android:id="@+id/default_ptr_rotate"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:visibility="visible"/>
+                android:visibility="visible" />
         </FrameLayout>
 
         <LinearLayout
@@ -42,14 +42,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                tools:text="上拉以刷新"/>
+                tools:text="上拉以刷新" />
 
             <TextView
                 android:id="@+id/refresh_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                tools:text="最近更新时间"/>
+                tools:text="最近更新时间" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

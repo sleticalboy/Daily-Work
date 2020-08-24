@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:padding="8dp"
-            android:src="@drawable/ic_search"/>
+            android:src="@drawable/ic_search" />
 
         <EditText
             android:layout_width="0dp"
@@ -24,7 +24,7 @@
             android:layout_weight="1"
             android:hint="输入关键字搜索"
             android:maxLines="1"
-            android:singleLine="true"/>
+            android:singleLine="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
             android:padding="8dp"
             android:text="取消"
             android:textColor="@android:color/black"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -44,5 +44,5 @@
         android:layout_weight="1"
         android:visibility="visible"
         tools:itemCount="30"
-        tools:listitem="@layout/recycler_view_item"/>
+        tools:listitem="@layout/recycler_view_item" />
 </merge>

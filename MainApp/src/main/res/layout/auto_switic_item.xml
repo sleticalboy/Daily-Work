@@ -14,7 +14,7 @@
         android:padding="4dp"
         android:singleLine="true"
         android:textColor="@android:color/black"
-        tools:text="first view"/>
+        tools:text="first view" />
 
     <TextView
         android:layout_width="match_parent"
@@ -24,6 +24,6 @@
         android:padding="4dp"
         android:singleLine="true"
         android:textColor="@android:color/black"
-        tools:text="first view"/>
+        tools:text="first view" />
 
 </LinearLayout>

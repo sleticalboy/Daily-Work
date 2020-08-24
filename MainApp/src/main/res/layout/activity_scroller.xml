@@ -16,13 +16,13 @@
             android:id="@+id/scroll_to_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="scrollTo"/>
+            android:text="scrollTo" />
 
         <Button
             android:id="@+id/scroll_by_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="scrollBy"/>
+            android:text="scrollBy" />
     </LinearLayout>
 
     <com.sleticalboy.weight.view.ScroscrllerView
@@ -32,31 +32,31 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:text="This is 1 child view"/>
+            android:text="This is 1 child view" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:text="This is 2 child view"/>
+            android:text="This is 2 child view" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:text="This is 3 child view"/>
+            android:text="This is 3 child view" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:text="This is 4 child view"/>
+            android:text="This is 4 child view" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:text="This is 5 child view"/>
+            android:text="This is 5 child view" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:text="This is 6 child view"/>
+            android:text="This is 6 child view" />
     </com.sleticalboy.weight.view.ScroscrllerView>
 </FrameLayout>
