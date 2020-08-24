@@ -16,7 +16,7 @@ import com.sleticalboy.dailywork.base.BaseListFragment
 import com.sleticalboy.dailywork.base.BaseRVAdapter
 import com.sleticalboy.dailywork.base.BaseRVHolder
 import com.sleticalboy.dailywork.bt.common.BtScanner
-import kotlinx.android.synthetic.main.fragment_bt_common.*
+import kotlinx.android.synthetic.main.bt_common_header.*
 
 /**
  * Created on 20-8-18.
@@ -26,7 +26,6 @@ import kotlinx.android.synthetic.main.fragment_bt_common.*
 class CommonBtFragment : BaseListFragment<BluetoothDevice>() {
 
     private var mScanner: BtScanner? = null
-    private var mAdapter: DevicesAdapter? = null
     private val mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val device = intent?.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
@@ -51,6 +50,7 @@ class CommonBtFragment : BaseListFragment<BluetoothDevice>() {
     override fun logTag(): String = "CommonBtFragment"
 
     override fun initHeader(headerContainer: FrameLayout) {
+        layoutInflater.inflate(R.layout.bt_common_header, headerContainer, true)
         startScan.setOnClickListener { doStart() }
         stopScan.setOnClickListener { doStop() }
     }
@@ -65,8 +65,8 @@ class CommonBtFragment : BaseListFragment<BluetoothDevice>() {
 
     private fun doStart() {
         mScanner?.startScan { device, rssi ->
-            Log.d(logTag(), "onDeviceFound() called with: device = $device, rssi = $rssi")
-            mAdapter?.addDevice(device)
+            val position = getAdapter().addData(device)
+            Log.d(logTag(), "onDeviceFound() device: $device, rssi: $rssi, pos: $position")
         }
     }
 
@@ -99,17 +99,6 @@ class CommonBtFragment : BaseListFragment<BluetoothDevice>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceHolder {
             return DeviceHolder(layoutInflater.inflate(
                     R.layout.item_ble_recycler, parent, false))
-        }
-
-        fun addDevice(device: BluetoothDevice) {
-            val index = mData.indexOf(device)
-            if (index < 0) {
-                mData.add(device)
-            } else {
-                mData[index] = device
-            }
-            Log.d(logTag(), "onDeviceScanned() index: $index, device: $device")
-            notifyItemChanged(if (index < 0) mData.size - 1 else index)
         }
     }
 

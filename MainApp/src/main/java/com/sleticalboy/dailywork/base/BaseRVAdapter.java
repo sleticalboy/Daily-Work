@@ -46,6 +46,19 @@ public abstract class BaseRVAdapter<DATA> extends RecyclerView.Adapter<BaseRVHol
         return mData.get(position);
     }
 
+    public final int addData(DATA data) {
+        final int index = mData.indexOf(data);
+        if (index < 0) {
+            mData.add(data);
+        } else {
+            mData.set(index, data);
+        }
+        final int position = index < 0 ? mData.size() - 1 : index;
+        notifyItemChanged(position);
+        // Log.d(logTag(), "onDeviceScanned() index: $index, device: $device");
+        return position;
+    }
+
     @Override
     public int getItemCount() {
         return mData.size();
