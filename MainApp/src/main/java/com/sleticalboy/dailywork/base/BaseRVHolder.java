@@ -1,7 +1,9 @@
 package com.sleticalboy.dailywork.base;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public abstract class BaseRVHolder<DATA> extends RecyclerView.ViewHolder {
 
-    public BaseRVHolder(@NonNull final View itemView) {
-        super(itemView);
+    public BaseRVHolder(@NonNull final ViewGroup parent, @LayoutRes int layout) {
+        super(LayoutInflater.from(parent.getContext()).inflate(layout, parent, false));
     }
 
     public abstract void bindData(@NonNull DATA data, int position);

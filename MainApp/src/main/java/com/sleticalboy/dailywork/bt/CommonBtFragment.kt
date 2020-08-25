@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.text.Html
 import android.util.Log
-import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -95,12 +94,12 @@ class CommonBtFragment : BaseListFragment<BluetoothDevice>() {
     private inner class DevicesAdapter : BaseRVAdapter<BluetoothDevice>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceHolder {
-            return DeviceHolder(layoutInflater.inflate(
-                    R.layout.item_ble_recycler, parent, false))
+            return DeviceHolder(parent, R.layout.item_ble_recycler)
         }
     }
 
-    private inner class DeviceHolder(itemView: View) : BaseRVHolder<BluetoothDevice>(itemView) {
+    private inner class DeviceHolder(parent: ViewGroup, layout: Int) :
+            BaseRVHolder<BluetoothDevice>(parent, layout) {
 
         val tvName: TextView = itemView.findViewById(R.id.tv_ble_name)
         val btnConnect: TextView = itemView.findViewById(R.id.btn_connect)
