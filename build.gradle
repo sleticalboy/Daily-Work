@@ -46,6 +46,27 @@ allprojects {
     }
 }
 
+// 定义函数递归输出目录下的文件
+def printRecurse(/*File*/ file) {
+    if (file.isDirectory()) {
+        println('' + file + ' -> dir')
+        file.listFiles().each {
+            printRecurse(it)
+        }
+    } else {
+        println file
+    }
+}
+
+// 定义一个 task
+// group: 对任务进行分组(否则就出现在 other 分组中)
+// description: 描述任务的职责
+task printBuildDir(description: 'print build files', group: 'custom') {
+    println 'printBuildDir() started'
+    printRecurse(rootProject.buildDir)
+    println 'printBuildDir() finished'
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
