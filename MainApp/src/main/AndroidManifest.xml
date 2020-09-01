@@ -54,12 +54,15 @@
         <activity android:name=".rv.PagerActivity" />
         <activity android:name=".rv.ClassifyActivity" />
         <activity android:name=".camera.LiveCameraActivity" />
+        <!--custom view -->
         <activity android:name=".csv.PathActivity" />
-        <activity android:name=".others.AlarmActivity" />
         <activity android:name=".csv.AlphaActivity" />
         <activity android:name=".csv.HeaderActivity" />
         <activity android:name=".csv.CustomViewActivity" />
         <activity android:name=".csv.ScrollerActivity" />
+        <activity android:name=".csv.GridViewActivity" />
+        <!--others-->
+        <activity android:name=".others.AlarmActivity" />
         <activity android:name=".others.ImageConvertUI" />
         <activity
             android:name=".csv.AutoSwitchUI"

@@ -18,7 +18,8 @@ class CustomViewActivity : ListActivity() {
 
     private val mDataList = arrayOf(
             ViewHolder(ScrollerActivity::class.java, "Scroller 使用"),
-            ViewHolder(PathActivity::class.java, "Path 类使用")
+            ViewHolder(PathActivity::class.java, "Path 类使用"),
+            ViewHolder(GridViewActivity::class.java, "GridView 使用")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
