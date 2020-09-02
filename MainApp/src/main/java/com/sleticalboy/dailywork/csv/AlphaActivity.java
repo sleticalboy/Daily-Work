@@ -59,9 +59,4 @@ public class AlphaActivity extends BaseActivity {
             return false;
         });
     }
-
-    @Override
-    protected void initData() {
-
-    }
 }
