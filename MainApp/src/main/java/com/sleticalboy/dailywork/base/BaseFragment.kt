@@ -19,10 +19,10 @@ abstract class BaseFragment : Fragment() {
     }
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initView();
+        initView(view)
     }
 
-    abstract fun initView()
+    abstract fun initView(view: View)
 
     @LayoutRes
     abstract fun layout(): Int

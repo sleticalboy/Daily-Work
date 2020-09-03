@@ -1,5 +1,6 @@
 package com.sleticalboy.dailywork.base
 
+import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sleticalboy.dailywork.R
@@ -16,7 +17,7 @@ abstract class BaseListFragment<DATA> : BaseFragment() {
 
     override fun logTag(): String = "BaseListFragment"
 
-    final override fun initView() {
+    final override fun initView(view: View) {
         initHeader(headerContainer)
 
         listContainer.layoutManager = LinearLayoutManager(context)

@@ -73,4 +73,5 @@
     <!-- notification -->
     <string name="notify_with_progress">Notify With Progress</string>
     <string name="notify_delay_with_light">Notify Delay With Light</string>
+    <string name="show_dialog">show dialog</string>
 </resources>
