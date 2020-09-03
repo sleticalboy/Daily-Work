@@ -10,7 +10,7 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.widget.ImageView
 
-import com.sleticalboy.dailywork.R
+import com.sleticalboy.learning.R
 
 import java.io.File
 import java.io.FileNotFoundException

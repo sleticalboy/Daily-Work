@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sleticalboy.dailywork.R;
+import com.sleticalboy.learning.R;
 
 /**
  * Created on 18-2-3.

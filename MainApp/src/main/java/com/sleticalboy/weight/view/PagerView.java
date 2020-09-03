@@ -16,7 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sleticalboy.dailywork.R;
+import com.sleticalboy.learning.R;
 import com.sleticalboy.util.UIUtils;
 import com.sleticalboy.weight.xrecycler.helper.PageScrollHelper;
 import com.sleticalboy.weight.xrecycler.helper.PagerLayoutManager;

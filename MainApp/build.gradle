@@ -6,11 +6,11 @@ android {
     compileSdkVersion rootProject.ext.compile_version
     buildToolsVersion rootProject.ext.build_version
     defaultConfig {
-        applicationId "com.sleticalboy.dailywork"
+        applicationId "com.sleticalboy.learning"
         minSdkVersion rootProject.ext.min_version
         targetSdkVersion rootProject.ext.target_version
-        versionCode 1
-        versionName "1.0"
+        versionCode 1.1
+        versionName "1.1"
         multiDexEnabled true
     }
     buildTypes {

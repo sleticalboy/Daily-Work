@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 
-import com.sleticalboy.dailywork.R
+import com.sleticalboy.learning.R
 import com.sleticalboy.weight.xrefresh.interfaces.IHeaderView
 
 /**

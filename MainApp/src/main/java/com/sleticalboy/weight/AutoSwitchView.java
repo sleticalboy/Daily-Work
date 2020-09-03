@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.sleticalboy.dailywork.R;
+import com.sleticalboy.learning.R;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;

@@ -11,7 +11,7 @@ import android.view.View;
 import androidx.annotation.ColorRes;
 import androidx.annotation.Nullable;
 
-import com.sleticalboy.dailywork.R;
+import com.sleticalboy.learning.R;
 
 /**
  * Created on 18-3-1.

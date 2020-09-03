@@ -29,7 +29,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 
-import com.sleticalboy.dailywork.R
+import com.sleticalboy.learning.R
 
 class CircleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0)
     : AppCompatImageView(context, attrs, defStyle) {

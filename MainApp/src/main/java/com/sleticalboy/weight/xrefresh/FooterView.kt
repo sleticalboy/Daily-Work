@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 
-import com.sleticalboy.dailywork.R
+import com.sleticalboy.learning.R
 import com.sleticalboy.weight.xrefresh.interfaces.IFooterView
 
 /**
