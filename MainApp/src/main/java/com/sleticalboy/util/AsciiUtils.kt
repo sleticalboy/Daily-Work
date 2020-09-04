@@ -15,7 +15,7 @@ object AsciiUtils {
     fun ascii2String(ASCIIs: IntArray): String {
         val sb = StringBuffer()
         for (i in ASCIIs.indices) {
-            sb.append(ascii2Char(ASCIIs[i]).toChar())
+            sb.append(ascii2Char(ASCIIs[i]))
         }
         return sb.toString()
     }
@@ -25,7 +25,7 @@ object AsciiUtils {
         val ASCIIss = ASCIIs.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val sb = StringBuffer()
         for (i in ASCIIss.indices) {
-            sb.append(ascii2Char(Integer.parseInt(ASCIIss[i])).toChar())
+            sb.append(ascii2Char(Integer.parseInt(ASCIIss[i])))
         }
         return sb.toString()
     }

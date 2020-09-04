@@ -13,7 +13,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-    private val requestCode = 0x12;
+    private val requestCode = 0x12
     protected var rxPerm: RxPermissions? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

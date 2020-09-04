@@ -17,7 +17,7 @@ abstract class BaseDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                    savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View? {
         var content = super.onCreateView(inflater, container, savedInstanceState)
         if (content == null) {
             content = inflater.inflate(layout(), container, false)
@@ -34,7 +34,7 @@ abstract class BaseDialog : DialogFragment() {
     @LayoutRes
     abstract fun layout(): Int
 
-    protected  open fun configureDialog(dialog: Dialog) {
+    protected open fun configureDialog(dialog: Dialog) {
     }
 
     protected open fun logTag(): String = "BaseDialog"
