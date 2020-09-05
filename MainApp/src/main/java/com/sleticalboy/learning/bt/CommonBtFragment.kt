@@ -14,6 +14,7 @@ import com.sleticalboy.learning.R
 import com.sleticalboy.learning.base.BaseListFragment
 import com.sleticalboy.learning.base.BaseRVAdapter
 import com.sleticalboy.learning.base.BaseRVHolder
+import com.sleticalboy.learning.bt.ble.BleScanner
 import com.sleticalboy.learning.bt.common.BtScanner
 import kotlinx.android.synthetic.main.bt_common_header.*
 
@@ -61,10 +62,12 @@ class CommonBtFragment : BaseListFragment<BluetoothDevice>() {
     }
 
     private fun doStart() {
-        mScanner?.startScan { device, rssi ->
-            val position = getAdapter().addData(device)
-            Log.d(logTag(), "onDeviceFound() device: $device, rssi: $rssi, pos: $position")
-        }
+        mScanner?.startScan(object : BtScanner.Callback {
+            override fun onDeviceFound(device: BluetoothDevice, rssi: Int) {
+                val position = getAdapter().addData(device)
+                Log.d(logTag(), "onDeviceFound() device: $device, rssi: $rssi, pos: $position")
+            }
+        })
     }
 
     override fun onPause() {

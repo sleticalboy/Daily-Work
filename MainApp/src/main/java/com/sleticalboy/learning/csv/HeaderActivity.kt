@@ -14,7 +14,6 @@ import com.sleticalboy.learning.base.BaseActivity
 import com.sleticalboy.learning.csv.HeaderActivity.RecyclerAdapter.MyViewHolder
 import java.util.*
 
-
 /**
  * Created on 18-6-6.
  *
@@ -22,13 +21,17 @@ import java.util.*
  * @description
  */
 class HeaderActivity : BaseActivity() {
+
     override fun layoutResId(): Int {
         return R.layout.activity_header
     }
 
     override fun initView() {
         val appBarLayout = findViewById<AppBarLayout>(R.id.app_bar_layout)
-        appBarLayout.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout1: AppBarLayout?, verticalOffset: Int -> Log.d("HeaderActivity", "verticalOffset:$verticalOffset") })
+        appBarLayout.addOnOffsetChangedListener(OnOffsetChangedListener {
+            _: AppBarLayout?, verticalOffset: Int ->
+            Log.d("HeaderActivity", "verticalOffset:$verticalOffset")
+        })
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
         val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = lm
@@ -42,6 +45,7 @@ class HeaderActivity : BaseActivity() {
     }
 
     internal class RecyclerAdapter : RecyclerView.Adapter<MyViewHolder>() {
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             return MyViewHolder(LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_recycler, parent, false))
@@ -56,11 +60,7 @@ class HeaderActivity : BaseActivity() {
         }
 
         internal class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            var tvRecyclerItem: TextView
-
-            init {
-                tvRecyclerItem = itemView.findViewById(R.id.tv_recycler_item)
-            }
+            var tvRecyclerItem: TextView = itemView.findViewById(R.id.tv_recycler_item)
         }
     }
 

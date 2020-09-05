@@ -7,7 +7,9 @@ package com.sleticalboy.learning.data
  * @author binlee sleticalboy@gmail.com
  */
 class DataEngine private constructor() {
+
     private var mIndexModel: IndexModel? = null
+
     fun indexModel(): IndexModel {
         if (mIndexModel == null) {
             mIndexModel = IndexModel()
@@ -16,12 +18,13 @@ class DataEngine private constructor() {
     }
 
     companion object {
+
         private var sDataEngine: DataEngine? = null
-        fun get(): DataEngine? {
+        fun get(): DataEngine {
             if (sDataEngine == null) {
                 sDataEngine = DataEngine()
             }
-            return sDataEngine
+            return sDataEngine as DataEngine
         }
     }
 }

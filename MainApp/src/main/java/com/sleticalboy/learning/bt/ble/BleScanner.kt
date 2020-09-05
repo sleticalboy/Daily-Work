@@ -13,12 +13,14 @@ import androidx.annotation.RequiresApi
 
 
 class BleScanner(context: Context?, private val mHandler: Handler) {
+
     private val mAdapter: BluetoothAdapter
 
     @Volatile
     private var mStarted = false
     private var mRawCallback: Any? = null
     private var mRequest: Request? = null
+
     fun startScan(request: Request?) {
         requireNotNull(request) { "request is null." }
         if (mStarted || !mAdapter.isEnabled) {
@@ -42,13 +44,13 @@ class BleScanner(context: Context?, private val mHandler: Handler) {
     }
 
     private fun startBeforeLL(request: Request?) {
-        val rawCallback = label@ LeScanCallback { device: BluetoothDevice?, rssi: Int, scanRecord: ByteArray? ->
-            if (request == null || request.mCallback == null) {
-                return@label
+        val rawCallback = LeScanCallback { device: BluetoothDevice?, rssi: Int, scanRecord: ByteArray? ->
+            if (request?.mCallback == null) {
+                return@LeScanCallback
             }
             if (request.mCallback!!.filter(scanRecord)) {
                 val rst = Result.obtain()
-                rst!!.mDevice = device
+                rst.mDevice = device
                 rst.mRssi = rssi
                 rst.mConnectable = true
                 request.mCallback!!.onScanResult(rst)
@@ -64,17 +66,17 @@ class BleScanner(context: Context?, private val mHandler: Handler) {
         val rawCallback: ScanCallback = object : ScanCallback() {
             override fun onScanResult(callbackType: Int, result: ScanResult) {
                 // Log.d(TAG, "onScanResult() callbackType: " + callbackType + ", result: " + result);
-                val record = result.scanRecord
-                if (request == null || request.mCallback == null || record == null) {
+                if (request?.mCallback == null || result.scanRecord == null) {
                     return
                 }
-                if (request.mCallback!!.filter(record.bytes)) {
+                val record = result.scanRecord
+                if (request.mCallback!!.filter(record?.bytes)) {
                     var connectable = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         connectable = result.isConnectable
                     }
                     val rst = Result.obtain()
-                    rst!!.mDevice = result.device
+                    rst.mDevice = result.device
                     rst.mRssi = result.rssi
                     rst.mConnectable = connectable
                     request.mCallback!!.onScanResult(rst)
@@ -83,7 +85,7 @@ class BleScanner(context: Context?, private val mHandler: Handler) {
             }
 
             override fun onScanFailed(errorCode: Int) {
-                if (request != null && request.mCallback != null) {
+                if (request?.mCallback != null) {
                     request.mCallback!!.onScanFailed(errorCode)
                 }
             }
@@ -112,8 +114,11 @@ class BleScanner(context: Context?, private val mHandler: Handler) {
     }
 
     abstract class Callback {
-        abstract fun onScanResult(result: Result?)
+
+        abstract fun onScanResult(result: Result)
+
         open fun onScanFailed(errorCode: Int) {}
+
         fun filter(scanRecord: ByteArray?): Boolean {
             return true
         }
@@ -125,11 +130,13 @@ class BleScanner(context: Context?, private val mHandler: Handler) {
     }
 
     class Result private constructor() {
+
         var mDevice: BluetoothDevice? = null
         var mRssi = 0
         var mConnectable = true
         private var mNext: Result? = null
         private var mInUse = 0
+
         override fun equals(o: Any?): Boolean {
             if (this === o) {
                 return true
@@ -168,7 +175,7 @@ class BleScanner(context: Context?, private val mHandler: Handler) {
             private var sPool: Result? = null
             private var sPoolSize = 0
             private val POOL_LOCK = Any()
-            fun obtain(): Result? {
+            fun obtain(): Result {
                 synchronized(POOL_LOCK) {
                     if (sPool != null) {
                         val r = sPool

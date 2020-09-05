@@ -6,6 +6,7 @@ import java.util.regex.Pattern
 
 
 class SM4Utils {
+
     // 秘钥
     private var secretKey = ""
 
@@ -24,10 +25,9 @@ class SM4Utils {
     fun encryptECB(plainText: String): String? {
         return try {
             val ctx = SM4Context()
-            ctx.isPadding = true
-            ctx.mode = SM4.Companion.SM4_ENCRYPT
-            val keyBytes: ByteArray?
-            keyBytes = if (hexString) {
+            ctx.setPadding(true)
+            ctx.setMode(SM4.SM4_ENCRYPT)
+            val keyBytes = if (hexString) {
                 Util.hexStringToBytes(secretKey)
             } else {
                 secretKey.toByteArray()
@@ -37,7 +37,7 @@ class SM4Utils {
             val input = plainText.toByteArray(charset("GBK"))
             val encrypted = sm4.cryptECB(ctx, input)
             var cipherText = BASE64Encoder().encode(encrypted)
-            if (cipherText != null && cipherText.trim { it <= ' ' }.length > 0) {
+            if (cipherText != null && cipherText.trim { it <= ' ' }.isNotEmpty()) {
                 val p = Pattern.compile("\\s*|\t|\r|\n")
                 val m = p.matcher(cipherText)
                 cipherText = m.replaceAll("")
@@ -58,10 +58,9 @@ class SM4Utils {
     fun decryptECB(cipherText: String?): String? {
         return try {
             val ctx = SM4Context()
-            ctx.isPadding = true
-            ctx.mode = SM4.Companion.SM4_DECRYPT
-            val keyBytes: ByteArray?
-            keyBytes = if (hexString) {
+            ctx.setPadding(true)
+            ctx.setMode(SM4.SM4_DECRYPT)
+            val keyBytes = if (hexString) {
                 Util.hexStringToBytes(secretKey)
             } else {
                 secretKey.toByteArray()
@@ -69,7 +68,7 @@ class SM4Utils {
             val sm4 = SM4()
             sm4.setDecryptKey(ctx, keyBytes)
             val decrypted = sm4.cryptECB(ctx, BASE64Decoder().decodeBuffer(cipherText))
-            String(decrypted!!, "GBK")
+            String(decrypted!!, charset("GBK"))
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -85,8 +84,8 @@ class SM4Utils {
     fun encryptCBC(plainText: String): String? {
         return try {
             val ctx = SM4Context()
-            ctx.isPadding = true
-            ctx.mode = SM4.Companion.SM4_ENCRYPT
+            ctx.setPadding(true)
+            ctx.setMode(SM4.SM4_ENCRYPT)
             val keyBytes: ByteArray?
             val ivBytes: ByteArray?
             if (hexString) {
@@ -98,9 +97,10 @@ class SM4Utils {
             }
             val sm4 = SM4()
             sm4.setEncryptKey(ctx, keyBytes)
-            val encrypted = sm4.cryptCBC(ctx, ivBytes, plainText.toByteArray(charset("GBK")))
-            var cipherText = BASE64Encoder().encode(encrypted)
-            if (cipherText != null && cipherText.trim { it <= ' ' }.length > 0) {
+            var cipherText = BASE64Encoder().encode(sm4.cryptCBC(ctx, ivBytes,
+                    plainText.toByteArray(charset("GBK")))
+            )
+            if (cipherText != null && cipherText.trim { it <= ' ' }.isNotEmpty()) {
                 val p = Pattern.compile("\\s*|\t|\r|\n")
                 val m = p.matcher(cipherText)
                 cipherText = m.replaceAll("")
@@ -121,8 +121,8 @@ class SM4Utils {
     fun decryptCBC(cipherText: String?): String? {
         return try {
             val ctx = SM4Context()
-            ctx.isPadding = true
-            ctx.mode = SM4.Companion.SM4_DECRYPT
+            ctx.setPadding(true)
+            ctx.setMode(SM4.SM4_DECRYPT)
             val keyBytes: ByteArray?
             val ivBytes: ByteArray?
             if (hexString) {
@@ -135,7 +135,7 @@ class SM4Utils {
             val sm4 = SM4()
             sm4.setDecryptKey(ctx, keyBytes)
             val decrypted = sm4.cryptCBC(ctx, ivBytes, BASE64Decoder().decodeBuffer(cipherText))
-            String(decrypted!!, "GBK")
+            String(decrypted!!, charset("GBK"))
         } catch (e: Exception) {
             e.printStackTrace()
             null

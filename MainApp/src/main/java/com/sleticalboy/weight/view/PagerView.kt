@@ -23,7 +23,9 @@ import com.sleticalboy.weight.xrecycler.helper.PagerLayoutManager
 /**
  * 使用 RecyclerView 实现的 ViewPager，支持单页翻动，支持自适应高度
  */
-class PagerView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
+class PagerView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+    : LinearLayout(context, attrs, defStyleAttr) {
+
     private var mTextView: TextView? = null
     private var mRecyclerView: RecyclerView? = null
     private var mIndicatorLayout: LinearLayout? = null
@@ -98,13 +100,13 @@ class PagerView @JvmOverloads constructor(context: Context?, attrs: AttributeSet
             return
         }
         if (layoutManager is PagerLayoutManager) {
-            val pageSize = (layoutManager as PagerLayoutManager?).getPageSize()
+            val pageSize = (layoutManager as PagerLayoutManager).getPageSize()
             this.pageSize = if (pageSize > MAX_PAGE_SIZE) MAX_PAGE_SIZE else pageSize
         }
     }
 
     private val layoutManager: RecyclerView.LayoutManager?
-        private get() = if (mRecyclerView == null || mRecyclerView!!.layoutManager == null) {
+        get() = if (mRecyclerView == null || mRecyclerView!!.layoutManager == null) {
             null
         } else mRecyclerView!!.layoutManager
 
@@ -197,7 +199,7 @@ class PagerView @JvmOverloads constructor(context: Context?, attrs: AttributeSet
             return
         }
         // 将 ScrollHelper 与 RecyclerView 关联起来
-        helper.setUpWithRecycleView(mRecyclerView)
+        helper.setUpWithRecycleView(mRecyclerView!!)
         if (mOnPageSelectedListener == null) {
             mOnPageSelectedListener = SimpleOnPageSelectedListener()
         }

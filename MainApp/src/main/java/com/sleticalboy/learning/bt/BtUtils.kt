@@ -3,7 +3,6 @@ package com.sleticalboy.learning.bt
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothProfile
 import android.os.Build
-import java.lang.reflect.InvocationTargetException
 import java.util.*
 
 
@@ -13,6 +12,7 @@ import java.util.*
  * @author BenLee binli@grandstream.cn
  */
 object BtUtils {
+
     // public static CharSequence errorReason(Context context, String name, int reason) {
     //     int errorMsg;
     //     switch(reason) {
@@ -41,38 +41,52 @@ object BtUtils {
     //     return reason + " " + context.getResources().getString(errorMsg, name);
     // }
     fun bondStr(state: Int): String {
-        if (state == BluetoothDevice.BOND_NONE) {
-            return "NONE(10)"
-        } else if (state == BluetoothDevice.BOND_BONDING) {
-            return "BONDING(11)"
-        } else if (state == BluetoothDevice.BOND_BONDED) {
-            return "BONDEd(12)"
+        return when (state) {
+            BluetoothDevice.BOND_NONE -> {
+                "NONE(10)"
+            }
+            BluetoothDevice.BOND_BONDING -> {
+                "BONDING(11)"
+            }
+            BluetoothDevice.BOND_BONDED -> {
+                "BONDEd(12)"
+            }
+            else -> String.format(Locale.US, "Unknown state(%d)", state)
         }
-        return String.format(Locale.US, "Unknown state(%d)", state)
     }
 
     fun bleTypeToString(type: Int): String {
-        if (type == BluetoothDevice.DEVICE_TYPE_DUAL) {
-            return "Dual Mode - BR/EDR/LE(3)"
-        } else if (type == BluetoothDevice.DEVICE_TYPE_LE) {
-            return "Low Energy - LE-only(2)"
-        } else if (type == BluetoothDevice.DEVICE_TYPE_CLASSIC) {
-            return "Classic - BR/EDR devices(1)"
+        return when (type) {
+            BluetoothDevice.DEVICE_TYPE_DUAL -> {
+                "Dual Mode - BR/EDR/LE(3)"
+            }
+            BluetoothDevice.DEVICE_TYPE_LE -> {
+                "Low Energy - LE-only(2)"
+            }
+            BluetoothDevice.DEVICE_TYPE_CLASSIC -> {
+                "Classic - BR/EDR devices(1)"
+            }
+            else -> "Unknown(0)"
         }
-        return "Unknown(0)"
     }
 
     fun profileState(state: Int): String {
-        return if (state == BluetoothProfile.STATE_DISCONNECTED) {
-            "0 DISCONNECTED"
-        } else if (state == BluetoothProfile.STATE_CONNECTING) {
-            "1 CONNECTING"
-        } else if (state == BluetoothProfile.STATE_CONNECTED) {
-            "2 CONNECTED"
-        } else if (state == BluetoothProfile.STATE_DISCONNECTING) {
-            "3 DISCONNECTING"
-        } else {
-            "Unknown state $state"
+        return when (state) {
+            BluetoothProfile.STATE_DISCONNECTED -> {
+                "0 DISCONNECTED"
+            }
+            BluetoothProfile.STATE_CONNECTING -> {
+                "1 CONNECTING"
+            }
+            BluetoothProfile.STATE_CONNECTED -> {
+                "2 CONNECTED"
+            }
+            BluetoothProfile.STATE_DISCONNECTING -> {
+                "3 DISCONNECTING"
+            }
+            else -> {
+                "Unknown state $state"
+            }
         }
     }
 
@@ -151,55 +165,60 @@ object BtUtils {
 
     private operator fun invoke(obj: Any, clazz: Class<*>, method: String, vararg args: Any): Any? {
         return try {
-            val parameterTypes: Array<Class<*>?>?
-            if (args == null || args.size == 0) {
-                parameterTypes = null
+            val m = if (args.isEmpty()) {
+                clazz.getDeclaredMethod(method)
             } else {
-                parameterTypes = arrayOfNulls<Class<*>?>(args.size)
-                for (i in 0 until args.size) {
+                val parameterTypes = arrayOfNulls<Class<*>?>(args.size)
+                for (i in args.indices) {
                     parameterTypes[i] = getObjClass(args[i])
                 }
+                clazz.getDeclaredMethod(method, *parameterTypes)
             }
             // 如果参数是 int，则必须是 int.class
-            val m = clazz.getDeclaredMethod(method, *parameterTypes)
             m.isAccessible = true
             m.invoke(obj, *args)
-        } catch (e: NoSuchMethodException) {
-            e.printStackTrace()
-            null
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
-            null
-        } catch (e: InvocationTargetException) {
+        } catch (e: Exception) {
             e.printStackTrace()
             null
         }
     }
 
     private fun getObjClass(obj: Any?): Class<*>? {
-        if (obj is Class<*>) {
-            return obj
-        } else if (obj is Boolean) {
-            return Boolean::class.javaPrimitiveType
-        } else if (obj is Char) {
-            return Char::class.javaPrimitiveType
-        } else if (obj is Byte) {
-            return Byte::class.javaPrimitiveType
-        } else if (obj is Short) {
-            return Short::class.javaPrimitiveType
-        } else if (obj is Int) {
-            return Int::class.javaPrimitiveType
-        } else if (obj is Long) {
-            return Long::class.javaPrimitiveType
-        } else if (obj is Float) {
-            return Float::class.javaPrimitiveType
-        } else if (obj is Double) {
-            return Double::class.javaPrimitiveType
-        } else if (obj is Void) {
-            return Void.TYPE
-        } else if (obj != null) {
-            return obj.javaClass
+        when {
+            obj is Class<*> -> {
+                return obj
+            }
+            obj is Boolean -> {
+                return Boolean::class.javaPrimitiveType
+            }
+            obj is Char -> {
+                return Char::class.javaPrimitiveType
+            }
+            obj is Byte -> {
+                return Byte::class.javaPrimitiveType
+            }
+            obj is Short -> {
+                return Short::class.javaPrimitiveType
+            }
+            obj is Int -> {
+                return Int::class.javaPrimitiveType
+            }
+            obj is Long -> {
+                return Long::class.javaPrimitiveType
+            }
+            obj is Float -> {
+                return Float::class.javaPrimitiveType
+            }
+            obj is Double -> {
+                return Double::class.javaPrimitiveType
+            }
+            obj is Void -> {
+                return Void.TYPE
+            }
+            obj != null -> {
+                return obj.javaClass
+            }
+            else -> return null
         }
-        return null
     }
 }

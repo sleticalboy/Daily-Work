@@ -4,14 +4,15 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 
-
 /**
  * Created by AndroidStudio on 20-2-23.
  *
  * @author binlee
  */
 class AuthenticationService : Service() {
+
     private var mAuthenticator: Authenticator? = null
+
     override fun onCreate() {
         mAuthenticator = Authenticator(this)
         // Log.d(TAG, "onCreate() called");

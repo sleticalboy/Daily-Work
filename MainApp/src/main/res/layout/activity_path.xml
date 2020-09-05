@@ -17,7 +17,7 @@
         android:layout_gravity="bottom"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        app:circlePadding="20dp"
-        app:circleRadius="20"
-        app:lineColor="@color/colorPrimary" />
+        app:circle_padding="20dp"
+        app:circle_radius="20"
+        app:line_color="@color/colorPrimary" />
 </FrameLayout>

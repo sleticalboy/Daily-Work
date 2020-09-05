@@ -11,7 +11,6 @@ import com.sleticalboy.weight.view.PagerView
 import com.sleticalboy.weight.xrecycler.adapter.XBaseHolder
 import com.sleticalboy.weight.xrecycler.adapter.XRecyclerAdapter
 
-
 /**
  * Created on 18-2-11.
  *
@@ -20,6 +19,7 @@ import com.sleticalboy.weight.xrecycler.adapter.XRecyclerAdapter
  * @description 测试 RecyclerView  分页效果
  */
 class PagerActivity : AppCompatActivity() {
+
     private val mImagesId = arrayOf(
             R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher,
             R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher,
@@ -41,7 +41,9 @@ class PagerActivity : AppCompatActivity() {
         pagerView.setTitle("已添加的应用")
         pagerView.adapter = PagerAdapter(this, mImagesId)
         pagerView.setIndicatorDrawable(R.drawable.mx_page_indicator)
-        findViewById<View>(R.id.btnShowPage).setOnClickListener { v: View? -> pagerView.visibility = if (++sCounter % 2 == 0) View.GONE else View.VISIBLE }
+        findViewById<View>(R.id.btnShowPage).setOnClickListener {
+            pagerView.visibility = if (++sCounter % 2 == 0) View.GONE else View.VISIBLE
+        }
     }
 
     private fun setView() {
@@ -54,8 +56,10 @@ class PagerActivity : AppCompatActivity() {
         setContentView(pagerView)
     }
 
-    internal class PagerAdapter(context: Context, var mIntegers: Array<Int>) : XRecyclerAdapter<Int>(context) {
-        override fun onCreateItemHolder(parent: ViewGroup, viewType: Int): XBaseHolder<*> {
+    internal class PagerAdapter(context: Context, private var mIntegers: Array<Int>)
+        : XRecyclerAdapter<Int>(context) {
+
+        override fun onCreateItemHolder(parent: ViewGroup, viewType: Int): XBaseHolder<Int> {
             return ItemHolder(parent, R.layout.item_common_layout)
         }
 
@@ -68,12 +72,12 @@ class PagerActivity : AppCompatActivity() {
             return mIntegers.size
         }
 
-        internal class ItemHolder(parent: ViewGroup, res: Int) : XBaseHolder<Int?>(parent, res) {
+        internal class ItemHolder(parent: ViewGroup, res: Int) : XBaseHolder<Int>(parent, res) {
 
             private var mImageView: ImageView? = getView(R.id.image_view)
 
-            override fun bindData(data: Int?) {
-                mImageView!!.setImageResource(data!!)
+            override fun bindData(data: Int) {
+                mImageView!!.setImageResource(data)
             }
 
             init {

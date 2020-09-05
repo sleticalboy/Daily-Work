@@ -8,15 +8,16 @@ import android.util.Log
 import android.widget.Toast
 import com.sleticalboy.learning.R
 
-
 /**
  * Created on 20-2-17.
  *
  * @author sleticalboy
  */
 class DevicesManager(private val mContext: Context) {
+
     private val mMgr: DevicePolicyManager
     private val mComponent: ComponentName
+
     private fun isActive(): Boolean {
         return mMgr.isAdminActive(mComponent)
     }

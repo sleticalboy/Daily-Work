@@ -20,8 +20,8 @@ import com.sleticalboy.learning.R
 import com.sleticalboy.learning.accounts.Constants
 import com.sleticalboy.learning.base.BaseActivity
 
-
 class AuthenticatorActivity : BaseActivity(), Constants {
+
     private var mAccountAuthenticatorResponse: AccountAuthenticatorResponse? = null
     private var mResultBundle: Bundle? = null
     private var mUsername: String? = null
@@ -29,6 +29,7 @@ class AuthenticatorActivity : BaseActivity(), Constants {
     private var mAccountManager: AccountManager? = null
     private var mRequestNewAccount = false
     private var mLoading: ProgressBar? = null
+
     override fun prepareWork(savedInstanceState: Bundle?) {
         mAccountManager = AccountManager.get(application)
         mUsername = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
@@ -62,7 +63,7 @@ class AuthenticatorActivity : BaseActivity(), Constants {
         usernameEt.addTextChangedListener(watcher)
         passwordEt.addTextChangedListener(watcher)
         loginBtn.setOnClickListener { v: View ->
-            mLoading.setVisibility(View.VISIBLE)
+            mLoading?.visibility = View.VISIBLE
             mUsername = usernameEt.text.toString().trim { it <= ' ' }
             mPassword = passwordEt.text.toString().trim { it <= ' ' }
             handleLogin(v)
@@ -70,8 +71,8 @@ class AuthenticatorActivity : BaseActivity(), Constants {
     }
 
     private fun handleLogin(v: View) {
-        if (mUsername!!.startsWith(Constants.Companion.ACCOUNT_PREFIX) && mPassword!!.startsWith(Constants.Companion.ACCOUNT_PASSWORD)) {
-            v.postDelayed({ finishLogin(Constants.Companion.ACCOUNT_AUTH_TOKEN) }, 300L)
+        if (mUsername!!.startsWith(Constants.ACCOUNT_PREFIX) && mPassword!!.startsWith(Constants.ACCOUNT_PASSWORD)) {
+            v.postDelayed({ finishLogin(Constants.ACCOUNT_AUTH_TOKEN) }, 300L)
         } else {
             finishLogin(null)
         }
@@ -79,12 +80,12 @@ class AuthenticatorActivity : BaseActivity(), Constants {
 
     private fun finishLogin(authToken: String?) {
         Log.d(TAG, "finishLogin() called with: authToken = [$authToken]")
-        if (authToken == null || authToken.length == 0) {
+        if (authToken == null || authToken.isEmpty()) {
             mLoading!!.visibility = View.GONE
             Toast.makeText(this, R.string.login_failed, Toast.LENGTH_SHORT).show()
             return
         }
-        val account = Account(mUsername, Constants.Companion.ACCOUNT_TYPE)
+        val account = Account(mUsername, Constants.ACCOUNT_TYPE)
         if (mRequestNewAccount) {
             mAccountManager!!.addAccountExplicitly(account, mPassword, null)
             // Set contacts sync for this account.
@@ -94,7 +95,7 @@ class AuthenticatorActivity : BaseActivity(), Constants {
         }
         val intent = Intent()
         intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername)
-        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.Companion.ACCOUNT_TYPE)
+        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ACCOUNT_TYPE)
         mResultBundle = intent.extras
         setResult(RESULT_OK, intent)
         mLoading!!.visibility = View.GONE

@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
-
 class GlobalReceiver : BroadcastReceiver() {
+
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
         if (Intent.ACTION_SCREEN_ON == action || Intent.ACTION_USER_PRESENT == action) {

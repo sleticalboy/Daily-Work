@@ -16,12 +16,16 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
  * @author leebin
  * @description 圆点页面指示器
  */
-class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) : View(context, attrs, defStyle), PageIndicator {
+class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null,
+                                                    defStyle: Int = 0)
+    : View(context, attrs, defStyle), PageIndicator {
     private val mRadius = 0
     private var mCurrentPage = 0
     private var mViewPager: ViewPager? = null
     private val mInternalListener: OnPageChangeListener? = null
+
     private fun init() {}
+
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {}
 
     override fun onSaveInstanceState(): Parcelable? {
@@ -86,7 +90,7 @@ class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: At
         }
 
         companion object {
-            val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState?> {
+            val CREATOR: Parcelable.Creator<SavedState?> = object : Parcelable.Creator<SavedState?> {
                 override fun createFromParcel(`in`: Parcel): SavedState? {
                     return SavedState(`in`)
                 }
@@ -105,8 +109,7 @@ class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: At
         invalidate()
     }
 
-    private fun <T> checkValid(ref: T?): T {
-        requireNotNull(ref)
+    private fun <T> checkValid(ref: T): T {
         return ref
     }
 

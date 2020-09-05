@@ -4,19 +4,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
-
 /**
  * Created on 20-8-23.
  *
  * @author binlee sleticalboy@gmail.com
  */
-abstract class BaseRVAdapter<DATA> @JvmOverloads constructor(data: List<DATA>? = ArrayList()) : RecyclerView.Adapter<BaseRVHolder<DATA>>() {
-    protected val mData: MutableList<DATA>
+abstract class BaseRVAdapter<DATA> @JvmOverloads constructor(data: List<DATA>? = ArrayList())
+    : RecyclerView.Adapter<BaseRVHolder<DATA>>() {
 
-    constructor(data: Array<DATA>?) : this(if (data == null) ArrayList<DATA>() else ArrayList<DATA>(Arrays.asList(*data)))
+    protected val mData: MutableList<DATA> = data as MutableList<DATA>? ?: ArrayList()
+
+    constructor(data: Array<DATA>?) : this(data?.toList() ?: ArrayList<DATA>())
 
     abstract override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRVHolder<DATA>
-    override fun onBindViewHolder(holder: BaseRVHolder<*>, position: Int) {
+
+    override fun onBindViewHolder(holder: BaseRVHolder<DATA>, position: Int) {
         holder.bindData(getData(position), position)
     }
 
@@ -42,7 +44,4 @@ abstract class BaseRVAdapter<DATA> @JvmOverloads constructor(data: List<DATA>? =
         return mData.size
     }
 
-    init {
-        mData = data ?: ArrayList<DATA>()
-    }
 }

@@ -19,7 +19,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
-
 /**
  * Created on 18-2-27.
  *
@@ -30,6 +29,7 @@ import java.util.*
  * @version 1.0
  */
 class CameraManager {
+
     private var mCamera: Camera? = null
     private val mHandler = Handler(Looper.getMainLooper())
 
@@ -56,15 +56,18 @@ class CameraManager {
     private fun openCamera() {
         val cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT
         mCamera = Camera.open(cameraId)
-        mCamera.setDisplayOrientation(90)
-        val parameters = mCamera.getParameters()
+        if (mCamera == null) {
+            return
+        }
+        mCamera!!.setDisplayOrientation(90)
+        val parameters = mCamera!!.parameters
         parameters.pictureFormat = ImageFormat.JPEG
         val pictureSize = parameters.supportedPictureSizes[0]
         parameters.setPictureSize(pictureSize.width, pictureSize.height)
         val previewSize = parameters.supportedPreviewSizes[0]
         parameters.setPreviewSize(previewSize.width, previewSize.height)
         parameters.setRotation(270)
-        mCamera.setParameters(parameters)
+        mCamera!!.parameters = parameters
     }
 
     /**
@@ -115,7 +118,7 @@ class CameraManager {
 
     fun autoFocus(context: Context, focusView: ViewGroup,
                   focusViewSize: Size, event: MotionEvent) {
-        mCamera!!.autoFocus { success: Boolean, camera: Camera? ->
+        mCamera!!.autoFocus { success: Boolean, _: Camera? ->
             if (success) {
                 // 1, 设置聚焦区域
                 setFocusArea(context, event)
@@ -203,6 +206,7 @@ class CameraManager {
     }
 
     open class SimpleSurfaceTextureListener : SurfaceTextureListener {
+
         override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
             // CameraManager.getInstance().startPreview(surface);
             if (DEBUG) {
@@ -211,6 +215,7 @@ class CameraManager {
         }
 
         override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
+
         override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
             getInstance().stopPreview()
             if (DEBUG) {

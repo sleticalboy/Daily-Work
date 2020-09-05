@@ -9,20 +9,24 @@ import android.text.TextUtils
 import android.util.Log
 import com.sleticalboy.learning.accounts.Constants
 
-
 /**
  * Created by AndroidStudio on 20-2-23.
  *
  * @author binlee
  */
-class Authenticator     // Log.d(TAG, "Authenticator() called with: context = [" + context + "]");
-(private val mContext: Context) : AbstractAccountAuthenticator(mContext), Constants {
+class Authenticator(private val mContext: Context)
+    : AbstractAccountAuthenticator(mContext), Constants {
+
+    init {
+        // Log.d(TAG, "Authenticator() called with: context = [" + context + "]");
+    }
+
     @Throws(NetworkErrorException::class)
     override fun addAccount(response: AccountAuthenticatorResponse, accountType: String,
                             authTokenType: String, requiredFeatures: Array<String>, options: Bundle): Bundle {
         Log.d(TAG, "addAccount() called with: response = [" + response + "], accountType = ["
                 + accountType + "], authTokenType = [" + authTokenType + "], options = [" + options + "]")
-        if (options != null && options.keySet() != null) {
+        if (options.keySet() != null) {
             for (key in options.keySet()) {
                 Log.d(TAG, "addAccount: key = " + key + ", value = " + options[key])
             }
@@ -40,7 +44,7 @@ class Authenticator     // Log.d(TAG, "Authenticator() called with: context = ["
         Log.d(TAG, "getAuthToken() called with: response = [" + response + "], account = ["
                 + account + "], authTokenType = [" + authTokenType + "], options = ["
                 + options + "]")
-        if (Constants.Companion.ACCOUNT_AUTH_TOKEN != authTokenType) {
+        if (Constants.ACCOUNT_AUTH_TOKEN != authTokenType) {
             val result = Bundle()
             result.putString(AccountManager.KEY_ERROR_MESSAGE, "invalid authTokenType")
             return result
@@ -50,11 +54,11 @@ class Authenticator     // Log.d(TAG, "Authenticator() called with: context = ["
         if (password != null) {
             // pretend requesting auth token.
             SystemClock.sleep(300L)
-            val authToken: String = Constants.Companion.ACCOUNT_AUTH_TOKEN
+            val authToken: String = Constants.ACCOUNT_AUTH_TOKEN
             if (!TextUtils.isEmpty(authToken)) {
                 val result = Bundle()
-                result.putString(AccountManager.KEY_ACCOUNT_NAME, Constants.Companion.ACCOUNT_NAME)
-                result.putString(AccountManager.KEY_ACCOUNT_TYPE, Constants.Companion.ACCOUNT_TYPE)
+                result.putString(AccountManager.KEY_ACCOUNT_NAME, Constants.ACCOUNT_NAME)
+                result.putString(AccountManager.KEY_ACCOUNT_TYPE, Constants.ACCOUNT_TYPE)
                 result.putString(AccountManager.KEY_AUTHTOKEN, authToken)
                 return result
             }
@@ -71,7 +75,7 @@ class Authenticator     // Log.d(TAG, "Authenticator() called with: context = ["
     override fun editProperties(response: AccountAuthenticatorResponse, accountType: String): Bundle {
         Log.d(TAG, "editProperties() called with: response = [" + response + "], accountType = ["
                 + accountType + "]")
-        return null
+        throw NetworkErrorException()
     }
 
     @Throws(NetworkErrorException::class)
@@ -79,7 +83,7 @@ class Authenticator     // Log.d(TAG, "Authenticator() called with: context = ["
                                     options: Bundle): Bundle {
         Log.d(TAG, "confirmCredentials() called with: response = [" + response + "], account = ["
                 + account + "], options = [" + options + "]")
-        return null
+        throw NetworkErrorException()
     }
 
     override fun getAuthTokenLabel(authTokenType: String): String {
@@ -93,7 +97,7 @@ class Authenticator     // Log.d(TAG, "Authenticator() called with: context = ["
         Log.d(TAG, "updateCredentials() called with: response = [" + response + "], account = ["
                 + account + "], authTokenType = [" + authTokenType + "], options = ["
                 + options + "]")
-        return null
+        throw NetworkErrorException()
     }
 
     @Throws(NetworkErrorException::class)
@@ -101,7 +105,7 @@ class Authenticator     // Log.d(TAG, "Authenticator() called with: context = ["
                              features: Array<String>): Bundle {
         Log.d(TAG, "hasFeatures() called with: response = [" + response + "], account = ["
                 + account + "], features = [" + features + "]")
-        return null
+        throw NetworkErrorException()
     }
 
     companion object {

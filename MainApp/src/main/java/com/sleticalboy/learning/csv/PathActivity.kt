@@ -13,7 +13,9 @@ import com.sleticalboy.weight.view.TestView
  * @version 1.0
  */
 class PathActivity : BaseActivity() {
+
     override fun initData() {}
+
     override fun initView() {
         val testView = findViewById<TestView>(R.id.test)
         val singleLine = findViewById<View>(R.id.singleLine)
@@ -21,7 +23,7 @@ class PathActivity : BaseActivity() {
         //     testView.update();
         //     singleLine.performClick();
         // }, 250L));
-        singleLine.setOnClickListener { v: View? -> testView.invalidate() }
+        singleLine.setOnClickListener { testView.invalidate() }
     }
 
     override fun layoutResId(): Int {

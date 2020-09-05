@@ -4,13 +4,13 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 
-
 /**
  * Created by AndroidStudio on 20-2-23.
  *
  * @author binlee
  */
 class ContactsSyncService : Service() {
+
     override fun onCreate() {
         synchronized(LOCK) {
             if (sSyncAdapter == null) {

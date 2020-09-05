@@ -6,7 +6,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-
 /**
  * Created on 18-3-26.
  *
@@ -14,8 +13,10 @@ import java.util.concurrent.TimeUnit
  * @description
  */
 class RetrofitClient private constructor() {
-    val okHttpClient: OkHttpClient
+
+    private val okHttpClient: OkHttpClient
     private val mRetrofit: Retrofit
+
     fun <T> create(service: Class<T>?): T {
         if (service == null) {
             throw RuntimeException("Api service is null")
@@ -24,11 +25,13 @@ class RetrofitClient private constructor() {
     }
 
     private object Holder {
-        val instance = RetrofitClient()
-            get() = Holder.field
+        val client = RetrofitClient()
     }
 
-    companion object;
+    companion object {
+        fun get(): RetrofitClient = Holder.client
+    }
+
     init {
         val loggingInterceptor = HttpLogInterceptor()
                 .setLevel(HttpLogInterceptor.Level.BODY)
@@ -37,7 +40,8 @@ class RetrofitClient private constructor() {
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(true) //                .cookieJar(new CookieJar() { // cookie 持久化[只是在内存中]
+                .retryOnConnectionFailure(true)
+                //                .cookieJar(new CookieJar() { // cookie 持久化[只是在内存中]
                 //                    private Map<String, List<Cookie>> mCookies = new HashMap<>();
                 //
                 //                    @Override

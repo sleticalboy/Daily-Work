@@ -119,10 +119,12 @@ class BleFragment : BaseListFragment<BleScanner.Result>() {
         val btnConnect: TextView = itemView.findViewById(R.id.btn_connect)
 
         override fun bindData(result: BleScanner.Result, position: Int) {
-            tvName.text = Html.fromHtml("<font color='red'>" + result.mDevice.name
-                    + "</font>  <font color='blue'>" + result.mDevice.address)
+            tvName.text = Html.fromHtml("<font color='red'>" + result.mDevice?.name
+                    + "</font>  <font color='blue'>" + result.mDevice?.address)
             btnConnect.isEnabled = result.mConnectable
-            btnConnect.setOnClickListener { doConnect(result.mDevice) }
+            btnConnect.setOnClickListener {
+                result.mDevice?.let { it1 -> doConnect(it1) }
+            }
         }
     }
 }

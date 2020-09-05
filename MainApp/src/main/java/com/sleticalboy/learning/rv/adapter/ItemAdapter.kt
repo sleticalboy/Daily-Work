@@ -18,7 +18,7 @@ import com.sleticalboy.weight.xrecycler.adapter.XRecyclerAdapter
 class ItemAdapter(context: Context, private val mObjects: Array<Int>)
     : XRecyclerAdapter<Int>(context, mObjects) {
 
-    override fun onCreateItemHolder(parent: ViewGroup, viewType: Int): XBaseHolder<*> {
+    override fun onCreateItemHolder(parent: ViewGroup, viewType: Int): XBaseHolder<Int> {
         return ViewHolder(parent, R.layout.item_wheel_layout)
     }
 
@@ -30,12 +30,12 @@ class ItemAdapter(context: Context, private val mObjects: Array<Int>)
         return mObjects[getCount() % mObjects.size]
     }
 
-    internal class ViewHolder(parent: ViewGroup, res: Int) : XBaseHolder<Int?>(parent, res) {
+    internal class ViewHolder(parent: ViewGroup, res: Int) : XBaseHolder<Int>(parent, res) {
 
         private var mImageView: ImageView? = getView(R.id.image_view)
 
-        override fun bindData(resId: Int?) {
-            mImageView!!.setImageResource(resId!!)
+        override fun bindData(resId: Int) {
+            mImageView!!.setImageResource(resId)
         }
 
     }

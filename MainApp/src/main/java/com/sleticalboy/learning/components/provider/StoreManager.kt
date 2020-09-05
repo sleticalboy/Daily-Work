@@ -4,8 +4,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-
 class StoreManager private constructor(context: Context? = null) {
+
     private val mHelper: DbHelper?
 
     private object SingletonHolder {

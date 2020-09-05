@@ -23,7 +23,7 @@ class IndexActivity : BaseActivity() {
     override fun initView() {
         val adapter = DataAdapter()
         val start = System.currentTimeMillis()
-        DataEngine.get().indexModel().moduleSource.observe(this, Observer {
+        DataEngine.get().indexModel().getModuleSource().observe(this, Observer {
             when (it) {
                 is Result.Loading -> {
                     Log.d(logTag(), "initView() loading data: $it")
@@ -34,10 +34,9 @@ class IndexActivity : BaseActivity() {
                 else -> {
                     Log.d(logTag(), "initView() load data success: $it")
                     dataSet.clear()
-                    dataSet.addAll((it as Result.Success).data)
+                    dataSet.addAll((it as Result.Success).getData())
                     adapter.notifyDataSetChanged()
-                    val cost = System.currentTimeMillis() - start
-                    Log.d(logTag(), "show UI cost: $cost ms")
+                    Log.d(logTag(), "show UI cost: ${System.currentTimeMillis() - start} ms")
                 }
             }
         })
@@ -69,7 +68,7 @@ class IndexActivity : BaseActivity() {
         }
     }
 
-    inner class ItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView = itemView as TextView
     }
 }

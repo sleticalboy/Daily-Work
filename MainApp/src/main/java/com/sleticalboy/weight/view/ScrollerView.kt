@@ -14,11 +14,13 @@ import android.widget.Scroller
  * @author leebin
  * @description
  */
-class ScrollerView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) : ViewGroup(context, attrs, defStyle) {
+class ScrollerView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0)
+    : ViewGroup(context, attrs, defStyle) {
+
     private val mTouchSlop // 最小滑动距离
-            : Int
+            : Int = ViewConfiguration.get(context).scaledTouchSlop
     private val mScroller // 辅助滑动
-            : Scroller
+            : Scroller = Scroller(context)
     private var mDownX // 手指按下时 x 的位置
             = 0f
     private var mMoveX // 手指移动时 x 的位置
@@ -125,8 +127,6 @@ class ScrollerView @JvmOverloads constructor(context: Context?, attrs: Attribute
 
     init {
         // 第一步，创建Scroller的实例
-        mTouchSlop = ViewConfiguration.get(context).scaledTouchSlop
-        mScroller = Scroller(context)
         init()
     }
 }

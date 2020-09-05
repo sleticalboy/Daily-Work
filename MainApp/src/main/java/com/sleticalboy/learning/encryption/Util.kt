@@ -1,7 +1,7 @@
 package com.sleticalboy.learning.encryption
 
 import java.math.BigInteger
-
+import kotlin.math.pow
 
 object Util {
     /**
@@ -27,8 +27,7 @@ object Util {
      */
     fun byteToInt(bytes: ByteArray): Int {
         var num = 0
-        var temp: Int
-        temp = 0x000000ff and bytes[0].toInt() shl 0
+        var temp = 0x000000ff and bytes[0].toInt() shl 0
         num = num or temp
         temp = 0x000000ff and bytes[1].toInt() shl 8
         num = num or temp
@@ -115,7 +114,7 @@ object Util {
     fun getHexString(bytes: ByteArray, upperCase: Boolean): String {
         var ret = ""
         for (i in bytes.indices) {
-            ret += Integer.toString((bytes[i] and 0xff) + 0x100, 16).substring(1)
+            ret += Integer.toString((bytes[i].toInt() and 0xff) + 0x100, 16).substring(1)
         }
         return if (upperCase) ret.toUpperCase() else ret
     }
@@ -127,7 +126,7 @@ object Util {
      */
     fun printHexString(bytes: ByteArray) {
         for (i in bytes.indices) {
-            var hex = Integer.toHexString(bytes[i] and 0xFF)
+            var hex = Integer.toHexString(bytes[i].toInt() and 0xFF)
             if (hex.length == 1) {
                 hex = "0$hex"
             }
@@ -153,7 +152,7 @@ object Util {
         val d = ByteArray(length)
         for (i in 0 until length) {
             val pos = i * 2
-            d[i] = (charToByte(hexChars[pos]) shl 4 or charToByte(hexChars[pos + 1])) as Byte
+            d[i] = (charToByte(hexChars[pos]).toInt() shl 4 or charToByte(hexChars[pos + 1]).toInt()).toByte()
         }
         return d
     }
@@ -303,7 +302,7 @@ object Util {
         for (i in 0 until max) {
             val c = content[i]
             val b = Integer.toHexString(c.toInt())
-            result = result + b
+            result += b
         }
         return result
     }
@@ -333,19 +332,18 @@ object Util {
      * @return 十进制数值
      */
     fun hexStringToAlgorism(hex: String): Int {
-        var hex = hex
-        hex = hex.toUpperCase()
-        val max = hex.length
+        var input = hex
+        input = input.toUpperCase()
+        val max = input.length
         var result = 0
         for (i in max downTo 1) {
-            val c = hex[i - 1]
-            var algorism = 0
-            algorism = if (c >= '0' && c <= '9') {
+            val c = input[i - 1]
+            val algorism  = if (c in '0'..'9') {
                 c - '0'
             } else {
                 c.toInt() - 55
             }
-            (result += Math.pow(16.0, max - i.toDouble()) * algorism).toInt()
+            result += (16.0.pow(max - i.toDouble()) * algorism).toInt()
         }
         return result
     }
@@ -357,12 +355,12 @@ object Util {
      * @return 二进制字符串
      */
     fun hexStringToBinary(hex: String): String {
-        var hex = hex
-        hex = hex.toUpperCase()
+        var input = hex
+        input = input.toUpperCase()
         var result = ""
-        val max = hex.length
+        val max = input.length
         for (i in 0 until max) {
-            val c = hex[i]
+            val c = input[i]
             when (c) {
                 '0' -> result += "0000"
                 '1' -> result += "0001"
@@ -449,7 +447,7 @@ object Util {
         for (i in max downTo 1) {
             val c = binary[i - 1]
             val algorism = c - '0'
-            (result += Math.pow(2.0, max - i.toDouble()) * algorism).toInt()
+            result += (2.0.pow(max - i.toDouble()) * algorism).toInt()
         }
         return result
     }
@@ -537,8 +535,7 @@ object Util {
         val l = hex.length
         while (i < l) {
             val swap = "" + arr[i++] + arr[i]
-            val byteint = swap.toInt(16) and 0xFF
-            b[j] = byteint.toByte()
+            b[j] = (swap.toInt(16) and 0xFF).toByte()
             i++
             j++
         }
@@ -556,7 +553,7 @@ object Util {
         var hs = ""
         var stmp = ""
         for (n in b.indices) {
-            stmp = Integer.toHexString(b[n] and 0xff)
+            stmp = Integer.toHexString(b[n].toInt() and 0xff)
             hs = if (stmp.length == 1) {
                 hs + "0" + stmp
             } else {

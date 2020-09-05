@@ -9,18 +9,19 @@ import java.util.concurrent.SynchronousQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
-
 /**
  * Created on 20-8-13.
  *
  * @author Ben binli@grandstream.cn
  */
-class Dispatcher(val context: Context) {
+class Dispatcher(private val context: Context) {
+
     private val mReadyConns: Deque<Connection> = ArrayDeque()
     private val mRunningConns: Deque<Connection> = ArrayDeque()
     private var mMaxRequest = 5
     private var mExecutorService: ExecutorService? = null
-    var hidHost: BluetoothProfile? = null
+    private var hidHost: BluetoothProfile? = null
+
     private fun promoteAndExecute() {
         val executables: MutableList<Connection> = ArrayList()
         synchronized(this) {
@@ -96,4 +97,12 @@ class Dispatcher(val context: Context) {
             connection.cancel()
         }
     }
+
+    fun setHidHost(proxy: BluetoothProfile?) {
+        hidHost = proxy
+    }
+
+    fun getHidHost(): BluetoothProfile? = hidHost
+
+    fun getContext(): Context? = context
 }

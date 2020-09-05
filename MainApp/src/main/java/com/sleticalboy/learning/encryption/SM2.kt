@@ -9,8 +9,8 @@ import org.bouncycastle.math.ec.ECPoint
 import java.math.BigInteger
 import java.security.SecureRandom
 
-
 class SM2 {
+
     val ecc_p: BigInteger
     val ecc_a: BigInteger
     val ecc_b: BigInteger
@@ -61,9 +61,7 @@ class SM2 {
         ecc_curve = ECCurve.Fp(ecc_p, ecc_a, ecc_b)
         ecc_point_g = ECPoint.Fp(ecc_curve, ecc_gx_fieldelement, ecc_gy_fieldelement)
         ecc_bc_spec = ECDomainParameters(ecc_curve, ecc_point_g, ecc_n)
-        val ecc_ecgenparam: ECKeyGenerationParameters
-        ecc_ecgenparam = ECKeyGenerationParameters(ecc_bc_spec, SecureRandom())
         ecc_key_pair_generator = ECKeyPairGenerator()
-        ecc_key_pair_generator.init(ecc_ecgenparam)
+        ecc_key_pair_generator.init(ECKeyGenerationParameters(ecc_bc_spec, SecureRandom()))
     }
 }

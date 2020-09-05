@@ -12,14 +12,16 @@ import android.util.Log
 import com.sleticalboy.learning.accounts.Constants
 import java.io.IOException
 
-
 /**
  * Created by AndroidStudio on 20-2-23.
  *
  * @author binlee
  */
-internal class ContactsSyncAdapter(context: Context?) : AbstractThreadedSyncAdapter(context, true), Constants {
-    private val mAccountManager: AccountManager
+internal class ContactsSyncAdapter(context: Context?)
+    : AbstractThreadedSyncAdapter(context, true), Constants {
+
+    private val mAccountManager: AccountManager = AccountManager.get(context)
+
     override fun onPerformSync(account: Account, extras: Bundle, authority: String,
                                provider: ContentProviderClient, syncResult: SyncResult) {
         Log.d(TAG, "onPerformSync() called with: account = [" + account + "], extras = [" + extras
@@ -33,7 +35,7 @@ internal class ContactsSyncAdapter(context: Context?) : AbstractThreadedSyncAdap
                 setAccountContactsVisibility(context, account, true)
             }
             val authToken = mAccountManager.blockingGetAuthToken(account,
-                    Constants.Companion.ACCOUNT_TYPE, NOTIFY_AUTH_FAILURE)
+                    Constants.ACCOUNT_TYPE, NOTIFY_AUTH_FAILURE)
             Log.d(TAG, "onPerformSync: authToken = $authToken")
         } catch (e: Throwable) {
             if (e is AuthenticatorException) {
@@ -63,7 +65,7 @@ internal class ContactsSyncAdapter(context: Context?) : AbstractThreadedSyncAdap
      * @param marker  The high-water-mark we want to save.
      */
     private fun setServerSyncMarker(account: Account, marker: Long) {
-        mAccountManager.setUserData(account, SYNC_MARKER_KEY, java.lang.Long.toString(marker))
+        mAccountManager.setUserData(account, SYNC_MARKER_KEY, marker.toString())
     }
 
     companion object {
@@ -74,18 +76,25 @@ internal class ContactsSyncAdapter(context: Context?) : AbstractThreadedSyncAdap
             if (obj == null) {
                 Log.d(TAG, "printObj: obj is null")
             }
-            if (obj is Map<*, *>) {
-                Log.d(TAG, "printObj: obj is $obj")
-            } else if (obj is List<*>) {
-                Log.d(TAG, "printObj: obj is $obj")
-            } else if (obj is Bundle) {
-                printBundle(obj as Bundle?, "Bundle")
-            } else if (obj is Intent) {
-                printBundle(obj.extras, "Intent bundle")
-            } else if (obj is Throwable) {
-                Log.d(TAG, "printObj: obj is Throwable", obj as Throwable?)
-            } else {
-                Log.d(TAG, "printObj: obj is $obj")
+            when (obj) {
+                is Map<*, *> -> {
+                    Log.d(TAG, "printObj: obj is $obj")
+                }
+                is List<*> -> {
+                    Log.d(TAG, "printObj: obj is $obj")
+                }
+                is Bundle -> {
+                    printBundle(obj as Bundle?, "Bundle")
+                }
+                is Intent -> {
+                    printBundle(obj.extras, "Intent bundle")
+                }
+                is Throwable -> {
+                    Log.d(TAG, "printObj: obj is Throwable", obj as Throwable?)
+                }
+                else -> {
+                    Log.d(TAG, "printObj: obj is $obj")
+                }
             }
         }
 
@@ -95,13 +104,16 @@ internal class ContactsSyncAdapter(context: Context?) : AbstractThreadedSyncAdap
                 return
             }
             for (key in bundle.keySet()) {
-                val value = bundle[key]
-                if (value is Bundle) {
-                    printBundle(value as Bundle?, "Bundle")
-                } else if (value is Intent) {
-                    printBundle(value.extras, "Intent bundle")
-                } else {
-                    Log.d(TAG, "$prefix key = $value")
+                when (val value = bundle[key]) {
+                    is Bundle -> {
+                        printBundle(value as Bundle?, "Bundle")
+                    }
+                    is Intent -> {
+                        printBundle(value.extras, "Intent bundle")
+                    }
+                    else -> {
+                        Log.d(TAG, "$prefix key = $value")
+                    }
                 }
             }
         }
@@ -110,13 +122,10 @@ internal class ContactsSyncAdapter(context: Context?) : AbstractThreadedSyncAdap
                                          visible: Boolean) {
             val values = ContentValues()
             values.put(ContactsContract.RawContacts.ACCOUNT_NAME, account.name)
-            values.put(ContactsContract.RawContacts.ACCOUNT_TYPE, Constants.Companion.ACCOUNT_TYPE)
+            values.put(ContactsContract.RawContacts.ACCOUNT_TYPE, Constants.ACCOUNT_TYPE)
             values.put(ContactsContract.Settings.UNGROUPED_VISIBLE, if (visible) 1 else 0)
-            context.contentResolver.insert(Constants.Companion.DB_URI, values)
+            context.contentResolver.insert(Constants.DB_URI, values)
         }
     }
 
-    init {
-        mAccountManager = AccountManager.get(context)
-    }
 }

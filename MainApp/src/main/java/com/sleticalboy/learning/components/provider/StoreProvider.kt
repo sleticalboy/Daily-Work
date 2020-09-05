@@ -8,8 +8,8 @@ import android.database.MatrixCursor
 import android.net.Uri
 import android.util.Log
 
-
 class StoreProvider : ContentProvider() {
+
     companion object {
         private const val TAG = "StoreProvider"
         private const val AUTHORITY = "com.sleticalboy.dailywork.store"
@@ -46,19 +46,21 @@ class StoreProvider : ContentProvider() {
         var value = 0
         val table = uri.lastPathSegment
         var sql = "select mac from device_list where mac=? and status"
-        sql += if ("cache" == table) {
-            "=0"
-        } else if ("pair" == table) {
-            ">=3"
-        } else {
-            cursor.addRow(arrayOf<Any>(value))
-            return cursor
+        sql += when (table) {
+            "cache" -> {
+                "=0"
+            }
+            "pair" -> {
+                ">=3"
+            }
+            else -> {
+                cursor.addRow(arrayOf<Any>(value))
+                return cursor
+            }
         }
-        val c: Cursor = StoreManager.Companion.get().readableDb().rawQuery(sql, projection)
-        if (c != null) {
-            value = if (c.count != 0) 1 else 0
-            c.close()
-        }
+        val c: Cursor = StoreManager.get().readableDb().rawQuery(sql, projection)
+        value = if (c.count != 0) 1 else 0
+        c.close()
         cursor.addRow(arrayOf<Any>(value))
         return cursor
     }

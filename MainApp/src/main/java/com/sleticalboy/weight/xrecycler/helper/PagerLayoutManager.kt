@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 
-
 /**
  * Created on 2016/11/9.
  *
  * @author zhuguohui
  */
-class PagerLayoutManager(rows: Int, columns: Int) : RecyclerView.LayoutManager(), PageDecorationLastJudge {
+class PagerLayoutManager(rows: Int, columns: Int)
+    : RecyclerView.LayoutManager(), PageDecorationLastJudge {
+
     private val totalHeight = 0
     private var totalWidth = 0
     private var offsetY = 0
@@ -27,6 +28,7 @@ class PagerLayoutManager(rows: Int, columns: Int) : RecyclerView.LayoutManager()
     private var itemWidthUsed = 0
     private var itemHeightUsed = 0
     private val mMeasuredDimension = IntArray(2)
+
     override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams {
         return RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -52,9 +54,9 @@ class PagerLayoutManager(rows: Int, columns: Int) : RecyclerView.LayoutManager()
     }
 
     private val usableWidth: Int
-        private get() = width - paddingLeft - paddingRight
+        get() = width - paddingLeft - paddingRight
     private val usableHeight: Int
-        private get() = height - paddingTop - paddingBottom
+        get() = height - paddingTop - paddingBottom
 
     override fun onLayoutChildren(recycler: Recycler, state: RecyclerView.State) {
         if (itemCount == 0) {
@@ -73,7 +75,7 @@ class PagerLayoutManager(rows: Int, columns: Int) : RecyclerView.LayoutManager()
         itemHeightUsed = (mRows - 1) * itemHeight
 
         //计算总的页数
-        mPageSize = pageSize
+        mPageSize = getPageSize()
 
         //计算可以横向滚动的最大值
         totalWidth = (mPageSize - 1) * width
@@ -162,14 +164,13 @@ class PagerLayoutManager(rows: Int, columns: Int) : RecyclerView.LayoutManager()
      *
      * @return 总页数
      */
-    val pageSize: Int
-        get() {
-            val itemCount = itemCount
-            return itemCount / onePageSize + if (itemCount % onePageSize == 0) 0 else 1
-        }
+    fun getPageSize(): Int {
+        val itemCount = itemCount
+        return itemCount / onePageSize + if (itemCount % onePageSize == 0) 0 else 1
+    }
 
     override fun isLastRow(index: Int): Boolean {
-        if (index >= 0 && index < itemCount) {
+        if (index in 0 until itemCount) {
             var indexOfPage = index % onePageSize
             indexOfPage++
             return indexOfPage > (mRows - 1) * mColumns && indexOfPage <= onePageSize
@@ -179,7 +180,7 @@ class PagerLayoutManager(rows: Int, columns: Int) : RecyclerView.LayoutManager()
 
     override fun isLastColumn(position: Int): Boolean {
         var position = position
-        if (position >= 0 && position < itemCount) {
+        if (position in 0 until itemCount) {
             position++
             return position % mColumns == 0
         }
@@ -187,9 +188,9 @@ class PagerLayoutManager(rows: Int, columns: Int) : RecyclerView.LayoutManager()
     }
 
     override fun isLastLast(position: Int): Boolean {
-        var position = position
-        position++
-        return position % onePageSize == 0
+        var temp = position
+        temp++
+        return temp % onePageSize == 0
     }
 
     companion object {

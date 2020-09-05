@@ -14,12 +14,15 @@ import com.sleticalboy.learning.R
  * @version 1.0
  * @description 绘图：Path 类练习使用
  */
-class PathView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
+class PathView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null,
+                                         defStyleAttr: Int = 0)
+    : View(context, attrs, defStyleAttr) {
     private var mPaint: Paint? = null
     private var mPath: Path? = null
     private var mOval: RectF? = null
     private var mBitmap: Bitmap? = null
     private var mShader: Shader? = null
+
     private fun init() {
         mPaint = Paint()
         mPaint!!.style = Paint.Style.FILL_AND_STROKE // 画线，填充，默认是填充
@@ -27,8 +30,12 @@ class PathView @JvmOverloads constructor(context: Context?, attrs: AttributeSet?
         mPaint!!.strokeWidth = 4f
         mPath = Path()
         mOval = RectF()
-        mBitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_test_drawable)
-        mShader = BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+        var bitmap = mBitmap
+        if (bitmap == null) {
+            bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_test_drawable)
+        }
+        mBitmap = bitmap
+        mShader = BitmapShader(mBitmap!!, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
     }
 
     override fun onDraw(canvas: Canvas) {

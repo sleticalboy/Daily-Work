@@ -7,29 +7,30 @@ package com.sleticalboy.learning.data
  * @author binlee sleticalboy@gmail.com
  */
 open class Result<T> {
+
     class Success<Data>(private val mData: Data) : Result<Data>() {
         fun getData(): Data {
             return mData
         }
     }
 
-    class Error(private val mCause: Throwable) : Result<Any?>() {
-        fun getCause(): Throwable {
-            return mCause
-        }
+    inner class Error(private val mCause: Throwable) : Result<T>() {
+        fun getCause(): Throwable = mCause
     }
 
-    class Loading : Result<Any?>()
+    inner class Loading : Result<T>() {
+        fun getProgress(): String = "Loading..."
+    }
 
     override fun toString(): String {
         if (this is Success<*>) {
             return "data = " + (this as Success<T>).getData()
         }
         if (this is Error) {
-            return "error = " + (this as Error).getCause()
+            return "error = " + getCause()
         }
         return if (this is Loading) {
-            "Loading..."
+            return getProgress()
         } else super.toString()
     }
 }

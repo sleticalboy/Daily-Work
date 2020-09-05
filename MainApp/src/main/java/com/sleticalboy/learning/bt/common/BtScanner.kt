@@ -15,34 +15,35 @@ import android.util.Log
  * @author Ben binli@grandstream.cn
  */
 class BtScanner(context: Context) {
+
     private val mContext: Context
     private var mCallback: Callback? = null
+
     private val mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
-            if (BluetoothAdapter.ACTION_STATE_CHANGED == action) {
+            if (BluetoothAdapter.ACTION_STATE_CHANGED == intent.action) {
                 if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF)
                         == BluetoothAdapter.STATE_ON) {
                     startScan(mCallback)
                 }
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED == action) {
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED == intent.action) {
                 // discovery started
-                Log.d(TAG, "receive action: $action, discovery started")
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) {
+                Log.d(TAG, "receive action: ${intent.action}, discovery started")
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED == intent.action) {
                 // discovery finished
-                Log.d(TAG, "receive action: $action, discovery finished")
-            } else if (BluetoothDevice.ACTION_FOUND == action) {
+                Log.d(TAG, "receive action: ${intent.action}, discovery finished")
+            } else if (BluetoothDevice.ACTION_FOUND == intent.action) {
                 // bt device found
                 if (mCallback != null) {
                     mCallback!!.onDeviceFound(getDevice(intent),
-                            intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, 0.toShort())
-                                    .toInt())
+                            intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, 0.toShort()).toInt()
+                    )
                 }
             }
         }
 
         private fun getDevice(intent: Intent): BluetoothDevice {
-            return intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+            return intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
         }
     }
 
@@ -69,7 +70,7 @@ class BtScanner(context: Context) {
     }
 
     interface Callback {
-        fun onDeviceFound(device: BluetoothDevice?, rssi: Int)
+        fun onDeviceFound(device: BluetoothDevice, rssi: Int)
     }
 
     companion object {

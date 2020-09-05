@@ -7,8 +7,8 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters
 import java.io.IOException
 import java.math.BigInteger
 
-
 class SM2Utils {
+
     //	public static void main(String[] args) throws Exception
     //	{
     //		//生成密钥对

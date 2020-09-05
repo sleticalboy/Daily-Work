@@ -21,8 +21,10 @@ import com.sleticalboy.util.ThreadHelper
  * @author binlee sleticalboy@gmail.com
  */
 class NotificationsUI : BaseActivity() {
+
     private var mManager: NotificationManager? = null
     private var mHandler: Handler? = null
+
     override fun prepareWork(savedInstanceState: Bundle?) {
         mManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         mHandler = Handler(Looper.getMainLooper())
@@ -39,7 +41,11 @@ class NotificationsUI : BaseActivity() {
 
     private fun notifyWithProgress() {
         val mgr = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val b = Notification.Builder(this, TAG + "@" + hashCode())
+        val b = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Notification.Builder(this, "$TAG@${hashCode()}")
+        } else {
+            Notification.Builder(this)
+        }
         b.setContentTitle("test progress notification")
         b.setSubText("progress: 0%")
         b.setProgress(100, 0, false)
@@ -73,14 +79,16 @@ class NotificationsUI : BaseActivity() {
         builder.setLights(Color.RED, 3000, 3000)
         builder.setSmallIcon(R.drawable.ic_sms_light_24dp)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId(NotificationHelper.Companion.SPECIAL_TAG)
+            builder.setChannelId(NotificationHelper.SPECIAL_TAG)
         }
         builder.setDefaults(Notification.DEFAULT_ALL)
         val not = builder.build()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             not.color = Color.RED
         }
-        ThreadHelper.runOnMain({ mManager!!.notify(NotificationHelper.Companion.SPECIAL_TAG, -1, not) }, 3000L)
+        ThreadHelper.runOnMain(Runnable {
+            mManager!!.notify(NotificationHelper.SPECIAL_TAG, -1, not)
+        }, 3000L)
     }
 
     companion object {

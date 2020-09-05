@@ -12,14 +12,13 @@ import android.content.IntentFilter
 import android.os.*
 import android.util.Log
 
-
 class BleService : Service(), Handler.Callback {
+
     private var mBinder: LeBinder? = null
-    var handler: Handler? = null
-        get() = mService.field
-        private set
+    private var handler: Handler? = null
     private var mScanner: BleScanner? = null
     private var mDispatcher: Dispatcher? = null
+
     private val mBtReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             // all logic is handled in mCoreHandler thread
@@ -65,18 +64,18 @@ class BleService : Service(), Handler.Callback {
         val adapter = BluetoothAdapter.getDefaultAdapter()
         adapter.getProfileProxy(this, object : ServiceListener {
             override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
-                mDispatcher.setHidHost(proxy)
+                mDispatcher?.setHidHost(proxy)
             }
 
             override fun onServiceDisconnected(profile: Int) {
-                mDispatcher.setHidHost(null)
+                mDispatcher?.setHidHost(null)
             }
         }, 4 /*BluetoothProfile.HID_HOST*/)
     }
 
     private fun unbindHidProxy() {
         val adapter = BluetoothAdapter.getDefaultAdapter()
-        adapter.closeProfileProxy(4 /*BluetoothProfile.HID_HOST*/, mDispatcher.getHidHost())
+        adapter.closeProfileProxy(4 /*BluetoothProfile.HID_HOST*/, mDispatcher?.getHidHost())
     }
 
     private fun registerBtReceiver() {
@@ -107,30 +106,31 @@ class BleService : Service(), Handler.Callback {
         return true
     }
 
-    class LeBinder(private val mService: BleService) : Binder() {
+    inner class LeBinder(private val mService: BleService) : Binder() {
+
         fun startScan(request: BleScanner.Request?) {
             val msg = Message.obtain()
             msg.obj = request
             msg.what = MSG_START_SCAN
-            handler.sendMessage(msg)
+            handler?.sendMessage(msg)
         }
 
         fun stopScan() {
-            handler.sendEmptyMessage(MSG_STOP_SCAN)
+            handler?.sendEmptyMessage(MSG_STOP_SCAN)
         }
 
-        fun connect(device: BluetoothDevice, callback: IConnectCallback?) {
+        fun connect(device: BluetoothDevice, callback: IConnectCallback) {
             val msg = Message.obtain()
             msg.obj = Connection(device, callback)
             msg.what = MSG_START_CONNECT
-            handler.sendMessage(msg)
+            handler?.sendMessage(msg)
         }
 
         fun cancel(device: BluetoothDevice?) {
             val msg = Message.obtain()
             msg.what = MSG_CANCEL_CONNECT
             msg.obj = device
-            handler.sendMessage(msg)
+            handler?.sendMessage(msg)
         }
     }
 

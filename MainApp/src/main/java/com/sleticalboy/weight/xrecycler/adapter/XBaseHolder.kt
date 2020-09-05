@@ -8,7 +8,6 @@ import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 
-
 /**
  * Created on 18-2-7.
  *
@@ -41,7 +40,8 @@ abstract class XBaseHolder<M>(itemView: View?) : RecyclerView.ViewHolder(itemVie
     private val ownerRecyclerView: RecyclerView?
         get() {
             try {
-                val mOwnerRecyclerView = RecyclerView.ViewHolder::class.java.getDeclaredField("mOwnerRecyclerView")
+                val mOwnerRecyclerView = RecyclerView.ViewHolder::class.java
+                        .getDeclaredField("mOwnerRecyclerView")
                 mOwnerRecyclerView.isAccessible = true
                 return mOwnerRecyclerView[this] as RecyclerView
             } catch (e: NoSuchFieldException) {
@@ -51,6 +51,7 @@ abstract class XBaseHolder<M>(itemView: View?) : RecyclerView.ViewHolder(itemVie
             }
             return null
         }
+
     protected val context: Context get() = itemView.context
 
     abstract fun bindData(data: M)

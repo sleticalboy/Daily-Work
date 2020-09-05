@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_service.*
 class ServicePractise : BaseActivity() {
 
     private var mService: LocalService? = null
+
     private val connection = object : ServiceConnection {
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -23,7 +24,7 @@ class ServicePractise : BaseActivity() {
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             tvBindProgress.text = "Connected"
-            mService = (service as LocalService.LocalBinder).service
+            mService = (service as LocalService.LocalBinder).getService()
         }
     }
 

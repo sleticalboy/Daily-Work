@@ -5,14 +5,15 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters
 import org.bouncycastle.math.ec.ECPoint
 import java.math.BigInteger
 
-
 class Cipher {
+
     private var ct = 1
     private var p2: ECPoint? = null
     private var sm3keybase: SM3Digest? = null
     private var sm3c3: SM3Digest? = null
-    private val key: ByteArray
-    private var keyOff: Byte
+    private val key: ByteArray = ByteArray(32)
+    private var keyOff: Byte = 0
+
     private fun Reset() {
         sm3keybase = SM3Digest()
         sm3c3 = SM3Digest()
@@ -53,7 +54,7 @@ class Cipher {
             if (keyOff.toInt() == key.size) {
                 NextKey()
             }
-            data[i] = data[i] xor key[keyOff++.toInt()]
+            data[i] = (data[i].toInt() xor key[keyOff++.toInt()].toInt()).toByte()
         }
     }
 
@@ -67,7 +68,7 @@ class Cipher {
             if (keyOff.toInt() == key.size) {
                 NextKey()
             }
-            data[i] = data[i] xor key[keyOff++.toInt()]
+            data[i] = (data[i].toInt() xor key[keyOff++.toInt()].toInt()).toByte()
         }
         sm3c3!!.update(data, 0, data.size)
     }
@@ -77,10 +78,5 @@ class Cipher {
         sm3c3!!.update(p, 0, p!!.size)
         sm3c3!!.doFinal(c3, 0)
         Reset()
-    }
-
-    init {
-        key = ByteArray(32)
-        keyOff = 0
     }
 }

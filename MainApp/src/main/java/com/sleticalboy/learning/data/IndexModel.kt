@@ -21,8 +21,6 @@ import com.sleticalboy.learning.rv.ClassifyActivity
 import com.sleticalboy.learning.rv.DecorationActivity
 import com.sleticalboy.learning.rv.PagerActivity
 import com.sleticalboy.learning.rv.WheelRVActivity
-import java.util.*
-
 
 /**
  * Created on 20-3-30.
@@ -30,7 +28,9 @@ import java.util.*
  * @author binlee sleticalboy@gmail.com
  */
 class IndexModel internal constructor() {
-    private val mModuleSource: MutableLiveData<Result<List<ModuleItem>>>
+
+    private val mModuleSource: MutableLiveData<Result<List<ModuleItem>>> = MutableLiveData()
+
     fun getModuleSource(): LiveData<Result<List<ModuleItem>>> {
         mModuleSource.value = getTasks()
         return mModuleSource
@@ -57,12 +57,7 @@ class IndexModel internal constructor() {
                 ModuleItem("RecyclerView 轮播", WheelRVActivity::class.java),  // notifications
                 ModuleItem("通知呼吸灯闪烁", NotificationsUI::class.java)
         )
-        return Result.Success(ArrayList(Arrays.asList(*array)))
+        return Result.Success(array.toList())
     }
 
-    // private RemoteTask mRemoteTask;
-    // private LocalTask mLocalTask;
-    init {
-        mModuleSource = MutableLiveData()
-    }
 }

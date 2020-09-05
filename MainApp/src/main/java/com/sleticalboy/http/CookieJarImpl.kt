@@ -7,7 +7,6 @@ import okhttp3.CookieJar
 import okhttp3.HttpUrl
 import java.util.*
 
-
 /**
  * Created on 18-3-28.
  *
@@ -15,7 +14,9 @@ import java.util.*
  * @description Cookie 持久化「sp, db, file」
  */
 class CookieJarImpl(context: Context?) : CookieJar {
+
     private val mPreferences: SharedPreferences
+
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
         val values: MutableSet<String> = HashSet()
         for (cookie in cookies) {

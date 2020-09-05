@@ -4,8 +4,8 @@ import com.sleticalboy.util.OperationUtils
 import com.sleticalboy.util.UnicodeUtils.string2char
 import org.bouncycastle.util.encoders.Hex
 
-
 class SM3Digest {
+
     /**
      * 缓冲区
      */

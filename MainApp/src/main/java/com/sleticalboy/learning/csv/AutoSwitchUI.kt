@@ -5,14 +5,15 @@ import com.sleticalboy.learning.base.BaseActivity
 import com.sleticalboy.weight.AutoSwitchView
 import java.util.*
 
-
 /**
  * Created on 18-10-23.
  *
  * @author leebin
  */
 class AutoSwitchUI : BaseActivity() {
+
     private var autoSwitchView: AutoSwitchView? = null
+
     override fun layoutResId(): Int {
         return R.layout.activity_auto_switch
     }

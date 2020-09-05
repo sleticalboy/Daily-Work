@@ -42,9 +42,9 @@
 
     <!--SingleLine-->
     <declare-styleable name="SingleLine">
-        <attr name="circlePadding" format="dimension"/>
-        <attr name="circleRadius" format="integer"/>
-        <attr name="lineWidth" format="integer"/>
-        <attr name="lineColor" format="color"/>
+        <attr name="circle_padding" format="dimension"/>
+        <attr name="circle_radius" format="integer"/>
+        <attr name="line_width" format="integer"/>
+        <attr name="line_color" format="color"/>
     </declare-styleable>
 </resources>

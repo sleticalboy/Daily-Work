@@ -9,8 +9,9 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 
+class RoutineSyncAdapter internal constructor(context: Context?)
+    : AbstractThreadedSyncAdapter(context, true) {
 
-class RoutineSyncAdapter internal constructor(context: Context?) : AbstractThreadedSyncAdapter(context, true) {
     override fun onPerformSync(account: Account, extras: Bundle, authority: String,
                                provider: ContentProviderClient, syncResult: SyncResult) {
         Log.d(TAG, "onPerformSync() called with: account = [" + account + "], extras = [" + extras

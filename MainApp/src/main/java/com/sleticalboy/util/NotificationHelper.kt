@@ -14,9 +14,8 @@ import androidx.annotation.RequiresApi
  */
 object NotificationHelper {
 
-
     private const val COMMON_TAG = "Daily-Work"
-    private const val SPECIAL_TAG = "Special-Notify"
+    const val SPECIAL_TAG = "Special-Notify"
     private var sManager: NotificationManager? = null
 
     fun createAllChannels(context: Context) {

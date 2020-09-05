@@ -3,9 +3,9 @@ package com.sleticalboy.learning.anims
 import android.content.Intent
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
+import androidx.fragment.app.Fragment
 import com.sleticalboy.learning.R
 import com.sleticalboy.learning.base.BaseActivity
-
 
 /**
  * Created by AS 3.3 on 19-1-6.
@@ -13,6 +13,7 @@ import com.sleticalboy.learning.base.BaseActivity
  * @author leebin
  */
 class TransitionUI : BaseActivity() {
+
     override fun layoutResId(): Int {
         return R.layout.activity_transition
     }
@@ -48,7 +49,7 @@ class TransitionUI : BaseActivity() {
         supportFragmentManager
                 .beginTransaction()
                 .addSharedElement(sharedElement, "shared_element_test")
-                .replace(R.id.container, null)
+                .replace(R.id.container, Fragment()/*placeholder*/)
                 .addToBackStack(null)
                 .commit()
     }

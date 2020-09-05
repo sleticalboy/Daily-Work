@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import java.util.*
 
-
 /**
  * Created on 18-2-7.
  *
@@ -15,7 +14,7 @@ import java.util.*
  * @version 1.0
  * @description
  */
-abstract class XRecyclerAdapter<M> : RecyclerView.Adapter<XBaseHolder<*>> {
+abstract class XRecyclerAdapter<M> : RecyclerView.Adapter<XBaseHolder<M>> {
 
     private val mLock = Any()
     private val mHeaders: MutableList<HeaderView> = ArrayList()
@@ -47,13 +46,13 @@ abstract class XRecyclerAdapter<M> : RecyclerView.Adapter<XBaseHolder<*>> {
         init(context, dataList)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): XBaseHolder<*> {
+    final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): XBaseHolder<M> {
         val view = createViewByViewType(parent, viewType)
         if (view != null) {
             return PlaceHolder(view)
         }
         val holder = onCreateItemHolder(parent, viewType)
-        //        final int position = holder.getAdapterPosition() - mHeaders.size();
+        // final int position = holder.getAdapterPosition() - mHeaders.size();
         val position = holder.adapterPosition
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener { mOnItemClickListener!!.onItemClick(position) }
@@ -78,7 +77,7 @@ abstract class XRecyclerAdapter<M> : RecyclerView.Adapter<XBaseHolder<*>> {
         return null
     }
 
-    protected abstract fun onCreateItemHolder(parent: ViewGroup, viewType: Int): XBaseHolder<*>
+    protected abstract fun onCreateItemHolder(parent: ViewGroup, viewType: Int): XBaseHolder<M>
 
     private fun getView(parent: ViewGroup, itemView: ItemView): View {
         val view = itemView.onCreateView(parent)
@@ -90,7 +89,7 @@ abstract class XRecyclerAdapter<M> : RecyclerView.Adapter<XBaseHolder<*>> {
         return view
     }
 
-    override fun onBindViewHolder(holder: XBaseHolder<*>, position: Int) {
+    override fun onBindViewHolder(holder: XBaseHolder<M>, position: Int) {
         holder.itemView.id = position
         if (mHeaders.size != 0 && position < mHeaders.size) {
             mHeaders[position].onBindView(holder.itemView)
@@ -99,10 +98,6 @@ abstract class XRecyclerAdapter<M> : RecyclerView.Adapter<XBaseHolder<*>> {
         if (mFooters.size != 0 && position >= mHeaders.size + mDataList!!.size) {
             mFooters[position - mHeaders.size - mDataList!!.size].onBindView(holder.itemView)
         }
-        onBindItemHolder(holder, position)
-    }
-
-    protected fun onBindItemHolder(holder: XBaseHolder<*>, position: Int) {
         holder.bindData(getItemData(position))
     }
 
@@ -143,7 +138,7 @@ abstract class XRecyclerAdapter<M> : RecyclerView.Adapter<XBaseHolder<*>> {
     }
 
     fun setData(dataArray: Array<M>) {
-        mDataList = ArrayList(Arrays.asList(*dataArray))
+        mDataList = dataArray.toMutableList()
     }
 
     val allData: List<M>?
@@ -332,9 +327,10 @@ abstract class XRecyclerAdapter<M> : RecyclerView.Adapter<XBaseHolder<*>> {
     }
 
     // placeholder
-    private class PlaceHolder(itemView: View?) : XBaseHolder<Any?>(itemView) {
+    private inner class PlaceHolder(itemView: View?) : XBaseHolder<M>(itemView) {
 
-        override fun bindData(data: Any?) {}
+        override fun bindData(data: M) {
+        }
     }
 
     protected open fun getCount(): Int {

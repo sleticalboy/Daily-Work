@@ -4,8 +4,8 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 
-
 class RoutineSyncService : Service() {
+
     override fun onCreate() {
         super.onCreate()
         synchronized(LOCK) {

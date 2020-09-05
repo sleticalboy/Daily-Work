@@ -1,7 +1,7 @@
 package com.sleticalboy.learning.encryption
 
-
 object SM3 {
+
     val iv = byteArrayOf(0x73, 0x80.toByte(), 0x16, 0x6f, 0x49,
             0x14, 0xb2.toByte(), 0xb9.toByte(), 0x17, 0x24, 0x42, 0xd7.toByte(),
             0xda.toByte(), 0x8a.toByte(), 0x06, 0x00, 0xa9.toByte(), 0x6f, 0x30,
@@ -9,6 +9,7 @@ object SM3 {
             0x8d.toByte(), 0xee.toByte(), 0x4d, 0xb0.toByte(), 0xfb.toByte(), 0x0e,
             0x4e)
     var Tj = IntArray(64)
+
     fun CF(V: ByteArray, B: ByteArray): ByteArray {
         val v: IntArray
         val b: IntArray
@@ -127,7 +128,7 @@ object SM3 {
     }
 
     private fun FFj(X: Int, Y: Int, Z: Int, j: Int): Int {
-        return if (j >= 0 && j <= 15) {
+        return if (j in 0..15) {
             FF1j(X, Y, Z)
         } else {
             FF2j(X, Y, Z)
@@ -135,7 +136,7 @@ object SM3 {
     }
 
     private fun GGj(X: Int, Y: Int, Z: Int, j: Int): Int {
-        return if (j >= 0 && j <= 15) {
+        return if (j in 0..15) {
             GG1j(X, Y, Z)
         } else {
             GG2j(X, Y, Z)
@@ -237,9 +238,9 @@ object SM3 {
         var t2: Int
         var t3: Int
         for (i in tmp.indices) {
-            t1 = (`in`[i] and 0x000000ff shl len) as Byte.toInt()
-            t2 = (`in`[(i + 1) % tmp.size] and 0x000000ff shr 8 - len) as Byte.toInt()
-            t3 = (t1 or t2) as Byte.toInt()
+            t1 = (`in`[i].toInt() and 0x000000ff shl len)
+            t2 = (`in`[(i + 1) % tmp.size].toInt() and 0x000000ff shr 8 - len)
+            t3 = (t1 or t2)
             tmp[i] = t3.toByte()
         }
         return tmp

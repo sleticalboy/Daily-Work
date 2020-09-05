@@ -10,6 +10,7 @@ import android.view.View.OnTouchListener
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnFlingListener
+import kotlin.math.abs
 
 
 /**
@@ -130,9 +131,9 @@ class PageScrollHelper {
 
             //使用动画处理滚动
             if (mAnimator == null) {
-                mAnimator = ValueAnimator.ofInt(startPoint, endPoint)
-                mAnimator.setDuration(300)
-                mAnimator.addUpdateListener(AnimatorUpdateListener { animation ->
+                val anim = ValueAnimator.ofInt(startPoint, endPoint)
+                anim.duration = 300
+                anim.addUpdateListener(AnimatorUpdateListener { animation ->
                     val nowPoint = animation.animatedValue as Int
                     if (mOrientation == VERTICAL) {
                         val dy = nowPoint - offsetY
@@ -145,12 +146,13 @@ class PageScrollHelper {
                 })
                 // 回调监听
                 if (mOnPageSelectedListener != null) {
-                    mAnimator.addListener(object : AnimatorListenerAdapter() {
+                    anim.addListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
                             mOnPageSelectedListener!!.onPageChanged(pageIndex)
                         }
                     })
                 }
+                mAnimator = anim
             } else {
                 mAnimator!!.cancel()
                 mAnimator!!.setIntValues(startPoint, endPoint)
@@ -176,7 +178,7 @@ class PageScrollHelper {
                         vY = if (offsetY - startY < 0) -1000 else 1000
                     }
                 } else {
-                    val absX = Math.abs(offsetX - startX)
+                    val absX = abs(offsetX - startX)
                     move = absX > recyclerView.width / 2
                     if (move) {
                         vX = if (offsetX - startX < 0) -1000 else 1000

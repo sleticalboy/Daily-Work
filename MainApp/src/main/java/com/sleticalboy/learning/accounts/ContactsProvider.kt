@@ -5,8 +5,8 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
 
-
 class ContactsProvider : ContentProvider() {
+
     override fun onCreate(): Boolean {
         return false
     }

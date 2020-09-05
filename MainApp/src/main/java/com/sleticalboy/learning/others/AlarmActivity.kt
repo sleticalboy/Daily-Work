@@ -21,7 +21,9 @@ import com.sleticalboy.util.TimeUtils
  * @author leebin
  */
 class AlarmActivity : BaseActivity() {
+
     private var mAction: String? = null
+
     private val alarmReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (mAction == intent.action) {
@@ -51,14 +53,8 @@ class AlarmActivity : BaseActivity() {
     """.trimIndent())
         val distance = TimeUtils.getDistance(34.7704267, 113.7584882, 34.7703974, 113.7583287).toDouble()
         tvTime.append("\ndistance = $distance")
-        tvTime.append("""
-
-    mac address = ${DevicesUtils.getMacAddress(this)}
-    """.trimIndent())
-        tvTime.append("""
-
-    wifi mac address = ${DevicesUtils.getConnectedWifiMacAddress(this)}
-    """.trimIndent())
+        tvTime.append("mac address = ${DevicesUtils.getMacAddress(this)}")
+        tvTime.append("wifi mac address = ${DevicesUtils.getConnectedWifiMacAddress(this)}")
     }
 
     override fun initData() {
@@ -66,7 +62,6 @@ class AlarmActivity : BaseActivity() {
         registerReceiver(alarmReceiver, filter)
         val intent = Intent(mAction)
         val operation = PendingIntent.getBroadcast(this, 0, intent, 0)
-        assert(mAlarmManager != null)
         mAlarmManager!!.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60000, operation)
     }
 

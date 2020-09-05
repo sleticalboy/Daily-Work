@@ -19,7 +19,8 @@ import java.util.*
  */
 class ItemTouchAdapter(context: Context, private val mObjects: Array<Int>)
     : XRecyclerAdapter<Int>(context, mObjects), ItemTouchDragAdapter {
-    override fun onCreateItemHolder(parent: ViewGroup, viewType: Int): XBaseHolder<*> {
+
+    override fun onCreateItemHolder(parent: ViewGroup, viewType: Int): XBaseHolder<Int> {
         return ViewHolder(parent, R.layout.item_wheel_layout)
     }
 
@@ -32,12 +33,12 @@ class ItemTouchAdapter(context: Context, private val mObjects: Array<Int>)
         ListUtils.relocation(source.toMutableList(), from, to)
     }
 
-    internal class ViewHolder(parent: ViewGroup?, res: Int) : XBaseHolder<Int?>(parent!!, res) {
+    private class ViewHolder(parent: ViewGroup?, res: Int) : XBaseHolder<Int>(parent!!, res) {
 
         private var mImageView: ImageView = getView(R.id.image_view)
 
-        protected override fun bindData(resId: Int?) {
-            resId?.let { mImageView.setImageResource(it) }
+        override fun bindData(data: Int) {
+            data.let { mImageView.setImageResource(it) }
         }
 
     }

@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
-
 /**
  * Created on 20-2-17.
  *
@@ -13,6 +12,7 @@ import android.util.Log
  * @description
  */
 class DevicesReceiver : DeviceAdminReceiver() {
+
     override fun onEnabled(context: Context, intent: Intent) {
         Log.d(TAG, "onEnabled() called with: context = [$context], intent = [$intent]")
     }

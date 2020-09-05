@@ -2,8 +2,8 @@ package com.sleticalboy.learning.accounts
 
 import android.net.Uri
 
-
 interface Constants {
+
     companion object {
         const val ACCOUNT_PREFIX = "user"
         const val ACCOUNT_PASSWORD = "test"

@@ -6,9 +6,10 @@ import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 
-
 class LocalService : Service() {
+
     private var mBinder: LocalBinder? = null
+
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "onCreate() called")
@@ -38,6 +39,7 @@ class LocalService : Service() {
     }
 
     class LocalBinder(private val mService: LocalService) : Binder() {
+
         fun getService(): LocalService {
             return mService
         }

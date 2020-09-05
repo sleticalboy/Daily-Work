@@ -9,10 +9,11 @@ import java.io.ByteArrayOutputStream
  * SM4 分组加密算法
  */
 class SM4 {
+
     private fun GET_ULONG_BE(b: ByteArray, i: Int): Long {
-        return ((b[i] and 0xff) as Long shl 24 or (b[i + 1] and 0xff shl 16) as Long
-                or (b[i + 2] and 0xff shl 8) as Long
-                or ((b[i + 3] and 0xff) as Long and 0xffffffffL))
+        return ((b[i].toInt() and 0xff).toLong() shl 24 or (b[i + 1].toInt() and 0xff shl 16).toLong()
+                or (b[i + 2].toInt() and 0xff shl 8).toLong()
+                or ((b[i + 3].toInt()and 0xff).toLong() and 0xffffffffL))
     }
 
     private fun PUT_ULONG_BE(n: Long, b: ByteArray, i: Int) {
@@ -47,7 +48,7 @@ class SM4 {
     }
 
     private fun sm4Sbox(inch: Byte): Byte {
-        val i: Int = inch and 0xFF
+        val i: Int = inch.toInt() and 0xFF
         return SboxTable[i]
     }
 
@@ -163,8 +164,8 @@ class SM4 {
         if (key == null || key.size != 16) {
             throw Exception("key error!")
         }
-        ctx.mode = SM4_ENCRYPT
-        sm4_setKey(ctx.sk, key)
+        ctx.setMode(SM4_ENCRYPT)
+        sm4_setKey(ctx.getSk(), key)
     }
 
     /**
@@ -183,11 +184,11 @@ class SM4 {
             throw Exception("key error!")
         }
         var i = 0
-        ctx.mode = SM4_DECRYPT
-        sm4_setKey(ctx.sk, key)
+        ctx.setMode(SM4_DECRYPT)
+        sm4_setKey(ctx.getSk(), key)
         i = 0
         while (i < 16) {
-            swap(ctx.sk, i)
+            swap(ctx.getSk(), i)
             i++
         }
     }
@@ -203,7 +204,7 @@ class SM4 {
     @Throws(Exception::class)
     fun cryptECB(ctx: SM4Context, input: ByteArray?): ByteArray? {
         var input: ByteArray? = input ?: throw Exception("input is null!")
-        if (ctx.isPadding && ctx.mode == SM4_ENCRYPT) {
+        if (ctx.isPadding() && ctx.getMode() == SM4_ENCRYPT) {
             input = padding(input, SM4_ENCRYPT)
         }
         var length = input!!.size
@@ -213,12 +214,12 @@ class SM4 {
             val `in` = ByteArray(16)
             val out = ByteArray(16)
             bins.read(`in`)
-            sm4_one_round(ctx.sk, `in`, out)
+            sm4_one_round(ctx.getSk(), `in`, out)
             bous.write(out)
             length -= 16
         }
         var output = bous.toByteArray()
-        if (ctx.isPadding && ctx.mode == SM4_DECRYPT) {
+        if (ctx.isPadding() && ctx.getMode() == SM4_DECRYPT) {
             output = padding(output, SM4_DECRYPT)
         }
         bins.close()
@@ -237,21 +238,21 @@ class SM4 {
      */
     @Throws(Exception::class)
     fun cryptCBC(ctx: SM4Context, iv: ByteArray?, input: ByteArray?): ByteArray? {
-        var input = input
+        var buf = input
         if (iv == null || iv.size != 16) {
             throw Exception("iv error!")
         }
-        if (input == null) {
+        if (buf == null) {
             throw Exception("input is null!")
         }
-        if (ctx.isPadding && ctx.mode == SM4_ENCRYPT) {
-            input = padding(input, SM4_ENCRYPT)
+        if (ctx.isPadding() && ctx.getMode() == SM4_ENCRYPT) {
+            buf = padding(buf, SM4_ENCRYPT)
         }
         var i = 0
-        var length = input!!.size
-        val bins = ByteArrayInputStream(input)
+        var length = buf!!.size
+        val bins = ByteArrayInputStream(buf)
         val bous = ByteArrayOutputStream()
-        if (ctx.mode == SM4_ENCRYPT) {
+        if (ctx.getMode() == SM4_ENCRYPT) {
             while (length > 0) {
                 val `in` = ByteArray(16)
                 val out = ByteArray(16)
@@ -259,10 +260,10 @@ class SM4 {
                 bins.read(`in`)
                 i = 0
                 while (i < 16) {
-                    out[i] = (`in`[i] xor iv[i]) as Byte
+                    out[i] = (`in`[i].toInt() xor iv[i].toInt()).toByte()
                     i++
                 }
-                sm4_one_round(ctx.sk, out, out1)
+                sm4_one_round(ctx.getSk(), out, out1)
                 System.arraycopy(out1, 0, iv, 0, 16)
                 bous.write(out1)
                 length -= 16
@@ -275,10 +276,10 @@ class SM4 {
                 val out1 = ByteArray(16)
                 bins.read(`in`)
                 System.arraycopy(`in`, 0, temp, 0, 16)
-                sm4_one_round(ctx.sk, `in`, out)
+                sm4_one_round(ctx.getSk(), `in`, out)
                 i = 0
                 while (i < 16) {
-                    out1[i] = (out[i] xor iv[i]) as Byte
+                    out1[i] = (out[i].toInt() xor iv[i].toInt()).toByte()
                     i++
                 }
                 System.arraycopy(temp, 0, iv, 0, 16)
@@ -287,7 +288,7 @@ class SM4 {
             }
         }
         var output = bous.toByteArray()
-        if (ctx.isPadding && ctx.mode == SM4_DECRYPT) {
+        if (ctx.isPadding() && ctx.getMode() == SM4_DECRYPT) {
             output = padding(output, SM4_DECRYPT)
         }
         bins.close()

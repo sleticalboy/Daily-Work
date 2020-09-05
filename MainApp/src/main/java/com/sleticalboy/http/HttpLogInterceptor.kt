@@ -12,7 +12,6 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
-
 /*
 * Copyright (C) 2015 Square, Inc.
 *
@@ -35,7 +34,9 @@ import java.util.concurrent.TimeUnit
  * this class should not be considered stable and may change slightly between releases. If you need
  * a stable logging format, use your own interceptor.
  */
-class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = Logger.DEFAULT) : Interceptor {
+class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = Logger.DEFAULT)
+    : Interceptor {
+
     @Volatile
     private var level = Level.NONE
 
