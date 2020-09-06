@@ -15,7 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.binlee.emoji.ImageAdapter
 import com.binlee.emoji.R
 import com.binlee.emoji.helper.UrlHelper
-
+import kotlin.math.max
 
 /**
  * Created on 19-7-21.
@@ -23,17 +23,19 @@ import com.binlee.emoji.helper.UrlHelper
  * @author leebin
  */
 internal class EmojiPreviewWindow(context: Context?) : PopupWindow(context) {
+
     private val mImage: ImageView
     private val mRight: Int
     private val mLeft: Int
+
     private fun updateInternal(params: Params) {
-        width = Math.max(params.width, params.height)
+        width = max(params.width, params.height)
         height = width
         val lp = mImage.layoutParams
         lp.height = params.size
         lp.width = lp.height
         mImage.layoutParams = lp
-        ImageAdapter.Companion.engine()!!.show(UrlHelper.Companion.inspectUrl(params.url), mImage)
+        ImageAdapter.engine().show(UrlHelper.inspectUrl(params.url), mImage)
         var resId = R.drawable.mx_emoji_preview_fg_center
         if (params.position % 4 == 0) {
             resId = R.drawable.mx_emoji_preview_fg_left

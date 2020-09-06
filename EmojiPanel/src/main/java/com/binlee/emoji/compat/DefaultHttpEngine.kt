@@ -129,7 +129,6 @@ class DefaultHttpEngine : HttpEngine<HttpURLConnection, HttpURLConnection>() {
             response.code = conn.responseCode
             response.msg = conn.responseMessage
         }
-        response.headers = mutableMapOf()
         val headerFields = conn.headerFields
         for (name in headerFields.keys) {
             // skip status line
@@ -147,7 +146,7 @@ class DefaultHttpEngine : HttpEngine<HttpURLConnection, HttpURLConnection>() {
                 val redirect = BaseRequest()
                 redirect.method = current.method
                 redirect.url = redirectUrl
-                redirect.headers = current.headers
+                redirect.headers.putAll(current.headers)
                 redirect.params = current.params
                 return request(redirect)
             }

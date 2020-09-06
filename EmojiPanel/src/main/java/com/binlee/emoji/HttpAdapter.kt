@@ -1,13 +1,15 @@
 package com.binlee.emoji
 
+import com.binlee.emoji.compat.DefaultHttpEngine
 import com.binlee.emoji.compat.HttpEngine
 import com.binlee.emoji.third.OkHttpEngine
+import com.binlee.emoji.third.SocketHttpEngine
 
 class HttpAdapter private constructor() {
 
     companion object {
 
-        private lateinit var sEngine: HttpEngine<*, *>
+        private var sEngine: HttpEngine<*, *>? = null
 
         fun setHttpEngine(engine: HttpEngine<*, *>?) {
             if (engine == null) {
@@ -18,11 +20,11 @@ class HttpAdapter private constructor() {
 
         fun engine(): HttpEngine<*, *> {
             if (sEngine == null) {
-                sEngine = OkHttpEngine()
-                // sEngine = new DefaultHttpEngine();
-                // sEngine = new SocketHttpEngine();
+                // sEngine = OkHttpEngine()
+                // sEngine = DefaultHttpEngine()
+                sEngine = SocketHttpEngine()
             }
-            return sEngine
+            return sEngine!!
         }
     }
 

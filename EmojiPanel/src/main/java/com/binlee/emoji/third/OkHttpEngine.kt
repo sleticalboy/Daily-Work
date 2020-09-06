@@ -13,10 +13,10 @@ import java.util.concurrent.TimeUnit
 class OkHttpEngine : HttpEngine<Request, Response>() {
 
     @Volatile
-    private lateinit var mClient: OkHttpClient
+    private var mClient: OkHttpClient? = null
     private lateinit var mConfig: Config
 
-    private fun client(): OkHttpClient? {
+    private fun client(): OkHttpClient {
         if (mClient == null) {
             synchronized(this) {
                 if (mClient == null) {
@@ -24,7 +24,7 @@ class OkHttpEngine : HttpEngine<Request, Response>() {
                 }
             }
         }
-        return mClient
+        return mClient!!
     }
 
     override fun setupClient(client: Any?) {
@@ -49,14 +49,14 @@ class OkHttpEngine : HttpEngine<Request, Response>() {
 
     @Throws(IOException::class)
     override fun request(request: BaseRequest): BaseResponse {
-        val raw = client()!!.newCall(adaptRequest(request)).execute()
+        val raw = client().newCall(adaptRequest(request)).execute()
         val response = adaptResponse(raw, request)
         trace("OkHttpEngine", response)
         return response
     }
 
     override fun request(request: BaseRequest, callback: Callback) {
-        client()!!.newCall(adaptRequest(request)).enqueue(object : okhttp3.Callback {
+        client().newCall(adaptRequest(request)).enqueue(object : okhttp3.Callback {
             override fun onFailure(call: Call, e: IOException) {
                 mainHandler().post { callback.onFailure(e) }
             }
@@ -119,7 +119,7 @@ class OkHttpEngine : HttpEngine<Request, Response>() {
         response.protocol = raw.protocol.toString()
         response.code = raw.code
         response.msg = raw.message
-        response.headers = toHeaders(raw.headers)
+        response.headers.putAll(toHeaders(raw.headers))
         if (raw.body != null) {
             response.data = raw.body!!.bytes()
         }

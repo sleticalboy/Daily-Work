@@ -14,8 +14,11 @@ import androidx.viewpager.widget.ViewPager
  *
  * @author leebin
  */
-class EmojiViewPager @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null) : ViewPager(context!!, attrs) {
+class EmojiViewPager @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null)
+    : ViewPager(context!!, attrs) {
+
     private var mParentVp: ViewPager? = null
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (mParentVp == null) {
             mParentVp = findParentViewPager(this)

@@ -2,6 +2,7 @@ package com.binlee.emoji.compat
 
 import android.os.Handler
 import android.os.Looper
+import androidx.annotation.NonNull
 import androidx.annotation.StringDef
 import com.binlee.emoji.BuildConfig
 import com.binlee.emoji.helper.LogHelper
@@ -74,12 +75,10 @@ abstract class HttpEngine<RealRequest, RealResponse> {
         // request line
         buffer.append(request!!.method).append(" ").append(request.url).append("\n\n")
         // request headers
-        if (request.headers != null) {
-            for (name in request.headers!!.keys) {
-                buffer.append(name).append(": ").append(request.headers!![name]).append('\n')
-            }
-            buffer.append("\n")
+        for (name in request.headers.keys) {
+            buffer.append(name).append(": ").append(request.headers[name]).append('\n')
         }
+        buffer.append("\n")
         // params
         if (request.params != null) {
             for (name in request.params!!.keys) {
@@ -92,12 +91,10 @@ abstract class HttpEngine<RealRequest, RealResponse> {
         buffer.append(response.protocol).append(" ").append(response.code)
                 .append(" ").append(response.msg).append("\n\n")
         // response headers
-        if (response.headers != null) {
-            for (name in response.headers!!.keys) {
-                buffer.append(name).append(": ").append(response.headers!![name]).append('\n')
-            }
-            buffer.append("\n")
+        for (name in response.headers.keys) {
+            buffer.append(name).append(": ").append(response.headers[name]).append('\n')
         }
+        buffer.append("\n")
         // response body
         if (response.data != null && response.data!!.isNotEmpty()) {
             buffer.append(response.string())
@@ -117,10 +114,11 @@ abstract class HttpEngine<RealRequest, RealResponse> {
 
     class BaseRequest : Serializable {
 
-        lateinit var headers: MutableMap<String, String>
-        lateinit var url: String
-
+        val headers = mutableMapOf<String, String>()
+        @NonNull
+        var url: String? = null
         @Method
+        @NonNull
         var method: String? = null
         var params: MutableMap<String, Any>? = null
 
@@ -132,7 +130,6 @@ abstract class HttpEngine<RealRequest, RealResponse> {
                 val request = BaseRequest()
                 request.url = url
                 request.method = method
-                request.headers = mutableMapOf()
                 return request
             }
         }
@@ -140,7 +137,7 @@ abstract class HttpEngine<RealRequest, RealResponse> {
 
     class BaseResponse : Serializable {
 
-        lateinit var headers: MutableMap<String?, String?>
+        val headers = mutableMapOf<String?, String?>()
         var current: BaseRequest? = null
         var protocol: String? = null
         var code = 0
@@ -187,7 +184,7 @@ abstract class HttpEngine<RealRequest, RealResponse> {
         var authenticate: BaseRequest? = null
 
         // "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36"
-        lateinit var userAgent: String
+        var userAgent: String = ""
     }
 
     @StringDef(GET, POST, PUT, DELETE)
@@ -202,14 +199,14 @@ abstract class HttpEngine<RealRequest, RealResponse> {
         const val DELETE = "DELETE"
 
         @JvmStatic
-        protected fun buildUrl(request: BaseRequest): String {
+        fun buildUrl(request: BaseRequest): String {
             if (GET != request.method || request.params == null || request.params!!.isEmpty()) {
-                return request.url
+                return request.url!!
             }
             request.params!!.size
             val builder = StringBuilder()
             builder.append(request.url)
-            if (!request.url.contains("?")) {
+            if (!request.url!!.contains("?")) {
                 builder.append("?")
             } else {
                 builder.append("&")

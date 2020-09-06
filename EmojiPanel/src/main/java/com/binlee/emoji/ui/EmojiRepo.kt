@@ -27,12 +27,12 @@ class EmojiRepo private constructor() {
         /**
          * 内存中缓存的表情数据，如果内存被回收，则重新从数据库读取
          */
-        private var sEmojiMap: MutableMap<EmojiGroup, Array<Array<Emoji>>>? = LinkedHashMap()
+        private var sEmojiMap: MutableMap<EmojiGroup, Array<Array<Emoji?>>> = LinkedHashMap()
 
         /**
          * 内存中记录的最近使用表情，当数据更新到数据库之后将会清空
          */
-        private var sRecordedUsedEmojis: MutableSet<Emoji> = HashSet()
+        private var sRecordedUsedEmojis: MutableSet<Emoji?> = HashSet()
 
         /**
          * 是否是静态初始化
@@ -53,9 +53,7 @@ class EmojiRepo private constructor() {
             if (!OsHelper.isMasterProcess) {
                 return
             }
-            if (sEmojiMap == null) {
-                sEmojiMap = LinkedHashMap()
-            }
+            sEmojiMap.clear()
             // 1, 查询所有分组
             // 2, 遍历分组查询组内所有表情
             // 3, 遍历组内表情并填充 sEmojiMap
@@ -75,19 +73,19 @@ class EmojiRepo private constructor() {
                 val pageData = getPageData(context, key, sInit)
                         ?: continue
                 // 填充 sEmojiMap
-                emojiMap()!![key] = pageData
+                emojiMap()[key] = pageData
             }
         }
 
         // 不直接对外暴露
-        private fun emojiMap(): MutableMap<EmojiGroup, Array<Array<Emoji>>>? {
-            if (sEmojiMap == null) {
-                preloadData()
-            }
+        private fun emojiMap(): MutableMap<EmojiGroup, Array<Array<Emoji?>>> {
+            // if (sEmojiMap.isEmpty()) {
+            //     preloadData()
+            // }
             return sEmojiMap
         }
 
-        private fun recordedEmojis(): MutableSet<Emoji> {
+        private fun recordedEmojis(): MutableSet<Emoji?> {
             return sRecordedUsedEmojis
         }
 
@@ -105,7 +103,7 @@ class EmojiRepo private constructor() {
             requireNotNull(group) { "EmojiGroup is null." }
             val pageData = getPageData(OsHelper.app(), group, preload)
             if (pageData != null) {
-                emojiMap()!![group] = pageData
+                emojiMap()[group] = pageData
                 return true
             }
             return false
@@ -116,13 +114,13 @@ class EmojiRepo private constructor() {
          * @param preload 是否需要预加载数据
          */
         private fun getPageData(context: Context?, key: EmojiGroup?,
-                                preload: Boolean): Array<Array<Emoji>>? {
+                                preload: Boolean): Array<Array<Emoji?>>? {
             // 2, 遍历分组查询组内所有表情
             val emojis = EmojiHelper.instance.getEmojiList(context, key)
             if (emojis == null || emojis.isEmpty()) {
                 return null
             }
-            val pageData: Array<Array<Emoji>>
+            val pageData: Array<Array<Emoji?>>
             // 3, 遍历组内表情填充 sEmojiMap
             if (EmojiHelper.isSmallGroup(key)) {
                 // 小表情每页3行7列, 每页的最后一个元素为`删除按钮`
@@ -130,14 +128,11 @@ class EmojiRepo private constructor() {
                 // 填充最近使用表情
                 val recentEmojis = EmojiHelper.instance.recentlyUsedEmojis
                 if (recentEmojis?.isEmpty()!!) {
-                    // pageData = arrayOfNulls(pageCount)
-                    pageData = arrayOf()
+                    pageData = arrayOf(arrayOfNulls(pageCount))
                 } else {
                     // 第一页数据要给最近使用表情留出位置
-                    // pageData = arrayOfNulls(pageCount + 1)
-                    pageData = arrayOf()
-                    // pageData[0] = arrayOfNulls(recentEmojis.size)
-                    pageData[0] = arrayOf()
+                    pageData = arrayOf(arrayOfNulls(pageCount + 1))
+                    pageData[0] = arrayOfNulls(recentEmojis.size)
                     for (i in recentEmojis.indices) {
                         val emoji = recentEmojis[i]
                         emoji.resId = EmojiHelper.getDrawableId(context, emoji.key)
@@ -149,8 +144,7 @@ class EmojiRepo private constructor() {
                     val start = (if (startIndex == 1) i - 1 else i) * 20
                     val end = if (start + 20 > emojis.size) emojis.size else start + 20
                     // 最后一个是`删除按钮`
-                    // pageData[i] = arrayOfNulls(end - start + 1)
-                    pageData[i] = arrayOf()
+                    pageData[i] = arrayOfNulls(end - start + 1)
                     var j = start
                     var index = 0
                     while (j < end) {
@@ -170,14 +164,12 @@ class EmojiRepo private constructor() {
             } else {
                 // 其他分组表情
                 val pageCount = ceil(emojis.size / 8f.toDouble()).toInt()
-                // pageData = arrayOfNulls(pageCount)
-                pageData = arrayOf()
+                pageData = arrayOf(arrayOfNulls(pageCount))
                 for (i in pageData.indices) {
                     val start = i * 8
                     val end = if (start + 8 > emojis.size) emojis.size else start + 8
                     // 无需删除按钮
-                    // pageData[i] = arrayOfNulls(end - start)
-                    pageData[i] = arrayOf()
+                    pageData[i] = arrayOfNulls(end - start)
                     var j = start
                     var index = 0
                     while (j < end) {
@@ -201,13 +193,13 @@ class EmojiRepo private constructor() {
             // l < r -> -1
             // l == r -> 0
             // l > r -> 1
-            Collections.sort(emojis, Comparator<Emoji> { left: Emoji?, right: Emoji? ->
+            Collections.sort(emojis) { left: Emoji?, right: Emoji? ->
                 if (left != null && right != null) {
-                    return@sort java.lang.Long.compare(right.lastUseTime, left.lastUseTime)
+                    return@sort right.lastUseTime.compareTo(left.lastUseTime)
                 } else {
                     return@sort 0
                 }
-            })
+            }
         }
 
         /**
@@ -216,7 +208,7 @@ class EmojiRepo private constructor() {
          * @param list     新值
          * @param oldValue 旧值
          */
-        private fun mergeOldValues(list: MutableList<Emoji?>, oldValue: Array<Emoji>) {
+        private fun mergeOldValues(list: MutableList<Emoji?>, oldValue: Array<Emoji?>) {
             for (emoji in oldValue) {
                 if (!list.contains(emoji)) {
                     list.add(emoji)
@@ -229,26 +221,25 @@ class EmojiRepo private constructor() {
          *
          * @return 若有更新，返回更新后的数据；否则返回 null
          */
-        fun updateRecentEmojis(): Array<Array<Emoji>>? {
+        fun updateRecentEmojis(): Array<Array<Emoji?>>? {
             if (recordedEmojis().isEmpty()) {
                 return null
             }
-            for (key in emojiMap()!!.keys) {
+            val cachedEmojis = recordedEmojis().toMutableList()
+            for (key in emojiMap().keys) {
                 if (EmojiHelper.isSmallGroup(key)) {
-                    val oldValue = emojiMap()!!.remove(key)
-                    val newValue: Array<Array<Emoji>>
-                    if (oldValue!![0].size <= 9 && oldValue[0].size > 0) {
+                    val oldValue = emojiMap().remove(key)
+                    val newValue: Array<Array<Emoji?>>
+                    if (oldValue!![0].size <= 9 && oldValue[0].isNotEmpty()) {
                         // 已有最近使用表情
-                        // newValue = arrayOfNulls(oldValue.size)
-                        newValue = arrayOf()
+                        newValue = arrayOf(arrayOfNulls(oldValue.size))
                         // copy 原数据
                         System.arraycopy(oldValue, 1, newValue, 1, oldValue.size - 1)
                         // 添加旧数据并去重
                         mergeOldValues(cachedEmojis, oldValue[0])
                     } else {
                         // 第一次有最近使用表情
-                        // newValue = arrayOfNulls(oldValue.size + 1)
-                        newValue = arrayOf()
+                        newValue = arrayOf(arrayOfNulls(oldValue.size + 1))
                         // copy 原数据
                         System.arraycopy(oldValue, 0, newValue, 1, oldValue.size)
                     }
@@ -256,13 +247,12 @@ class EmojiRepo private constructor() {
                     sortRecentEmojis(cachedEmojis)
                     // 新增数据
                     val length = if (cachedEmojis.size >= 9) 9 else cachedEmojis.size
-                    // newValue[0] = arrayOfNulls(length)
-                    newValue[0] = arrayOf()
+                    newValue[0] = arrayOfNulls(length)
                     for (i in 0 until length) {
                         newValue[0][i] = cachedEmojis[i]
                     }
                     // 缓存新数据
-                    emojiMap()!![key] = newValue
+                    emojiMap()[key] = newValue
                     // 清空内存
                     recordedEmojis().clear()
                     // 更新数据库
@@ -287,11 +277,11 @@ class EmojiRepo private constructor() {
 
         fun updateLastUsedGroup(groups: List<EmojiGroup?>?) {
             // 更新内存
-            for (key in emojiMap()!!.keys) {
+            for (key in emojiMap().keys) {
                 for (group in groups!!) {
                     if (key == group) {
-                        key.setLastGroup(group.isLastGroup)
-                        key.setLastChildIndex(group.lastChildIndex)
+                        key.isLastGroup = group.isLastGroup
+                        key.lastChildIndex = group.lastChildIndex
                     }
                 }
             }
@@ -303,11 +293,11 @@ class EmojiRepo private constructor() {
             ThreadHelper.runOnWorker(Runnable { DbManager.get().updateLastUsedEmojiGroup(groups, uid) })
         }
 
-        val emojiGroups: MutableList<EmojiGroup?>
-            get() = ArrayList(emojiMap()!!.keys)
+        val emojiGroups: MutableList<EmojiGroup>
+            get() = emojiMap().keys.toMutableList()
 
         fun getGroupData(group: EmojiGroup?): Array<Array<Emoji?>>? {
-            return emojiMap()!![group]
+            return emojiMap()[group]
         }
 
         fun registerCallback(callback: OnDataChangeCallback) {
@@ -371,7 +361,7 @@ class EmojiRepo private constructor() {
          * @param group 表情分组
          * @param isAdd 新增 or 移除
          */
-        fun onGroupChanged(group: EmojiGroup?, isAdd: Boolean)
+        fun onGroupChanged(group: EmojiGroup, isAdd: Boolean)
 
         /**
          * 当自定义表情发生变化时回调

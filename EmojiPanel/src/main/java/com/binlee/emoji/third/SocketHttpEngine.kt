@@ -50,7 +50,7 @@ class SocketHttpEngine : HttpEngine<Socket, Socket>() {
             buf.append(ch.toChar())
         }
         val statusLine = buf.toString()
-        LogHelper.debug(TAG, "status line: $buf")
+        LogHelper.debug("SocketHttpEngine", "status line: $buf")
         val elements = statusLine.split(" ".toRegex()).toTypedArray()
         if (elements.size > 2) {
             response.protocol = elements[0]
@@ -69,17 +69,17 @@ class SocketHttpEngine : HttpEngine<Socket, Socket>() {
             buf.append(ch.toChar())
         }
         val headers = buf.toString()
-        LogHelper.debug(TAG, "response headers:\n$headers")
+        LogHelper.debug("SocketHttpEngine", "response headers:\n$headers")
 
         // read response body
         raw.close()
-        trace(TAG, response)
+        trace("SocketHttpEngine", response)
         return response
     }
 
     @Throws(IOException::class)
     private fun createSocket(request: BaseRequest?): Socket {
-        val uri = URI.create(request!!.url)
+        val uri = URI.create(request!!.url!!)
         var port = uri.port
         if (port < 0) {
             val scheme = uri.scheme
@@ -106,6 +106,7 @@ class SocketHttpEngine : HttpEngine<Socket, Socket>() {
         out.write(COLONSPACE[1].toInt())
         out.write("HTTP/1.1".toByteArray(UTF_8))
         out.write(CRLF) /*request line end*/
+        out.flush()
 
         // write headers
         if (request.headers.isNotEmpty()) {
@@ -122,13 +123,12 @@ class SocketHttpEngine : HttpEngine<Socket, Socket>() {
         // write request body
         if (request.params != null && request.params!!.isNotEmpty()) {
             // have not implemented yet
+            out.write(CRLF) /*request end*/
+            out.flush()
         }
-        out.write(CRLF) /*request end*/
-        out.flush()
     }
 
     companion object {
-        private const val TAG = "SocketHttpEngine"
         private val UTF_8 = Charset.forName("UTF-8")
         private val CRLF = byteArrayOf('\r'.toByte(), '\n'.toByte())
         private val COLONSPACE = byteArrayOf(':'.toByte(), ' '.toByte())

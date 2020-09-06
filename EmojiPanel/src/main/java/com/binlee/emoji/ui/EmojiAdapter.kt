@@ -20,9 +20,9 @@ import com.binlee.emoji.model.Emoji
  *
  * @author leebin
  */
-internal class EmojiAdapter(emojis: Array<Emoji>, spanCount: Int) : BaseAdapter() {
+internal class EmojiAdapter(emojis: Array<Emoji?>, spanCount: Int) : BaseAdapter() {
 
-    private val mEmojis: MutableList<Emoji> = emojis.toMutableList()
+    private val mEmojis: MutableList<Emoji?> = emojis.toMutableList()
     private val mSpanCount: Int = spanCount
     private var mDeleteIndex = -1
     private var mDeleteAlpha = 0f
@@ -31,7 +31,7 @@ internal class EmojiAdapter(emojis: Array<Emoji>, spanCount: Int) : BaseAdapter(
         return mEmojis.size
     }
 
-    override fun getItem(position: Int): Emoji {
+    override fun getItem(position: Int): Emoji? {
         return mEmojis[position]
     }
 
@@ -51,11 +51,11 @@ internal class EmojiAdapter(emojis: Array<Emoji>, spanCount: Int) : BaseAdapter(
             itemView = convertView
             holder = convertView.tag as EmojiHolder
         }
-        if (emoji.resId != -1) {
-            holder.emojiIcon.setImageResource(emoji.resId)
+        if (emoji?.resId != -1) {
+            holder.emojiIcon.setImageResource(emoji!!.resId)
         } else {
             val model = UrlHelper.inspectUrl(emoji.thumbnail)
-            ImageAdapter.engine()!!.show(model, holder.emojiIcon)
+            ImageAdapter.engine().show(model, holder.emojiIcon)
         }
         if (emoji.isSmall || emoji.description == null) {
             holder.emojiName.visibility = View.GONE

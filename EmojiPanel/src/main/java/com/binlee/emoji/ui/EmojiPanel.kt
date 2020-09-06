@@ -24,17 +24,19 @@ import com.binlee.emoji.model.EmojiGroup
 import com.binlee.emoji.span.CustomAtSpan
 import com.binlee.emoji.ui.EmojiGridView.OnPressListener
 import com.binlee.emoji.ui.EmojiRepo.OnDataChangeCallback
-import java.util.*
+import kotlin.math.max
 import kotlin.math.min
-
 
 /**
  * Created on 19-7-17.
  *
  * @author leebin
  */
-class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) : ConstraintLayout(context!!, attrs, defStyle) {
-    private val mInflater: LayoutInflater
+class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null,
+                                           defStyle: Int = 0)
+    : ConstraintLayout(context!!, attrs, defStyle) {
+
+    private val mInflater: LayoutInflater = LayoutInflater.from(context)
     private var mCallback: OnActionCallback? = null
     private var mPreviewWin: EmojiPreviewWindow? = null
 
@@ -43,8 +45,8 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
 
     // 退出表情面板时所在的组
     private var mLastGroup: EmojiGroup? = null
-    private var mGroups: MutableList<EmojiGroup?>? = null
-    private var mGroupItems: MutableList<View>? = null
+    private lateinit var mGroups: MutableList<EmojiGroup>
+    private lateinit var mGroupItems: MutableList<View>
     private var mRecentEmojiAdapter: EmojiAdapter? = null
 
     /**
@@ -99,18 +101,17 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
     }
 
     private fun setupEmojiGroup(parentPager: ViewPager, container: LinearLayout) {
-        mGroups = EmojiRepo.Companion.getEmojiGroups()
+        mGroups = EmojiRepo.emojiGroups
         if (mBasicMode) {
-            val smallGroup = mGroups!![0]
-            mGroups!!.clear()
-            mGroups!!.add(smallGroup)
+            val smallGroup = mGroups[0]
+            mGroups.clear()
+            mGroups.add(smallGroup)
         }
-        mGroupItems = ArrayList()
+        mGroupItems = mutableListOf()
         var item: View
-        var model: String
-        for (i in mGroups!!.indices) {
+        for (i in mGroups.indices) {
             // 初始化组指示器
-            val emojiGroup = mGroups!![i]
+            val emojiGroup = mGroups[i]
             item = mInflater.inflate(R.layout.emoji_preview_layout, container, false)
             val lp = item.layoutParams as LinearLayout.LayoutParams
             lp.height = resources.getDimensionPixelSize(R.dimen.mx_dp_36)
@@ -126,9 +127,8 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
             p.height = p.width
             p.bottomToBottom = LayoutParams.PARENT_ID
             image.layoutParams = p
-            model = UrlHelper.Companion.inspectUrl(emojiGroup.getThumbnail())
-            ImageAdapter.Companion.engine()!!.show(model, image)
-            item.setOnClickListener { v: View? ->
+            ImageAdapter.engine().show(UrlHelper.inspectUrl(emojiGroup.thumbnail), image)
+            item.setOnClickListener {
                 mScrollToChange = false
                 parentPager.currentItem = i
             }
@@ -146,13 +146,12 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
                 return groupItem
             }
 
-            override fun destroyItem(container: ViewGroup, position: Int,
-                                     `object`: Any) {
+            override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
                 container.removeView(`object` as View)
             }
 
             override fun getCount(): Int {
-                return mGroups!!.size
+                return mGroups.size
             }
 
             override fun isViewFromObject(view: View, `object`: Any): Boolean {
@@ -165,7 +164,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
                 var i = 0
                 val count = container.childCount
                 while (i < count) {
-                    mGroups!![i].setLastGroup(i == position)
+                    mGroups[i].isLastGroup = i == position
                     container.getChildAt(i).isSelected = i == position
                     i++
                 }
@@ -177,33 +176,32 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
         })
         var index = -1
         var i = 0
-        val size = mGroups!!.size
+        val size = mGroups.size
         while (i < size) {
-            if (mGroups!![i]!!.isLastGroup) {
+            if (mGroups[i].isLastGroup) {
                 index = i
                 break
             }
             i++
         }
-        index = Math.max(index, 0)
+        index = max(index, 0)
         parentPager.currentItem = index
         container.getChildAt(index).isSelected = true
     }
 
     private fun setChildPagerRealIndex(position: Int) {
         if (mScrollToChange && mLastGroup != null) {
-            val lastPager: ViewPager = mGroupItems!![mGroups!!.indexOf(mLastGroup)]
+            val lastPager: ViewPager = mGroupItems[mGroups.indexOf(mLastGroup!!)]
                     .findViewById(R.id.childPager)
-            var realIndex = mLastGroup.getLastChildIndex()
+            var realIndex = mLastGroup!!.lastChildIndex
             if (realIndex == 0) {
                 realIndex = 99
-            } else if (lastPager.adapter != null
-                    && realIndex == lastPager.adapter!!.count - 1) {
+            } else if (lastPager.adapter != null && realIndex == lastPager.adapter!!.count - 1) {
                 realIndex = 0
             }
-            (mGroupItems!![position].findViewById<View>(R.id.childPager) as ViewPager).currentItem = realIndex
+            (mGroupItems[position].findViewById<ViewPager>(R.id.childPager)).currentItem = realIndex
         }
-        mLastGroup = mGroups!![position]
+        mLastGroup = mGroups[position]
         mScrollToChange = true
     }
 
@@ -217,9 +215,10 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
         val childPager: ViewPager = groupItem.findViewById(R.id.childPager)
 
         childPager.adapter = object : PagerAdapter() {
+
             override fun instantiateItem(container: ViewGroup, position: Int): Any {
                 val pageItem = mInflater.inflate(R.layout.emoji_page_item_layout, container, false)
-                initPageData(childPager, pageItem, data.[position], position, spanCount, hasRecently)
+                initPageData(childPager, pageItem, data?.get(position)!!, position, spanCount, hasRecently)
                 container.addView(pageItem)
                 return pageItem
             }
@@ -253,7 +252,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
             }
 
             override fun onPageScrolled(pos: Int, offset: Float, offsetPixels: Int) {
-                if ((pos == 0 || pos == data.size - 1) && offsetPixels == 0) {
+                if ((pos == 0 || pos == data!!.size - 1) && offsetPixels == 0) {
                     mLastGroup = group
                 }
             }
@@ -261,9 +260,9 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
         indicator.attachViewPager(childPager, hasRecently)
     }
 
-    private fun initPageData(pager: ViewPager, pageItem: View, data: Array<Emoji>,
+    private fun initPageData(pager: ViewPager, pageItem: View, data: Array<Emoji?>,
                              index: Int, spanCount: Int, hasRecently: Boolean) {
-        val paddingTop: Int = UiHelper.Companion.dip2px(if (spanCount == 7) 44 else 32.toFloat())
+        val paddingTop: Int = UiHelper.dip2px(if (spanCount == 7) 44F else 32F)
         val gridView: EmojiGridView = pageItem.findViewById(R.id.gridView)
         val adapter = EmojiAdapter(data, spanCount)
         gridView.adapter = adapter
@@ -271,7 +270,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
         val divider = pageItem.findViewById<View>(R.id.recentlyDivider)
         gridView.setBackgroundColor(Color.TRANSPARENT)
         gridView.numColumns = if (hasRecently && index == 0) 3 else spanCount
-        val columnWidth: Int = UiHelper.Companion.screenWidth() / spanCount
+        val columnWidth: Int = UiHelper.screenWidth() / spanCount
         gridView.columnWidth = columnWidth
         if (hasRecently && index == 0) {
             recently.visibility = VISIBLE
@@ -305,7 +304,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
         }
         gridView.selector = ColorDrawable(Color.TRANSPARENT)
         // 连续点击时
-        gridView.onItemClickListener = AdapterView.OnItemClickListener { parent: AdapterView<*>?, view: View, pos: Int, id: Long ->
+        gridView.onItemClickListener = AdapterView.OnItemClickListener { _: AdapterView<*>?, view: View, pos: Int, _: Long ->
             val src = adapter.dataSet[pos]
             // 深 copy，不改变原有对象字段
             val emoji = src!!.clone()
@@ -325,6 +324,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
             handleClickEvent(emoji)
         }
         gridView.setOnPressListener(object : OnPressListener {
+
             override fun onLongPress(pos: Int) {
                 val emoji = adapter.dataSet[pos]
                 if (emoji!!.isAdd) {
@@ -345,7 +345,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
 
     private fun handleClickEvent(emoji: Emoji?) {
         if (emoji == null) {
-            debug("EmojiPanel", "handleClickEvent() emoji is null")
+            LogHelper.debug("EmojiPanel", "handleClickEvent() emoji is null")
             return
         }
         val inputView = mAttachedEditText
@@ -363,7 +363,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
                 // 如果光标前一个字符是 '\u2005'
                 if (editable[end - 1] == '\u2005') {
                     val spans = editable.getSpans(0, end, CustomAtSpan::class.java)
-                    if (spans != null && spans.size > 0) {
+                    if (spans != null && spans.isNotEmpty()) {
                         // 取最后一个元素
                         val atSpan = spans[spans.size - 1]
                         val st = editable.getSpanStart(atSpan)
@@ -374,7 +374,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
                     if (end < text.length) {
                         text = text.substring(0, end + 1)
                     }
-                    val index: Int = EmojiHelper.Companion.findDeleteIndex(text)
+                    val index: Int = EmojiHelper.findDeleteIndex(text)
                     editable.delete(if (index == 0) 0 else if (index > 0) index else end - 1, end)
                 }
             }
@@ -382,7 +382,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
             // 如果是自定义表情的`添加按钮`
         } else if (!mCallback!!.onInsert(emoji) && emoji.isSmall) {
             if (inputView != null) {
-                val text: Spannable = EmojiHelper.Companion.toSpannable(context, emoji.key, inputView.textSize)
+                val text: Spannable = EmojiHelper.toSpannable(context, emoji.key, inputView.textSize)
                 inputView.text.insert(inputView.selectionEnd, text)
             }
         } else {
@@ -422,17 +422,16 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         EmojiRepo.registerCallback(object : OnDataChangeCallback {
-            override fun onGroupChanged(group: EmojiGroup?, isAdd: Boolean) {
+            override fun onGroupChanged(group: EmojiGroup, isAdd: Boolean) {
                 val parentPager: ViewPager = findViewById(R.id.parentPager)
                 if (isAdd) {
                     val item = mInflater.inflate(R.layout.emoji_group_item_layout, parentPager, false)
                     initGroupItem(item, group)
-                    mGroupItems!!.add(item)
-                    mGroups!!.add(group)
+                    mGroupItems.add(item)
+                    mGroups.add(group)
                 } else {
-                    val index = mGroups!!.indexOf(group)
-                    mGroupItems!!.removeAt(index)
-                    mGroups!!.remove(group)
+                    mGroupItems.removeAt(mGroups.indexOf(group))
+                    mGroups.remove(group)
                 }
                 if (parentPager.adapter != null) {
                     parentPager.adapter!!.notifyDataSetChanged()
@@ -440,12 +439,11 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
             }
 
             override fun onCustomEmojiChanged() {
-                val customGroup = mGroups!![1]
-                if (!EmojiRepo.updateEmojiMap(customGroup, false)) {
+                if (!EmojiRepo.updateEmojiMap(mGroups[1], false)) {
                     return
                 }
                 val parentPager: ViewPager = findViewById(R.id.parentPager)
-                initGroupItem(mGroupItems!![1], customGroup)
+                initGroupItem(mGroupItems[1], mGroups[1])
                 if (parentPager.adapter != null) {
                     parentPager.adapter!!.notifyDataSetChanged()
                 }
@@ -473,9 +471,9 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
         }
         // 更新 mLastGroup
         // 没有放在 onDetachedFromWindow() 中执行是因为杀进程时 onDetachedFromWindow() 执行不到
-        for (group in mGroups!!) {
+        for (group in mGroups) {
             if (mLastGroup != null) {
-                group!!.isLastGroup = group == mLastGroup
+                group.isLastGroup = group == mLastGroup
             }
         }
         EmojiRepo.updateLastUsedGroup(mGroups)
@@ -483,8 +481,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
 
     // 更新缓存和数据库（最近使用表情）
     private fun updateRecentlyUsed() {
-        val updatedValues: Array<Array<Emoji?>> = EmojiRepo.updateRecentEmojis()
-                ?: return
+        val updatedValues = EmojiRepo.updateRecentEmojis() ?: return
         // 刷新 ui
         if (mRecentEmojiAdapter != null) {
             Log.d("EmojiPanel", "updateRecentlyUsed() ${updatedValues[0].contentToString()}")
@@ -494,7 +491,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
             // 此时需要重新初始化父 ViewPager 的第一个item
             ThreadHelper.runOnMain(Runnable {
                 val parentPager: ViewPager = findViewById(R.id.parentPager)
-                initGroupItem(mGroupItems!![0], mGroups!![0])
+                initGroupItem(mGroupItems[0], mGroups[0])
                 if (parentPager.adapter != null) {
                     parentPager.adapter!!.notifyDataSetChanged()
                 }
@@ -503,7 +500,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
     }
 
     private fun recordRecentlyUsed(emoji: Emoji?) {
-        EmojiRepo.Companion.recordEmoji(emoji)
+        EmojiRepo.recordEmoji(emoji!!)
     }
 
     class OnActionCallback {
@@ -534,7 +531,6 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
     }
 
     init {
-        mInflater = LayoutInflater.from(context)
         mInflater.inflate(R.layout.emoji_panel_layout, this, true)
         setBackgroundColor(Color.WHITE)
     }
