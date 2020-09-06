@@ -20,6 +20,7 @@ import kotlin.concurrent.thread
 class MainActivityFragment : Fragment() {
 
     private var request: HttpEngine.BaseRequest? = null
+
     // private val url = "https://www.baidu.com/"
     private val url = "http://www.minxing365.com/"
 
@@ -112,10 +113,13 @@ class MainActivityFragment : Fragment() {
             })
         } else {
             thread(true) {
-                val response = HttpAdapter.engine().request(request)
-                if (response != null) {
-                    val result = response.string()
+                try {
+                    val result = HttpAdapter.engine().request(request).string()
                     helloWorld.post { helloWorld.text = result }
+                } catch (e: IOException) {
+                    val result = e.toString()
+                    helloWorld.post { helloWorld.text = result }
+                    return@thread
                 }
             }
         }
@@ -131,7 +135,7 @@ class MainActivityFragment : Fragment() {
         if (async) {
             client.newCall(r).enqueue(object : Callback {
                 override fun onResponse(call: Call, response: Response) {
-                    val result = response.body()?.string()
+                    val result = response.body?.string()
                     Log.d("Http", "onResponse()\n$result")
                     helloWorld.post { helloWorld.append(result) }
                 }
@@ -143,7 +147,7 @@ class MainActivityFragment : Fragment() {
         } else {
             Thread {
                 val response = client.newCall(r).execute()
-                val result = response.body()?.string()
+                val result = response.body?.string()
                 Log.d("Http", "sync result\n$result")
                 helloWorld.post { helloWorld.append(result) }
             }.start()
