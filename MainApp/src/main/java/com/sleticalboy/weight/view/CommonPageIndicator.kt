@@ -1,14 +1,13 @@
 package com.sleticalboy.weight.view
 
 import android.content.Context
-import android.graphics.Canvas
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-
+import kotlin.math.min
 
 /**
  * Created on 18-3-15.
@@ -23,8 +22,6 @@ class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: At
     private var mCurrentPage = 0
     private var mViewPager: ViewPager? = null
     private val mInternalListener: OnPageChangeListener? = null
-
-    private fun init() {}
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {}
 
@@ -46,7 +43,7 @@ class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: At
     }
 
     private fun measureWidth(widthMeasureSpec: Int): Int {
-        var result = 0
+        var result: Int
         val specMode = MeasureSpec.getMode(widthMeasureSpec)
         val specSize = MeasureSpec.getSize(widthMeasureSpec)
         if (specMode == MeasureSpec.EXACTLY) {
@@ -54,14 +51,14 @@ class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: At
         } else {
             result = 2 * mRadius + paddingTop + paddingBottom + 1
             if (specMode == MeasureSpec.AT_MOST) {
-                result = Math.min(result, specSize)
+                result = min(result, specSize)
             }
         }
         return result
     }
 
     private fun measureHeight(heightMeasureSpec: Int): Int {
-        var result = 0
+        var result: Int
         val specMode = MeasureSpec.getMode(heightMeasureSpec)
         val specSize = MeasureSpec.getSize(heightMeasureSpec)
         if (specMode == MeasureSpec.EXACTLY || mViewPager == null || mViewPager!!.adapter == null) {
@@ -70,7 +67,7 @@ class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: At
             val count = mViewPager!!.adapter!!.count
             result = paddingLeft + paddingRight + 2 * count * mRadius + (count - 1) * mRadius + 1
             if (specMode == MeasureSpec.AT_MOST) {
-                result = Math.min(result, specSize)
+                result = min(result, specSize)
             }
         }
         return result
@@ -90,6 +87,7 @@ class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: At
         }
 
         companion object {
+            @JvmField
             val CREATOR: Parcelable.Creator<SavedState?> = object : Parcelable.Creator<SavedState?> {
                 override fun createFromParcel(`in`: Parcel): SavedState? {
                     return SavedState(`in`)
@@ -102,10 +100,10 @@ class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: At
         }
     }
 
-    override fun setupWithViewPager(pagerView: ViewPager?, initialPos: Int) {
-        mViewPager = checkValid<ViewPager?>(mViewPager)
+    override fun setupWithViewPager(viewPager: ViewPager?, initialPos: Int) {
+        mViewPager = checkValid(mViewPager)
         checkNotNull(mViewPager!!.adapter) { "没有设置 Adapter" }
-        mViewPager = pagerView
+        mViewPager = viewPager
         invalidate()
     }
 
@@ -122,11 +120,6 @@ class CommonPageIndicator @JvmOverloads constructor(context: Context?, attrs: At
         invalidate()
     }
 
-    companion object {
-        private const val INVALID_POINTER = -1
-    }
-
     init {
-        init()
     }
 }

@@ -169,9 +169,9 @@ class PagerLayoutManager(rows: Int, columns: Int)
         return itemCount / onePageSize + if (itemCount % onePageSize == 0) 0 else 1
     }
 
-    override fun isLastRow(index: Int): Boolean {
-        if (index in 0 until itemCount) {
-            var indexOfPage = index % onePageSize
+    override fun isLastRow(position: Int): Boolean {
+        if (position in 0 until itemCount) {
+            var indexOfPage = position % onePageSize
             indexOfPage++
             return indexOfPage > (mRows - 1) * mColumns && indexOfPage <= onePageSize
         }
@@ -179,10 +179,10 @@ class PagerLayoutManager(rows: Int, columns: Int)
     }
 
     override fun isLastColumn(position: Int): Boolean {
-        var position = position
-        if (position in 0 until itemCount) {
-            position++
-            return position % mColumns == 0
+        var index = position
+        if (index in 0 until itemCount) {
+            index++
+            return index % mColumns == 0
         }
         return false
     }

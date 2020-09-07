@@ -72,8 +72,12 @@ class XRefreshLayout @JvmOverloads constructor(context: Context?, attrs: Attribu
             return
         }
         var a: TypedArray? = null
-        a = try {
-            context.obtainStyledAttributes(attrs, LAYOUT_ATTRS)
+        try {
+            a = context.obtainStyledAttributes(attrs, LAYOUT_ATTRS)
+            a.getInt(LAYOUT_ATTRS[0], 0)
+            a.getInt(LAYOUT_ATTRS[1], 0)
+            a.getInt(LAYOUT_ATTRS[2], 0)
+            a.getInt(LAYOUT_ATTRS[3], 0)
         } finally {
             a?.recycle()
         }
@@ -180,13 +184,11 @@ class XRefreshLayout @JvmOverloads constructor(context: Context?, attrs: Attribu
         } else { // 如果当前 view 没有拦截事件
             return mTarget.dispatchTouchEvent(ev); // 返回 child 对事件的分发结果
         }*/
-        var dispatched = false
-        dispatched = if (onInterceptTouchEvent(ev)) {
+        return if (onInterceptTouchEvent(ev)) {
             onTouchEvent(ev)
         } else {
             mTarget!!.dispatchTouchEvent(ev)
         }
-        return dispatched
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
@@ -256,7 +258,7 @@ class XRefreshLayout @JvmOverloads constructor(context: Context?, attrs: Attribu
     }
 
     private fun createTranslationYAnim(state: Int, from: Int, to: Int) {
-        Log.d(TAG, "create animation")
+        Log.d(TAG, "create animation state: $state, from: $from to $to")
         val animator = ValueAnimator.ofInt(from, to)
         animator.duration = ANIM_TIME.toLong()
         animator.addUpdateListener { animation ->
@@ -276,6 +278,7 @@ class XRefreshLayout @JvmOverloads constructor(context: Context?, attrs: Attribu
     }
 
     private fun smoothScrollTo(destX: Int, destY: Int) {
+        Log.d(TAG, "smoothScrollTo() destX = $destX, destY = $destY")
         val scrollX = scrollX
         val deltaX = destX - scrollX
         mScroller!!.startScroll(scrollX, 0, deltaX, 500)
@@ -293,18 +296,7 @@ class XRefreshLayout @JvmOverloads constructor(context: Context?, attrs: Attribu
         if (mTarget == null) {
             return false
         }
-        return if (Build.VERSION.SDK_INT < 14) {
-            if (mTarget is AbsListView) {
-                val absListView = mTarget as AbsListView
-                absListView.childCount > 0 &&
-                        (absListView.firstVisiblePosition > 0
-                                || absListView.getChildAt(0).top < absListView.paddingTop)
-            } else {
-                ViewCompat.canScrollVertically(mTarget, direction) || mTarget!!.scrollY != 0
-            }
-        } else {
-            mTarget!!.canScrollVertically(direction)
-        }
+        return mTarget!!.canScrollVertically(direction)
     }
 
     fun canChildScrollDown(): Boolean {
