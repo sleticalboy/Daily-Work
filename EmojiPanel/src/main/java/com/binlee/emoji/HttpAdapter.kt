@@ -20,9 +20,9 @@ class HttpAdapter private constructor() {
 
         fun engine(): HttpEngine<*, *> {
             if (sEngine == null) {
-                // sEngine = OkHttpEngine()
+                sEngine = OkHttpEngine()
                 // sEngine = DefaultHttpEngine()
-                sEngine = SocketHttpEngine()
+                // sEngine = SocketHttpEngine()
             }
             return sEngine!!
         }

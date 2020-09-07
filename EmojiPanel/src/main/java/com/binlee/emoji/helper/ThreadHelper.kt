@@ -18,15 +18,15 @@ class ThreadHelper private constructor() {
         private var sAsyncHandler: Handler? = null
         private var sMainHandler: Handler? = null
 
-        fun mainHandler(): Handler? {
+        fun mainHandler(): Handler {
             if (sMainHandler == null) {
                 sMainHandler = Handler(Looper.getMainLooper())
             }
-            return sMainHandler
+            return sMainHandler!!
         }
 
         @Synchronized
-        fun asyncHandler(): Handler? {
+        fun asyncHandler(): Handler {
             if (sAsyncHandler == null) {
                 val handlerThread = HandlerThread(
                         "sAsyncHandlerThread", Process.THREAD_PRIORITY_BACKGROUND)
@@ -34,23 +34,23 @@ class ThreadHelper private constructor() {
                 // getLooper() 方法可能会发生阻塞
                 sAsyncHandler = Handler(handlerThread.looper)
             }
-            return sAsyncHandler
+            return sAsyncHandler!!
         }
 
-        fun runOnMain(task: Runnable?) {
-            mainHandler()!!.post(task)
+        fun runOnMain(task: Runnable) {
+            mainHandler().post(task)
         }
 
-        fun runOnMain(task: Runnable?, delayMillis: Long) {
-            mainHandler()!!.postDelayed(task, delayMillis)
+        fun runOnMain(task: Runnable, delayMillis: Long) {
+            mainHandler().postDelayed(task, delayMillis)
         }
 
-        fun runOnWorker(task: Runnable?) {
-            asyncHandler()!!.post(task)
+        fun runOnWorker(task: Runnable) {
+            asyncHandler().post(task)
         }
 
-        fun runOnWorker(task: Runnable?, delayMillis: Long) {
-            asyncHandler()!!.postDelayed(task, delayMillis)
+        fun runOnWorker(task: Runnable, delayMillis: Long) {
+            asyncHandler().postDelayed(task, delayMillis)
         }
 
         val isMain: Boolean

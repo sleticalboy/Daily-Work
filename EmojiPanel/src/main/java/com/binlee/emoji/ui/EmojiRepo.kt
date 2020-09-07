@@ -57,20 +57,19 @@ class EmojiRepo private constructor() {
             // 1, 查询所有分组
             // 2, 遍历分组查询组内所有表情
             // 3, 遍历组内表情并填充 sEmojiMap
-            val context: Context? = OsHelper.app()
             // 首次升级新版表情初始化
             if (!EmojiHelper.hasGroup(EmojiHelper.smallGroupUuid)) {
-                EmojiHelper.instance.initDefaultEmoji(context)
+                EmojiHelper.instance.initDefaultEmoji(OsHelper.app())
             }
             // 同步 server 数据
-            EmojiHelper.instance.initEmojiGroupList(context)
+            EmojiHelper.instance.initEmojiGroupList(OsHelper.app())
             // 1, 查询所有分组
-            val groupList = EmojiHelper.instance.getCurrentEmojiGroupList(context)
+            val groupList = EmojiHelper.instance.getCurrentEmojiGroupList(OsHelper.app())
             if (groupList.isEmpty()) {
                 return
             }
             for (key in groupList) {
-                val pageData = getPageData(context, key, sInit)
+                val pageData = getPageData(OsHelper.app(), key, sInit)
                         ?: continue
                 // 填充 sEmojiMap
                 emojiMap()[key] = pageData
@@ -256,10 +255,10 @@ class EmojiRepo private constructor() {
                     // 清空内存
                     recordedEmojis().clear()
                     // 更新数据库
-                    ThreadHelper.Companion.runOnWorker(Runnable {
+                    ThreadHelper.runOnWorker {
                         // 最多更新 9 条数据
                         EmojiHelper.updateRecentlyUsedEmojis(cachedEmojis.subList(0, length))
-                    })
+                    }
                     return newValue
                 }
             }
@@ -290,7 +289,7 @@ class EmojiRepo private constructor() {
             if (uid < 0) {
                 return
             }
-            ThreadHelper.runOnWorker(Runnable { DbManager.get().updateLastUsedEmojiGroup(groups, uid) })
+            ThreadHelper.runOnWorker { DbManager.get().updateLastUsedEmojiGroup(groups, uid) }
         }
 
         val emojiGroups: MutableList<EmojiGroup>

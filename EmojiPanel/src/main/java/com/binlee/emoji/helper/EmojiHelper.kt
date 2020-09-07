@@ -10,6 +10,7 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.ImageSpan
 import android.util.Base64
+import android.util.Log
 import android.widget.EditText
 import androidx.core.content.ContextCompat
 import com.binlee.emoji.ImageAdapter
@@ -25,6 +26,7 @@ import okio.source
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.math.roundToInt
 
 class EmojiHelper private constructor() {
 
@@ -183,7 +185,7 @@ class EmojiHelper private constructor() {
                 }
             } else if (!emoji.isSmall && !TextUtils.isEmpty(emoji.thumbnail)) {
                 // 预加载表情包资源, 目前只加载了缩略图，如有必要可添加加载原图的逻辑
-                ImageAdapter.Companion.engine()!!.preload(ctx, null, UrlHelper.Companion.inspectUrl(emoji.thumbnail))
+                ImageAdapter.engine().preload(ctx, null, UrlHelper.inspectUrl(emoji.thumbnail))
             }
         }
 
@@ -201,7 +203,7 @@ class EmojiHelper private constructor() {
                         // w > h
                         outWidth = MAX_EMOJI_SIZE
                         // 缩小或放大 width * s = maxW
-                        outHeight = computeSize(Math.round(height * MAX_EMOJI_SIZE / width.toFloat()))
+                        outHeight = computeSize((height * MAX_EMOJI_SIZE / width.toFloat()).roundToInt())
                     } else {
                         // h > w
                         outHeight = MAX_EMOJI_SIZE
@@ -249,7 +251,7 @@ class EmojiHelper private constructor() {
             return -1
         }
 
-        fun getSmileText(text: String?): String? {
+        fun getSmileText(text: CharSequence): String? {
             if (TextUtils.isEmpty(text)) {
                 return null
             }
@@ -275,7 +277,7 @@ class EmojiHelper private constructor() {
             return SMILEY_KEYS[index].replace("\\", "")
         }
 
-        fun getShowText(text: String?): String {
+        fun getShowText(text: CharSequence): String {
             if (TextUtils.isEmpty(text)) {
                 return ""
             }
@@ -330,41 +332,41 @@ class EmojiHelper private constructor() {
          * @param view EditText
          */
         fun pasteToEditText(view: EditText, pasteString: String, maxLength: Int) {
-            var maxLength = maxLength
-            if (maxLength < 0) {
-                maxLength = 1000
+            var realMax = maxLength
+            if (realMax < 0) {
+                realMax = 1000
             }
             val matcher = PATTERN.matcher(pasteString)
             var smileyKey: String?
             var start = 0
-            var smiley_start: Int
+            var smileyStart: Int
             while (matcher.find()) {
                 smileyKey = matcher.group()
-                smiley_start = matcher.start()
-                if (smiley_start > start) {
-                    val pasteTextBefore = pasteString.substring(start, smiley_start)
+                smileyStart = matcher.start()
+                if (smileyStart > start) {
+                    val pasteTextBefore = pasteString.substring(start, smileyStart)
                     val index = view.selectionStart
                     view.text.insert(index, pasteTextBefore)
                     val selection = index + pasteTextBefore.length
-                    view.setSelection(if (selection > maxLength) maxLength else selection)
+                    view.setSelection(if (selection > realMax) realMax else selection)
                 }
                 val text = toSpannable(view.context, smileyKey, view.textSize)
                 val index = view.selectionStart
                 view.text.insert(index, text)
                 val selection = index + text.length
-                view.setSelection(if (selection > maxLength) maxLength else selection)
+                view.setSelection(if (selection > realMax) realMax else selection)
                 start = matcher.end()
-                if (selection > maxLength) {
+                if (selection > realMax) {
                     return
                 }
             }
             val index = view.selectionStart
             var pasteTextAfter = pasteString.substring(start)
-            if (maxLength > 0 && index + pasteTextAfter.length > maxLength) {
-                if (maxLength <= view.text.length) {
+            if (realMax > 0 && index + pasteTextAfter.length > realMax) {
+                if (realMax <= view.text.length) {
                     return
                 }
-                pasteTextAfter = pasteTextAfter.substring(0, maxLength - view.text.length)
+                pasteTextAfter = pasteTextAfter.substring(0, realMax - view.text.length)
             }
             view.text.insert(index, pasteTextAfter)
             view.setSelection(index + pasteTextAfter.length)
@@ -462,16 +464,16 @@ class EmojiHelper private constructor() {
 
         //////////////////////////// JS API ////////////////////////////
         fun convertRichText(context: Context, text: CharSequence): String {
-            var text = text
             return if (!isContainSmiley(text)) {
                 text.toString()
             } else {
                 val smileyList = findSmiley(text)
+                var result = text
                 for (emoji in smileyList) {
                     // 将文本中的表情替换成 img 标签
-                    text = text.toString().replace(emoji.key!!, smileyToImgTag(context, emoji.resId))
+                    result = text.toString().replace(emoji.key!!, smileyToImgTag(context, emoji.resId))
                 }
-                text.toString()
+                result.toString()
             }
         }
 
@@ -509,6 +511,8 @@ class EmojiHelper private constructor() {
         init {
             MAX_EMOJI_SIZE = (300 / 2 * Resources.getSystem().displayMetrics.density).toInt()
         }
+
+        private const val TAG = "EmojiHelper"
     }
 
     /**
@@ -517,6 +521,7 @@ class EmojiHelper private constructor() {
      * @param context
      */
     fun initEmojiGroupList(context: Context?) {
+        Log.d(TAG, "initEmojiGroupList() called with: context = $context")
         // 从server获取数据
         val groups: List<EmojiGroup> = ArrayList()
         // 因为这里本就在子线程 所以直接同步更新数据即可
@@ -526,6 +531,7 @@ class EmojiHelper private constructor() {
     }
 
     private fun updateEmojiGroupList(context: Context, emojiGroups: List<EmojiGroup>?) {
+        Log.d(TAG, "updateEmojiGroupList() called with: context = $context, emojiGroups = $emojiGroups")
         val userId = userId
         if (emojiGroups == null || emojiGroups.isEmpty() || userId < 0) {
             return
@@ -720,7 +726,7 @@ class EmojiHelper private constructor() {
         }
         for (move in moveList) {
             DATA@ for (emoji in data) {
-                if (instance!!.isEqual(move, emoji)) {
+                if (instance.isEqual(move, emoji)) {
                     data.remove(emoji)
                     break@DATA
                 }

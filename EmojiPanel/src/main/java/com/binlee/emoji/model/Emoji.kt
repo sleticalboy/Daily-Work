@@ -73,10 +73,10 @@ class Emoji : Serializable, Cloneable {
     }
 
     // 最近使用表情利用 HashSet 去重，所以重写 equals 和 hashCode 方法
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val emoji = o as Emoji
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val emoji = other as Emoji
         return uuid == emoji.uuid && sha1 == emoji.sha1
     }
 
@@ -85,6 +85,7 @@ class Emoji : Serializable, Cloneable {
     }
 
     class Desc : Serializable {
+
         var cn: String? = null
         var en: String? = null
 

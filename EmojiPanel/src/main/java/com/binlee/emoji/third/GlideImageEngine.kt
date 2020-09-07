@@ -14,7 +14,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import java.io.File
@@ -41,9 +41,10 @@ class GlideImageEngine : ImageEngine() {
                 .load(url)
                 .apply(convertConfig(config))
                 .listener(RequestLogger())
-                .into(object : SimpleTarget<Res>() {
-                    override fun onResourceReady(res: Res,
-                                                 transition: Transition<in Res>?) {
+                .into(object : CustomViewTarget<ImageView, Res>(target) {
+                    override fun onLoadFailed(errorDrawable: Drawable?) = Unit
+
+                    override fun onResourceReady(res: Res, transition: Transition<in Res>?) {
                         if (res is GifDrawable && real.mAsGif) {
                             target.setImageDrawable(res as GifDrawable)
                             (res as GifDrawable).start()
@@ -53,6 +54,8 @@ class GlideImageEngine : ImageEngine() {
                             target.setImageBitmap(res as Bitmap)
                         }
                     }
+
+                    override fun onResourceCleared(placeholder: Drawable?) = Unit
                 })
     }
 
@@ -156,9 +159,10 @@ class GlideImageEngine : ImageEngine() {
         return options
     }
 
-    private open class RequestLogger<R> @JvmOverloads constructor(private val mTag: String = DEF_TAG) : RequestListener<R> {
-        override fun onLoadFailed(e: GlideException?, model: Any,
-                                  target: Target<R>, isFirstResource: Boolean): Boolean {
+    private open class RequestLogger<R> @JvmOverloads constructor(private val mTag: String = DEF_TAG)
+        : RequestListener<R> {
+        override fun onLoadFailed(e: GlideException?, model: Any, target: Target<R>,
+                                  isFirstResource: Boolean): Boolean {
             ANDROID.log(mTag, "onLoadFailed() $model", e)
             return false
         }

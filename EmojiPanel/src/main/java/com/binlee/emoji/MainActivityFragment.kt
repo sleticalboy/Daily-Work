@@ -24,11 +24,6 @@ class MainActivityFragment : Fragment() {
     // private val url = "https://www.baidu.com/"
     private val url = "http://www.minxing365.com/"
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        LogHelper.debug("Fragment", "setUserVisibleHint() -> $isVisibleToUser")
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         LogHelper.debug("Fragment", "onAttach() -> $context")

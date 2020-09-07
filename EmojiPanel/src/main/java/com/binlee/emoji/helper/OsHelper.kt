@@ -23,8 +23,7 @@ class OsHelper private constructor() {
         private val mLock = Object()
 
         fun getProcessName(pid: Int): String? {
-            val am = app()!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                    ?: return null
+            val am = app().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             val apps = am.runningAppProcesses
             if (apps != null && apps.size > 0) {
                 for (info in apps) {
@@ -36,12 +35,12 @@ class OsHelper private constructor() {
             return null
         }
 
-        fun app(): Context? {
+        fun app(): Context {
             if (sContext == null) {
                 // do your own initialization
                 initialize()
             }
-            return sContext
+            return sContext!!
         }
 
         private fun initialize() {

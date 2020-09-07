@@ -6,20 +6,21 @@ import java.io.File
 class UrlHelper private constructor() {
 
     companion object {
+
         fun inspectUrl(url: String?): String? {
-            var url = url
-            if (TextUtils.isEmpty(url)) {
-                return url
+            var out = url
+            if (TextUtils.isEmpty(out)) {
+                return out
             }
-            if (isFile(url) || isHttp(url) || isAndroid(url)) {
-                return url
+            if (isFile(out) || isHttp(out) || isAndroid(out)) {
+                return out
             }
-            if (!isHttp(url) && url!!.startsWith("/")) {
-                url = baseUrl() + url
-            } else if (!isHttp(url) && !url!!.startsWith("/")) {
-                url = baseUrl() + File.separator + url
+            if (!isHttp(out) && out!!.startsWith("/")) {
+                out = baseUrl() + out
+            } else if (!isHttp(out) && !out!!.startsWith("/")) {
+                out = baseUrl() + File.separator + out
             }
-            return url
+            return out
         }
 
         fun isFile(url: String?): Boolean {

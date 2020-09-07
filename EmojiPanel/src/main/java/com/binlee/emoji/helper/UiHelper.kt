@@ -2,13 +2,12 @@ package com.binlee.emoji.helper
 
 import android.util.DisplayMetrics
 
-
 class UiHelper private constructor() {
 
     companion object {
 
         fun displayMetrics(): DisplayMetrics {
-            return OsHelper.app()!!.getResources().getDisplayMetrics()
+            return OsHelper.app().resources.displayMetrics
         }
 
         /**

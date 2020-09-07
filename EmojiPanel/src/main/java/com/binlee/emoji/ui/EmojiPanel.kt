@@ -325,13 +325,13 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
         }
         gridView.setOnPressListener(object : OnPressListener {
 
-            override fun onLongPress(pos: Int) {
-                val emoji = adapter.dataSet[pos]
+            override fun onLongPress(position: Int) {
+                val emoji = adapter.dataSet[position]
                 if (emoji!!.isAdd) {
                     // 如果长按是添加自定义表情按钮，则走点击的逻辑
                     // handleClickEvent(emoji);
                 } else if (!emoji.isSmall) {
-                    handleLongTouchEvent(gridView, emoji, pos)
+                    handleLongTouchEvent(gridView, emoji, position)
                 } else {
                     //
                 }
@@ -489,7 +489,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
         } else {
             // 如果是最开始的一次使用表情 mRecentEmojiAdapter 将会是 null
             // 此时需要重新初始化父 ViewPager 的第一个item
-            ThreadHelper.runOnMain(Runnable {
+            ThreadHelper.runOnMain({
                 val parentPager: ViewPager = findViewById(R.id.parentPager)
                 initGroupItem(mGroupItems[0], mGroups[0])
                 if (parentPager.adapter != null) {
@@ -509,6 +509,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
          * @return 返回 true 表示调用者自己处理删除事件，反之内部默认处理
          */
         fun onInsert(emoji: Emoji?): Boolean {
+            Log.d(TAG, "onInsert() called with: emoji = $emoji")
             return false
         }
 
@@ -519,6 +520,7 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
          * @return 返回 true 表示调用者自己处理删除事件，反之内部默认处理
          */
         fun onDelete(emoji: Emoji?): Boolean {
+            Log.d(TAG, "onDelete() called with: emoji = $emoji")
             return false
         }
 
@@ -527,11 +529,17 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
          *
          * @param emoji 被点表情
          */
-        fun onSpecialEmoji(emoji: Emoji?) {}
+        fun onSpecialEmoji(emoji: Emoji?) {
+            Log.d(TAG, "onSpecialEmoji() called with: emoji = $emoji")
+        }
     }
 
     init {
         mInflater.inflate(R.layout.emoji_panel_layout, this, true)
         setBackgroundColor(Color.WHITE)
+    }
+
+    companion object {
+        private const val TAG = "EmojiPanel"
     }
 }

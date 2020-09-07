@@ -62,10 +62,10 @@ class OkHttpEngine : HttpEngine<Request, Response>() {
             }
 
             @Throws(IOException::class)
-            override fun onResponse(call: Call, raw: Response) {
-                val response = adaptResponse(raw, request)
-                mainHandler().post { callback.onResponse(response) }
-                trace("OkHttpEngine", response)
+            override fun onResponse(call: Call, response: Response) {
+                val cooked = adaptResponse(response, request)
+                mainHandler().post { callback.onResponse(cooked) }
+                trace("OkHttpEngine", cooked)
             }
         })
     }

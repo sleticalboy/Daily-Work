@@ -2,6 +2,7 @@ package com.binlee.emoji.compat
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.annotation.StringDef
 import com.binlee.emoji.BuildConfig
@@ -104,7 +105,7 @@ abstract class HttpEngine<RealRequest, RealResponse> {
 
     abstract class Callback {
         fun onProgress(progress: Float) {
-            //
+            Log.d(TAG, "onProgress() called with: progress = $progress")
         }
 
         abstract fun onResponse(response: BaseResponse?)
@@ -115,8 +116,10 @@ abstract class HttpEngine<RealRequest, RealResponse> {
     class BaseRequest : Serializable {
 
         val headers = mutableMapOf<String, String>()
+
         @NonNull
         var url: String? = null
+
         @Method
         @NonNull
         var method: String? = null
@@ -192,6 +195,8 @@ abstract class HttpEngine<RealRequest, RealResponse> {
     annotation class Method
 
     companion object {
+
+        private const val TAG = "HttpEngine"
 
         const val GET = "GET"
         const val POST = "POST"

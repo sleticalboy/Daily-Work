@@ -132,7 +132,7 @@ internal class EmojiAdapter(emojis: Array<Emoji?>, spanCount: Int) : BaseAdapter
     }
 
     fun updateDataSet(values: Array<Emoji?>) {
-        if (values != null) {
+        if (values.isNotEmpty()) {
             mEmojis.clear()
             mEmojis.addAll(values)
             notifyDataSetChanged()
