@@ -21,7 +21,7 @@
                 android:id="@+id/default_ptr_flip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_refresh_arrow" />
+                android:src="@drawable/ic_refresh_arrow" />
 
             <ProgressBar
                 android:id="@+id/default_ptr_rotate"

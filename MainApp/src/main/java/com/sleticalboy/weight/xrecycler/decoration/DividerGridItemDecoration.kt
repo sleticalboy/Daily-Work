@@ -5,11 +5,11 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-
 
 /**
  * Date: 2017/2/16 0016.
@@ -99,7 +99,7 @@ class DividerGridItemDecoration(private val mContext: Context, private val mSpac
      * @return 是否是最后一列
      */
     private fun isLastColumn(parent: RecyclerView, pos: Int, spanCount: Int, childCount: Int): Boolean {
-        var childCount = childCount
+        var count = childCount
         val layoutManager = parent.layoutManager
         if (layoutManager is GridLayoutManager) {
             // 如果是最后一列，则不需要绘制右边
@@ -111,9 +111,9 @@ class DividerGridItemDecoration(private val mContext: Context, private val mSpac
                 // 如果是最后一列，则不需要绘制右边
                 (pos + 1) % spanCount == 0
             } else {
-                childCount = childCount - childCount % spanCount
+                count -= count % spanCount
                 // 如果是最后一列，则不需要绘制右边
-                pos >= childCount
+                pos >= count
             }
         }
         return false
@@ -153,20 +153,20 @@ class DividerGridItemDecoration(private val mContext: Context, private val mSpac
      * @return 判断item是否在最后一行
      */
     private fun isLastRaw(parent: RecyclerView, pos: Int, spanCount: Int, childCount: Int): Boolean {
-        var childCount = childCount
+        var count = childCount
         val layoutManager = parent.layoutManager
         if (layoutManager is GridLayoutManager) {
-            childCount -= childCount % spanCount
+            count -= count % spanCount
             // 如果是最后一行，则不需要绘制底部
-            return pos >= childCount
+            return pos >= count
         } else if (layoutManager is StaggeredGridLayoutManager) {
             val orientation = layoutManager
                     .orientation
             // StaggeredGridLayoutManager 且纵向滚动
             return if (orientation == StaggeredGridLayoutManager.VERTICAL) {
-                childCount -= childCount % spanCount
+                count -= count % spanCount
                 // 如果是最后一行，则不需要绘制底部
-                pos >= childCount
+                pos >= count
             } else  // StaggeredGridLayoutManager 且横向滚动
             {
                 // 如果是最后一行，则不需要绘制底部
@@ -199,7 +199,7 @@ class DividerGridItemDecoration(private val mContext: Context, private val mSpac
     }
 
     fun setDivider(@DrawableRes divider: Int) {
-        mDivider = mContext.resources.getDrawable(divider)
+        mDivider = ContextCompat.getDrawable(mContext, divider)
     }
 
     companion object {

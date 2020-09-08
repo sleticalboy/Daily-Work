@@ -1,6 +1,7 @@
 package com.sleticalboy.learning.encryption
 
 import java.math.BigInteger
+import java.util.*
 import kotlin.math.pow
 
 object Util {
@@ -114,9 +115,9 @@ object Util {
     fun getHexString(bytes: ByteArray, upperCase: Boolean): String {
         var ret = ""
         for (i in bytes.indices) {
-            ret += Integer.toString((bytes[i].toInt() and 0xff) + 0x100, 16).substring(1)
+            ret += ((bytes[i].toInt() and 0xff) + 0x100).toString(16).substring(1)
         }
-        return if (upperCase) ret.toUpperCase() else ret
+        return if (upperCase) ret.toUpperCase(Locale.getDefault()) else ret
     }
 
     /**
@@ -130,7 +131,7 @@ object Util {
             if (hex.length == 1) {
                 hex = "0$hex"
             }
-            print("0x" + hex.toUpperCase() + ",")
+            print("0x" + hex.toUpperCase(Locale.getDefault()) + ",")
         }
         println("")
     }
@@ -142,13 +143,13 @@ object Util {
      * @return byte[]
      */
     fun hexStringToBytes(hexString: String?): ByteArray? {
-        var hexString = hexString
-        if (hexString == null || hexString == "") {
+        var input = hexString
+        if (input == null || input == "") {
             return null
         }
-        hexString = hexString.toUpperCase()
-        val length = hexString.length / 2
-        val hexChars = hexString.toCharArray()
+        input = input.toUpperCase(Locale.getDefault())
+        val length = input.length / 2
+        val hexChars = input.toCharArray()
         val d = ByteArray(length)
         for (i in 0 until length) {
             val pos = i * 2
@@ -333,7 +334,7 @@ object Util {
      */
     fun hexStringToAlgorism(hex: String): Int {
         var input = hex
-        input = input.toUpperCase()
+        input = input.toUpperCase(Locale.getDefault())
         val max = input.length
         var result = 0
         for (i in max downTo 1) {
@@ -355,13 +356,11 @@ object Util {
      * @return 二进制字符串
      */
     fun hexStringToBinary(hex: String): String {
-        var input = hex
-        input = input.toUpperCase()
+        val input = hex.toUpperCase(Locale.getDefault())
         var result = ""
         val max = input.length
         for (i in 0 until max) {
-            val c = input[i]
-            when (c) {
+            when (input[i]) {
                 '0' -> result += "0000"
                 '1' -> result += "0001"
                 '2' -> result += "0010"
@@ -415,7 +414,7 @@ object Util {
         if (result.length % 2 == 1) {
             result = "0$result"
         }
-        return patchHexString(result.toUpperCase(), maxLength)
+        return patchHexString(result.toUpperCase(Locale.getDefault()), maxLength)
     }
 
     /**
@@ -464,7 +463,7 @@ object Util {
         if (result.length % 2 == 1) {
             result = "0$result"
         }
-        result = result.toUpperCase()
+        result = result.toUpperCase(Locale.getDefault())
         return result
     }
 
@@ -476,13 +475,13 @@ object Util {
      * @return 补充结果
      */
     fun patchHexString(str: String, maxLength: Int): String {
-        var str = str
+        var result = str
         var temp = ""
-        for (i in 0 until maxLength - str.length) {
+        for (i in 0 until maxLength - result.length) {
             temp = "0$temp"
         }
-        str = (temp + str).substring(0, maxLength)
-        return str
+        result = (temp + result).substring(0, maxLength)
+        return result
     }
 
     /**
@@ -560,7 +559,7 @@ object Util {
                 hs + stmp
             }
         }
-        return hs.toUpperCase()
+        return hs.toUpperCase(Locale.getDefault())
     }
 
     fun subByte(input: ByteArray, startIndex: Int, length: Int): ByteArray {

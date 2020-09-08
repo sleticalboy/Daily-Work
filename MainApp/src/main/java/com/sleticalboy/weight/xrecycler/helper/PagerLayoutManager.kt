@@ -92,7 +92,6 @@ class PagerLayoutManager(rows: Int, columns: Int)
                     val index = p * onePageSize + r * mColumns + c
                     if (index == count) {
                         //跳出多重循环
-                        c = mColumns
                         r = mRows
                         p = mPageSize
                         break

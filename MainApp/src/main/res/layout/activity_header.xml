@@ -20,7 +20,7 @@
             android:orientation="vertical"
             android:text="头部滚动部分"
             android:textColor="@android:color/white"
-            android:textSize="28dp"
+            android:textSize="28sp"
             app:layout_scrollFlags="scroll">
 
             <TextView
@@ -31,7 +31,7 @@
                 android:gravity="center"
                 android:text="头部滚动部分"
                 android:textColor="@android:color/white"
-                android:textSize="28dp" />
+                android:textSize="28sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                 android:gravity="center"
                 android:text="头部滚动部分"
                 android:textColor="@android:color/white"
-                android:textSize="28dp" />
+                android:textSize="28sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                 android:gravity="center"
                 android:text="头部滚动部分"
                 android:textColor="@android:color/white"
-                android:textSize="28dp" />
+                android:textSize="28sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -61,7 +61,7 @@
                 android:gravity="center"
                 android:text="头部滚动部分"
                 android:textColor="@android:color/white"
-                android:textSize="28dp" />
+                android:textSize="28sp" />
         </LinearLayout>
 
         <TextView

@@ -30,11 +30,10 @@ class CameraUtils {
     private var mIsPreview = false
     var mCamera: Camera? = null
         private set
-    val cameraInfo = Camera.CameraInfo()
-    var cameraId = Camera.CameraInfo.CAMERA_FACING_BACK
-        private set
+    private val cameraInfo = Camera.CameraInfo()
+    private var cameraId = Camera.CameraInfo.CAMERA_FACING_BACK
 
-    val cameraParameters: Camera.Parameters?
+    private val cameraParameters: Camera.Parameters?
         get() = if (mCamera != null) {
             mCamera!!.parameters
         } else null
@@ -184,7 +183,7 @@ class CameraUtils {
      * @param event   [MotionEvent] object
      */
     fun setFocusArea(context: Context, event: MotionEvent) {
-        if (!isSupportAutoFocusArea || mCamera == null) {
+        if (mCamera == null) {
             return
         }
         var ax = (2000f * event.rawX / context.resources.displayMetrics.widthPixels - 1000).toInt()
@@ -244,15 +243,12 @@ class CameraUtils {
     companion object {
 
         private val INSTANCE = CameraUtils()
-        val MSG_PREVIEW_STARTED = 1000
-        val MSG_SCAN_FACE = 1001
+        const val MSG_PREVIEW_STARTED = 1000
+        const val MSG_SCAN_FACE = 1001
 
         val instance: CameraUtils
             get() = synchronized(INSTANCE) {
                 return INSTANCE
             }
-
-        val isSupportAutoFocusArea: Boolean
-            get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH
     }
 }

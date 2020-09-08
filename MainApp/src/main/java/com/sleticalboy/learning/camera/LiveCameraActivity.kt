@@ -45,7 +45,7 @@ class LiveCameraActivity : BaseActivity() {
 
     private fun takePicture() {
         // take photos
-        CameraManager.getInstance().takePicture(File("/sdcard/DCIM/Camera"),
+        CameraManager.getInstance().takePicture(getExternalFilesDirs(null)[0],
                 object : OnPictureTakenCallback {
                     override fun onSuccess(picture: File) {
                         Log.d(TAG, picture.path)

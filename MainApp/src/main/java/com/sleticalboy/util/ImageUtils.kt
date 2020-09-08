@@ -2,10 +2,10 @@ package com.sleticalboy.util
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.ExifInterface
 import android.os.Environment
 import android.util.Base64
 import android.util.Log
+import androidx.exifinterface.media.ExifInterface
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -18,7 +18,7 @@ import java.io.IOException
  */
 object ImageUtils {
 
-    private val TAG = "ImageUtils"
+    private const val TAG = "ImageUtils"
 
     /**
      * 获取保存文件的路径
@@ -52,7 +52,7 @@ object ImageUtils {
             val orientation = exifInterface.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
             val degrees = getExifRotateDegrees(orientation)
-            Log.d(TAG, "degrees = " + degrees)
+            Log.d(TAG, "degrees = $degrees")
             return degrees
         } catch (e: IOException) {
             e.printStackTrace()

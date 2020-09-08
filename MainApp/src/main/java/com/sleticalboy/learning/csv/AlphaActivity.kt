@@ -11,7 +11,6 @@ import android.widget.TextView
 import com.sleticalboy.learning.R
 import com.sleticalboy.learning.base.BaseActivity
 
-
 /**
  * Created on 18-5-29.
  *
@@ -47,14 +46,14 @@ class AlphaActivity : BaseActivity() {
                 Log.d(TAG, "onStopTrackingTouch() called with: seekBar = [$seekBar]")
             }
         })
-        touchButton?.setOnTouchListener(OnTouchListener { _: View?, _: MotionEvent? ->
+        touchButton?.setOnTouchListener { _: View?, _: MotionEvent? ->
             touchButton?.getLocationInWindow(mLocation)
             Log.d(TAG, "mLocation[0]:" + mLocation[0])
             Log.d(TAG, "mLocation[1]:" + mLocation[1])
             Log.d(TAG, "touchButton.getMeasuredWidth():" + touchButton?.measuredWidth)
             Log.d(TAG, "touchButton.getMeasuredHeight():" + touchButton?.measuredHeight)
             false
-        })
+        }
     }
 
     companion object {
