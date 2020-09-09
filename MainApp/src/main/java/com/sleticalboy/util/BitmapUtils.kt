@@ -1,16 +1,19 @@
 package com.sleticalboy.util
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
+import android.media.MediaMetadataRetriever
+import android.net.Uri
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
 object BitmapUtils {
 
-    private val IO_BUFFER_SIZE = 2 * 1024
+    private const val IO_BUFFER_SIZE = 2 * 1024
 
     fun drawable2Bitmap(drawable: Drawable?): Bitmap? {
         if (drawable == null) {
@@ -304,5 +307,13 @@ object BitmapUtils {
         bitmap.setPixels(pix, 0, w, 0, 0, w, h)
 
         return bitmap
+    }
+
+    fun loadBitmapFromVideo(context: Context, timeUs: Long, uri: Uri): Bitmap? {
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(context, uri)
+        val frameBitmap = retriever.getFrameAtTime(timeUs)
+        retriever.release()
+        return frameBitmap
     }
 }
