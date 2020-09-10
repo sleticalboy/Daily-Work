@@ -6,4 +6,6 @@
     <color name="mx_light_gray">#33cccccc</color>
     <color name="color_picker_red">#99ff0000</color>
     <color name="transparent">#00000000</color>
+    <color name="progress_loading">#00a2ff</color>
+    <color name="progress_finish">#1C8631</color>
 </resources>

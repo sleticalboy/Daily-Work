@@ -47,4 +47,10 @@
         <attr name="line_width" format="integer"/>
         <attr name="line_color" format="color"/>
     </declare-styleable>
+    <!--ProgressView-->
+    <declare-styleable name="ProgressView">
+        <attr name="progress_size" format="dimension|integer" />
+        <attr name="loading_color" format="color|string" />
+        <attr name="finish_color" format="color|string" />
+    </declare-styleable>
 </resources>
