@@ -1,4 +1,4 @@
-package com.grandstream.gmd.widget;
+package com.sleticalboy.learning.csv;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
@@ -10,10 +10,11 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
-import com.grandstream.gmd.R;
+import androidx.core.content.ContextCompat;
+
+import com.sleticalboy.learning.R;
 
 public class ProgressView extends View {
 
@@ -65,9 +66,10 @@ public class ProgressView extends View {
         try {
             ta = context.obtainStyledAttributes(attrs, R.styleable.ProgressView);
             progressRadius = ta.getDimensionPixelSize(R.styleable.ProgressView_progress_size, 70);
-            Log.d("ProgressView", "progressRadius:" + progressRadius);
-            mLoadingColor = ta.getColor(R.styleable.ProgressView_loading_color, R.color.progress_loading);
-            mFinishColor = ta.getColor(R.styleable.ProgressView_finish_color, R.color.progress_finish);
+            mLoadingColor = ta.getColor(R.styleable.ProgressView_loading_color,
+                    ContextCompat.getColor(context, R.color.progress_loading));
+            mFinishColor = ta.getColor(R.styleable.ProgressView_finish_color,
+                    ContextCompat.getColor(context, R.color.progress_finish));
         } finally {
             if (ta != null) {
                 ta.recycle();
@@ -190,7 +192,7 @@ public class ProgressView extends View {
                 // mPathMeasure.setPath(successPath, false);
                 // mPathMeasure.getSegment(0, successValue * mPathMeasure.getLength(), mPathCircleDst, true);
 
-                mPaint.setColor(getContext().getColor(android.R.color.white));
+                mPaint.setColor(ContextCompat.getColor(getContext(), android.R.color.white));
                 mPaint.setStyle(Paint.Style.STROKE);
                 mPaint.setStrokeWidth(progressWidth);
                 // canvas.drawPath(mPathCircleDst, mPaint);
