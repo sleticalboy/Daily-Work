@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sleticalboy.learning">
 
@@ -160,6 +159,11 @@
         <!-- service practice -->
         <service android:name="com.sleticalboy.learning.components.service.LocalService" />
         <service android:name="com.sleticalboy.learning.bt.ble.BleService" />
+
+        <service
+            android:name=".components.service.UpgradeService"
+            android:exported="true"
+            android:permission="com.sleticalboy.permissions.REMOTE_UPGRADE" />
     </application>
 
 </manifest>

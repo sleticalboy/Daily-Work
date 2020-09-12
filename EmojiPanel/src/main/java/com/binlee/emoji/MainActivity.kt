@@ -1,6 +1,9 @@
 package com.binlee.emoji
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -37,7 +40,31 @@ class MainActivity : AppCompatActivity() {
             R.id.http_service -> {
                 return true
             }
+            R.id.remote_upgrade -> {
+                requestUpgrade()
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun requestUpgrade() {
+        val service = Intent()
+        // Service 不支持隐式 Intent 启动, 需要设置具体的包名和类名才可以
+        service.action = "com.sleticalboy.action.REMOTE_UPGRADE"
+        // com.sleticalboy.learning.components.service.UpgradeService
+        service.setClassName("com.sleticalboy.learning", "com.sleticalboy.learning.components.service.UpgradeService")
+        service.putExtra("_mac", "fake mac address")
+        service.putExtra("_file_url", "fake file url")
+        val component = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(service)
+        } else {
+            startService(service)
+        }
+        Log.d(TAG, "requestUpgrade() $component")
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 }

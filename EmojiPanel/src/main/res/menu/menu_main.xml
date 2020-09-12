@@ -12,4 +12,9 @@
         android:orderInCategory="100"
         android:title="@string/http_service"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/remote_upgrade"
+        android:orderInCategory="100"
+        android:title="@string/remote_upgrade"
+        app:showAsAction="never" />
 </menu>
