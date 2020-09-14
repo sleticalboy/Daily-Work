@@ -49,6 +49,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$rxjava_adapter_version"
     implementation "androidx.exifinterface:exifinterface:$exif_interface"
+    implementation "com.airbnb.android:lottie:$lottie_version"
 
     //debug版本
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"

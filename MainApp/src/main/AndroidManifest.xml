@@ -73,6 +73,8 @@
             android:label="@string/title_activity_auto_switch_view" />
         <!-- 转场动画 -->
         <activity android:name="com.sleticalboy.learning.anims.TransitionUI" />
+        <!--lottie json anim-->
+        <activity android:name="com.sleticalboy.learning.anims.JsonAnimUI"/>
         <!-- 设备管理 -->
         <activity android:name="com.sleticalboy.learning.devices.DeviceAdminUI" />
 
