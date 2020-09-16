@@ -1,4 +1,4 @@
-package com.binlee.emoji
+package com.binlee.emoji.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.binlee.emoji.HttpAdapter
+import com.binlee.emoji.R
 import com.binlee.emoji.compat.HttpEngine
 import com.binlee.emoji.helper.LogHelper
 import kotlinx.android.synthetic.main.fragment_main.*

@@ -3,4 +3,5 @@
     <string name="emoji_panel">EmojiPanel</string>
     <string name="http_service">HttpService</string>
     <string name="remote_upgrade">RemoteUpgrade</string>
+    <string name="generic">Generic</string>
 </resources>

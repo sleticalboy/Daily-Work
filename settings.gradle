@@ -1,6 +1,6 @@
 include ':MainApp'
-//include ':EmojiPanel'
-//include ':Http'
+include ':EmojiPanel'
+include ':Http'
 //include ':ObjectBox'
 //include ':OkHttp2.5'
 //include ':Glide4.x'

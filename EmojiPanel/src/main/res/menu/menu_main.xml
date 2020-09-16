@@ -17,4 +17,9 @@
         android:orderInCategory="100"
         android:title="@string/remote_upgrade"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/generic"
+        app:showAsAction="never"
+        android:title="@string/generic"
+        android:orderInCategory="100" />
 </menu>

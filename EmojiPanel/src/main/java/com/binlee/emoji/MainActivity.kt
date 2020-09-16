@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.binlee.emoji.ui.fragment.GenericFragment
+import com.binlee.emoji.ui.fragment.MainActivityFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -21,6 +23,8 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
+
+        show(GenericFragment::class.java.name)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -33,19 +37,43 @@ class MainActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
+        return if (showFragment(item.itemId)) {
+            true
+        } else super.onOptionsItemSelected(item)
+    }
+
+    private fun showFragment(itemId: Int): Boolean {
+        return when (itemId) {
             R.id.emoji_panel -> {
                 return true
             }
             R.id.http_service -> {
+                show(MainActivityFragment::class.java.name)
                 return true
             }
             R.id.remote_upgrade -> {
                 requestUpgrade()
                 return true
             }
-            else -> super.onOptionsItemSelected(item)
+            R.id.generic -> {
+                show(GenericFragment::class.java.name)
+                return true
+            }
+            else -> false
         }
+    }
+
+    private fun show(clazz: String) {
+        val transaction = supportFragmentManager.beginTransaction()
+        var fragment = supportFragmentManager.findFragmentByTag(clazz)
+        if (fragment == null) {
+            fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, clazz)
+        }
+        if (!fragment.isAdded) {
+            transaction.add(R.id.flContainer, fragment, clazz)
+        }
+        transaction.show(fragment)
+        transaction.commitAllowingStateLoss()
     }
 
     private fun requestUpgrade() {

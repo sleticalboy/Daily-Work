@@ -1,4 +1,4 @@
-package com.binlee.emoji.ui
+package com.binlee.emoji.widget
 
 import android.content.Context
 import android.util.AttributeSet

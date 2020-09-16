@@ -1,4 +1,4 @@
-package com.binlee.emoji.ui
+package com.binlee.emoji.widget
 
 import android.content.Context
 import android.graphics.Color
@@ -22,8 +22,11 @@ import com.binlee.emoji.helper.*
 import com.binlee.emoji.model.Emoji
 import com.binlee.emoji.model.EmojiGroup
 import com.binlee.emoji.span.CustomAtSpan
-import com.binlee.emoji.ui.EmojiGridView.OnPressListener
-import com.binlee.emoji.ui.EmojiRepo.OnDataChangeCallback
+import com.binlee.emoji.ui.EmojiAdapter
+import com.binlee.emoji.ui.EmojiPreviewWindow
+import com.binlee.emoji.model.EmojiRepo
+import com.binlee.emoji.widget.EmojiGridView.OnPressListener
+import com.binlee.emoji.model.EmojiRepo.OnDataChangeCallback
 import kotlin.math.max
 import kotlin.math.min
 
@@ -82,9 +85,9 @@ class EmojiPanel @JvmOverloads constructor(context: Context?, attrs: AttributeSe
         mAttachedEditText = editText
         mCallback = listener ?: OnActionCallback()
         // 首次 52 ms， 之后平均在 20 ms
-        val start: Long = LogHelper.Companion.logTime()
+        val start: Long = LogHelper.logTime()
         initContentView()
-        LogHelper.debug("EmojiPanel", "Constructor setupClient:" + LogHelper.Companion.elapsedMillis(start))
+        LogHelper.debug("EmojiPanel", "Constructor setupClient:" + LogHelper.elapsedMillis(start))
     }
 
     private fun initContentView() {

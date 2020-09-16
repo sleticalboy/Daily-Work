@@ -30,6 +30,7 @@ object DebugUtils {
     private var sCheckService: Method? = null
     private var sSet: Method? = null
     private var sIsWorking = false
+
     fun openSettings(context: Context) {
         val intent = Intent("android.settings.SETTINGS")
         val pkg = "com.android.settings"

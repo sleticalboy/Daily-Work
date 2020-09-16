@@ -1,13 +1,10 @@
-package com.binlee.emoji.ui
+package com.binlee.emoji.model
 
 import android.content.Context
 import com.binlee.emoji.helper.EmojiHelper
 import com.binlee.emoji.helper.LogHelper
 import com.binlee.emoji.helper.OsHelper
 import com.binlee.emoji.helper.ThreadHelper
-import com.binlee.emoji.model.DbManager
-import com.binlee.emoji.model.Emoji
-import com.binlee.emoji.model.EmojiGroup
 import java.util.*
 import kotlin.math.ceil
 
