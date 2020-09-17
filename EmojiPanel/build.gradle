@@ -43,5 +43,5 @@ dependencies {
         exclude group: 'com.android.support'
     }
 //    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-    implementation "jp.wasabeef:glide-transformations:$glide_transtormation_version"
+//    implementation "jp.wasabeef:glide-transformations:$glide_transtormation_version"
 }

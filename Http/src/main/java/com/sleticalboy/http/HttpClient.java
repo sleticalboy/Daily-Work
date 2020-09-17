@@ -33,16 +33,16 @@ import okhttp3.ResponseBody;
  * @author leebin
  */
 public final class HttpClient {
-    
+
     private static final boolean DBG = BuildConfig.DEBUG;
     private final Handler mMainHandler;
     private OkHttpClient mOkHttpClient;
-    
+
     private HttpClient() {
         mMainHandler = new Handler(Looper.getMainLooper());
         internalInit();
     }
-    
+
     private void internalInit() {
         if (mOkHttpClient != null) {
             return;
@@ -62,7 +62,7 @@ public final class HttpClient {
         // builder.sslSocketFactory(sslParams.sslSocketFactory, sslParams.trustManager);
         // 不安全
         builder.hostnameVerifier(Https.trustAll());
-        
+
         // 拦截器
         if (DBG) {
             final LoggerInterceptor loggerInterceptor = new LoggerInterceptor()
@@ -95,22 +95,22 @@ public final class HttpClient {
 //    private OkHttpClient rebuildWithProxy(Proxy proxy) {
 //        return mOkHttpClient.newBuilder().proxy(proxy).build();
 //    }
-    
+
     public static HttpClient getInstance() {
         return SingletonHolder.HTTP_CLIENT;
     }
-    
+
     public OkHttpClient getOkHttpClient() {
         checkInitialize();
         return mOkHttpClient.newBuilder().build();
     }
-    
+
     private void checkInitialize() {
         if (mOkHttpClient == null) {
             internalInit();
         }
     }
-    
+
     /**
      * 添加拦截器
      *
@@ -122,7 +122,7 @@ public final class HttpClient {
         mOkHttpClient.interceptors().add(interceptor);
         return this;
     }
-    
+
     // public <T> void asyncExecute(retrofit2.Call<String> call, HttpCallback<T> callback) {
     //     call.enqueue(new retrofit2.Callback<String>() {
     //
@@ -151,7 +151,7 @@ public final class HttpClient {
     //         }
     //     });
     // }
-    
+
     /**
      * 执行异步网络请求
      *
@@ -170,7 +170,7 @@ public final class HttpClient {
                 }
                 OkUtils.releaseCall(call);
             }
-            
+
             @SuppressWarnings("unchecked")
             @Override
             public void onResponse(final Call call, final Response response) throws IOException {
@@ -178,10 +178,10 @@ public final class HttpClient {
                     final ResponseBody responseBody = response.body();
                     if (callback != null && responseBody != null) {
                         final String result = responseBody.string();
-                        final Object object = callback.isStringType()
-                                ? result
+                        final T object = callback.isStringType()
+                                ? (T) result
                                 : JSON.parseObject(result, callback.getType());
-                        mMainHandler.post(() -> callback.onSuccess((T) object));
+                        mMainHandler.post(() -> callback.onSuccess(object));
                     }
                 } else {
                     final Exception error = new Exception(String.format("[code: %d, message: %s]%s",
@@ -194,12 +194,12 @@ public final class HttpClient {
             }
         });
     }
-    
+
     public Handler getMainHandler() {
         checkInitialize();
         return mMainHandler;
     }
-    
+
     private final static class SingletonHolder {
         private static final HttpClient HTTP_CLIENT = new HttpClient();
     }
