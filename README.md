@@ -6,9 +6,18 @@
 - Activity
 - BroadcastReceiver
 - Service
-    - start
-    - bind
+  - start
+    - Android 8.0+ 前台服务
+      - `<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />`
+      - `Context.startForegroundService()`
+      - Service#onCreate() `startForeground()`
+  - bind
+    - `LocalBinder`
+    - `RemoteBinder`
 - ContentProvider
+  - `onCreate()` 先于 `Application#onCreate()` 执行
+  - `getType()/insert()/delete()/update()/query()/onCreate()`
+### SqlLiteDatabase
 ### Context
 ### Bitmap
 - 如何加载 bitmap
@@ -52,7 +61,13 @@
 - 删除
 ### 系统蓝牙
 - 经典蓝牙
+  - `<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />`
+  - `<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />`
+  - `BluetoothDevice.createBond()/removeBond()`
 - Bluetooth 低功耗（BLE）
+  - GATT
+    - `BluetoothDevice.connectGatt()`
+  - Hid
 ### 系统工具
 - 打开 Settings 页面：`adb shell am start -n com.android.settings/.Settings`
 - 打开布局边界
@@ -66,7 +81,11 @@
 - TextureView
 ### notification & status bar
 - notification
+  - NotificationManager: Context.getSystemService(Context.NOTIFICATION_SERVICE)
 - status bar
+### Android 6.0+ 动态权限申请
+- ActivityCompat.requestPermission()
+- ActivityCompat.checkSelfPermissions()
 ### Jetpack 组件
 - Lifecycle
 - LiveData
@@ -74,6 +93,16 @@
 
 ## gradle 编译系统
 - task
+  - ```grovvy
+    // 定义一个 task
+    // group: 对任务进行分组(否则就出现在 other 分组中)
+    // description: 描述任务的职责
+    task printBuildDir(description: 'print build files', group: 'custom') {
+        println 'printBuildDir() started'
+        printRecurse(rootProject.buildDir)
+        println 'printBuildDir() finished'
+    }
+    ```
 - exclude
 - 自定义插件
 
@@ -82,6 +111,7 @@
 - 注解
 - 集合
 - 并发
+  - synchronized exception：`object not locked by thread before wait`
 - 反射
 - 类加载
 
@@ -93,6 +123,10 @@
 - GreenDao 数据库使用（ORM 数据库）
 - ObjectBox 数据库使用（no sql 数据库）
 - OkHttp（适用于 Java 和 Android 的高效网络请求框架）
+  - Dispatcher
+- Retrofit（http 网络请求适配器）
+  - 动态代理
 - Glide（高效的图片加载框架）
 - Lottie（使用 json 优雅地实现动画）
 - LeakCanary（内存泄露检测工具）
+  - 强引用
