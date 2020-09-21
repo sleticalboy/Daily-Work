@@ -1,7 +1,7 @@
 .gradle/
 *.iml
 .idea/
-build/
+/build/
 captures/
 .DS_Store
 .externalNativeBuild
@@ -9,3 +9,7 @@ local.properties
 gradle/
 MQTT/
 *.zip
+
+/*/release/
+/*/debug/
+/*/build/
