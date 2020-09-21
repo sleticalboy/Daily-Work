@@ -1,5 +1,6 @@
 package com.binlee.emoji.ui.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -14,17 +15,17 @@ import androidx.fragment.app.Fragment;
 
 import com.binlee.emoji.R;
 import com.binlee.emoji.generic.BaseGeneric;
-import com.binlee.emoji.generic.BaseGenericImpl;
 import com.binlee.emoji.generic.BaseGenericImpl2;
 import com.binlee.emoji.generic.ComplexGeneric;
 import com.binlee.emoji.generic.SimpleGeneric;
 import com.binlee.emoji.generic.StrList;
 import com.binlee.emoji.generic.TypeGetter;
-import com.binlee.emoji.generic.UpperHolder;
 import com.binlee.emoji.helper.LogHelper;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,14 +88,88 @@ public final class GenericFragment extends Fragment {
 
         typeGetter();
 
-        genericBounds();
+        try {
+            // 上边界：是 BaseGeneric 子类的元素，都能放入此集合
+            final List<? extends BaseGeneric> upperList = new ArrayList<>();
+            upperBonds(upperList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            // 下边界：任何是 BaseGenericImpl2 父类/接口 的元素，都能放入此集合
+            final List<? super BaseGenericImpl2> lowerList = new ArrayList<>();
+            lowerBonds(lowerList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void genericBounds() {
-        // 是 BaseGeneric 子类的元素，都能放入此集合
-        final List<? extends BaseGeneric> upperList = new ArrayList<>();
-        // 任何是 BaseGenericImpl2 父类/接口 的元素，都能放入此集合
-        final List<? super BaseGenericImpl2> lowerList = new ArrayList<>();
+    private void upperBonds(final List<? extends BaseGeneric> upper) throws Exception {
+        Log.d(TAG, "upperBonds() param.getClass(): " + upper.getClass());
+        final Method method = getClass().getDeclaredMethod("upperBonds", List.class);
+        final Type[] parameterTypes = method.getGenericParameterTypes();
+        for (Type type : parameterTypes) {
+            Log.d(TAG, "upperBonds() param.type: " + type);
+            if (type instanceof ParameterizedType) {
+                Log.d(TAG, "type.getRawType(): " + ((ParameterizedType) type).getRawType());
+                Log.d(TAG, "type.getOwnerType(): " + ((ParameterizedType) type).getOwnerType());
+                final Type[] types = ((ParameterizedType) type).getActualTypeArguments();
+                for (Type t : types) {
+                    Log.d(TAG, "param actual type: " + t);
+                    if (t instanceof WildcardType) {
+                        Type[] bounds = ((WildcardType) t).getUpperBounds();
+                        if (bounds.length == 0 || (bounds.length == 1 && bounds[0] == Object.class)) {
+                            Log.w(TAG, t + " has no upper bonds.");
+                        }
+                        for (Type bound : bounds) {
+                            Log.d(TAG, "param wildcard type upper bond: " + bound);
+                        }
+                        bounds = ((WildcardType) t).getLowerBounds();
+                        if (bounds.length == 0 || (bounds.length == 1 && bounds[0] == Object.class)) {
+                            Log.w(TAG, t + " has no lower bonds.");
+                        }
+                        for (Type bound : bounds) {
+                            Log.d(TAG, "param wildcard type lower bond: " + bound);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void lowerBonds(List<? super BaseGenericImpl2> lower) throws Exception {
+        Log.d(TAG, "\r\nlowerBonds() param.getClass(): " + lower.getClass());
+        final Method method = getClass().getDeclaredMethod("lowerBonds", List.class);
+        final Type[] parameterTypes = method.getGenericParameterTypes();
+        for (Type type : parameterTypes) {
+            Log.d(TAG, "lowerBonds() param.type: " + type);
+            if (type instanceof ParameterizedType) {
+                Log.d(TAG, "type.getRawType(): " + ((ParameterizedType) type).getRawType());
+                Log.d(TAG, "type.getOwnerType(): " + ((ParameterizedType) type).getOwnerType());
+                final Type[] types = ((ParameterizedType) type).getActualTypeArguments();
+                for (Type t : types) {
+                    Log.d(TAG, "param actual type: " + t);
+                    if (t instanceof WildcardType) {
+                        Type[] bounds = ((WildcardType) t).getUpperBounds();
+                        for (Type bound : bounds) {
+                            Log.d(TAG, "param wildcard type upper bond: " + bound);
+                        }
+                        if (bounds.length == 0 || (bounds.length == 1 && bounds[0] == Object.class)) {
+                            Log.w(TAG, t + " has no upper bonds.");
+                        }
+
+                        bounds = ((WildcardType) t).getLowerBounds();
+                        for (Type bound : bounds) {
+                            Log.d(TAG, "param wildcard type lower bond: " + bound);
+                        }
+                        if (bounds.length == 0 || (bounds.length == 1 && bounds[0] == Object.class)) {
+                            Log.w(TAG, t + " has no lower bonds.");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void typeGetter() {

@@ -70,5 +70,7 @@ task printBuildDir(description: 'print build files', group: 'custom') {
 }
 
 task clean(type: Delete) {
+    println 'start deleting ' + rootProject.buildDir + " done"
     delete rootProject.buildDir
+    println 'delete ' + rootProject.buildDir + " done"
 }
