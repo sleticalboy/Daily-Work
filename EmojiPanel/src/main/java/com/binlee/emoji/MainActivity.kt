@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.binlee.emoji.concurrent.DeadLock
 import com.binlee.emoji.ui.fragment.GenericFragment
 import com.binlee.emoji.ui.fragment.MainActivityFragment
 import com.google.android.material.snackbar.Snackbar
@@ -57,6 +58,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.generic -> {
                 show(GenericFragment::class.java.name)
+                return true
+            }
+            R.id.concurrent -> {
+                DeadLock.run()
                 return true
             }
             else -> false
