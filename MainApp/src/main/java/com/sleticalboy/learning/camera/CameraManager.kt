@@ -235,4 +235,9 @@ class CameraManager {
             synchronized(MANAGER) { return MANAGER }
         }
     }
+
+    inner class Compat(context: Context) {
+
+        fun newInstance(context: Context): Compat = Compat(context)
+    }
 }

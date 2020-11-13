@@ -1,4 +1,4 @@
-package com.sleticalboy.learning.camera
+package com.sleticalboy.learning.camera.v1
 
 import android.Manifest.permission
 import android.graphics.SurfaceTexture
@@ -7,6 +7,7 @@ import android.view.TextureView
 import android.widget.ImageButton
 import com.sleticalboy.learning.R
 import com.sleticalboy.learning.base.BaseActivity
+import com.sleticalboy.learning.camera.CameraManager
 import com.sleticalboy.learning.camera.CameraManager.OnPictureTakenCallback
 import com.sleticalboy.learning.camera.CameraManager.SimpleSurfaceTextureListener
 import java.io.File

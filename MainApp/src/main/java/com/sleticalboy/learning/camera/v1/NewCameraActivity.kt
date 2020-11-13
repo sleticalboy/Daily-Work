@@ -1,4 +1,4 @@
-package com.sleticalboy.learning.camera
+package com.sleticalboy.learning.camera.v1
 
 import com.sleticalboy.learning.R
 import com.sleticalboy.learning.base.BaseActivity

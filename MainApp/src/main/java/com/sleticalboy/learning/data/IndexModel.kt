@@ -6,7 +6,7 @@ import com.sleticalboy.learning.anims.JsonAnimUI
 import com.sleticalboy.learning.anims.TransitionUI
 import com.sleticalboy.learning.bean.ModuleItem
 import com.sleticalboy.learning.bt.BluetoothUI
-import com.sleticalboy.learning.camera.LiveCameraActivity
+import com.sleticalboy.learning.camera.v1.LiveCameraActivity
 import com.sleticalboy.learning.components.ProviderPractise
 import com.sleticalboy.learning.components.ServicePractise
 import com.sleticalboy.learning.csv.AlphaActivity

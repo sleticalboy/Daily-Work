@@ -36,6 +36,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!--permission for LeakCanary-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!--permission for camera-->
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name="com.sleticalboy.learning.MainApp"
@@ -57,7 +59,7 @@
         <activity android:name="com.sleticalboy.learning.rv.DecorationActivity" />
         <activity android:name="com.sleticalboy.learning.rv.PagerActivity" />
         <activity android:name="com.sleticalboy.learning.rv.ClassifyActivity" />
-        <activity android:name="com.sleticalboy.learning.camera.LiveCameraActivity" />
+        <activity android:name="com.sleticalboy.learning.camera.v1.LiveCameraActivity" />
         <!--custom view -->
         <activity android:name="com.sleticalboy.learning.csv.PathActivity" />
         <activity android:name="com.sleticalboy.learning.csv.AlphaActivity" />
