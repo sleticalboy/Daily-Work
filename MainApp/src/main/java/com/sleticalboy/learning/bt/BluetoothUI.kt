@@ -19,7 +19,7 @@ class BluetoothUI : BaseActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == requestCode) {
+        if (requestCode == super.requestCode) {
             Log.d(logTag(), "onRequestPermissionsResult() permission granted.")
         }
     }

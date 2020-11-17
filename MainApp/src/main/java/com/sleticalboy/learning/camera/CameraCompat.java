@@ -1,7 +1,8 @@
 package com.sleticalboy.learning.camera;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -23,6 +24,7 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,16 +49,22 @@ public final class CameraCompat {
      */
     public static final int CAMERA_FACING_FRONT = 1;
 
-    public void openCamera(Context context) throws CameraException {
+    private final Context mContext;
+
+    public CameraCompat(Context context) {
+        mContext = context;
+    }
+
+    public void openCamera() throws CameraException {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             try {
-                openLollipop(context);
+                openLollipop(mContext);
             } catch (CameraAccessException e) {
                 throw new CameraException("open camera error over Lollipop", e);
             }
         } else {
             try {
-                openCompat(context);
+                openCompat(mContext);
             } catch (IOException e) {
                 throw new CameraException("open camera error", e);
             }
@@ -76,9 +84,11 @@ public final class CameraCompat {
         camera.startPreview();
     }
 
-    @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void openLollipop(Context context) throws CameraAccessException {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         Handler handler = new Handler();
         manager.registerAvailabilityCallback(new CameraManager.AvailabilityCallback() {

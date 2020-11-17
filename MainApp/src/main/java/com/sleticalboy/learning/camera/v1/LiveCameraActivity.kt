@@ -20,6 +20,8 @@ import java.io.File
  */
 class LiveCameraActivity : BaseActivity() {
 
+    override fun logTag(): String = "LiveCamera"
+
     override fun layoutResId(): Int {
         return R.layout.activity_live_camera
     }
@@ -49,17 +51,13 @@ class LiveCameraActivity : BaseActivity() {
         CameraManager.getInstance().takePicture(getExternalFilesDirs(null)[0],
                 object : OnPictureTakenCallback {
                     override fun onSuccess(picture: File) {
-                        Log.d(TAG, picture.path)
+                        Log.d(logTag(), picture.path)
                     }
 
                     override fun onFailure(e: Throwable?) {
-                        Log.e(TAG, "onFailure: ", e)
+                        Log.e(logTag(), "onFailure: ", e)
                     }
                 }
         )
-    }
-
-    companion object {
-        private const val TAG = "LiveCameraActivity"
     }
 }
