@@ -1,0 +1,108 @@
+// 编译二进制可执行程序：sample_service
+cc_binary {
+    // 可执行程序的名字
+    name: "sample_service",
+    // 使用哪些源文件来进行编译
+    srcs: [
+        "server/native/ITest.cpp",
+        "server/native/TestServer.cpp",
+    ],
+    // 包含的头文件所在目录
+    include_dirs: [
+        "vendor/sleticalboy/binder-demo/server/native"
+    ],
+    // 使用到哪些共享库
+    shared_libs: [
+        "libbinder",
+        "libcutils",
+        "liblog",
+        "libutils",
+    ],
+    // c flags
+    cflags: [
+        "-Werror",
+        "-Wno-error=deprecated-declarations",
+        "-Wall",
+    ],
+}
+
+// 编译二进制可执行程序：sample_client
+cc_binary {
+    name: "sample_client",
+    srcs: [
+        "server/native/ITest.cpp",
+        "server/native/TestClient.cpp",
+    ],
+    include_dirs: [
+        "vendor/sleticalboy/binder-demo/server/native"
+    ],
+    shared_libs: [
+        "libbinder",
+        "libcutils",
+        "liblog",
+        "libutils",
+    ],
+    cflags: [
+        "-Werror",
+        "-Wno-error=deprecated-declarations",
+        "-Wall",
+    ],
+}
+
+// 编译 Android apk
+android_app {
+    // apk 名字
+    name: "SampleService",
+    // 源文件: .java/.aidl/.logtags/.proto
+    srcs: [
+        "server/java/aidl/com/sleticalboy/sample/service/ITest.aidl",
+        "server/java/src/com/sleticalboy/sample/service/DataStruct.java",
+    ],
+    aidl: {
+        // 本地目录（与 Android.bp 文件同级的目录）
+        local_include_dirs: ["server/java/aidl"],
+        // 猜测与日志输出相关
+        generate_traces: true,
+    },
+    // 签名文件，此处表示与平台使用相同的签名文件
+    certificate: "platform",
+    // 清单文件(当文件与 bp 文件同级时不需要指定)
+    manifest: "server/java/AndroidManifest.xml",
+    // 静态库，
+    static_libs: [
+        "android-common",
+    ],
+    // 优化开关
+    optimize: {
+        enabled: false,
+    },
+}
+
+android_app {
+    name: "SampleClient",
+    srcs: [
+        "client/src/com/sleticalboy/sample/client/**/*.java",
+        "server/java/src/com/sleticalboy/sample/service/DataStruct.java",
+        "server/java/aidl/com/sleticalboy/sample/service/ITest.aidl",
+    ],
+    aidl: {
+        local_include_dirs: ["server/java/aidl"],
+        generate_traces: true,
+    },
+    // 签名文件，此处表示与平台使用相同的签名文件
+    certificate: "platform",
+    // 清单文件(当文件与 bp 文件同级时不需要指定)
+    manifest: "client/AndroidManifest.xml",
+    // 资源文件(当文件与 bp 文件同级时不需要指定)
+    resource_dirs: [
+        "client/res"
+    ],
+    // 静态库，
+    static_libs: [
+        "android-common",
+    ],
+    // 优化开关
+    optimize: {
+        enabled: false,
+    },
+}
