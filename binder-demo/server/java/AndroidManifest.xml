@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sleticalboy.sample.service">
+
+    <application>
+        <!--访问此 service 时需要以下自定义权限-->
+        <service
+            android:name=".SampleService"
+            android:exported="true"
+            android:permission="com.sleticalboy.permission.sample_service" />
+    </application>
+
+</manifest>
