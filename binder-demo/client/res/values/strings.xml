@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SampleClient</string>
+    <string name="service_bind_ok">service 绑定成功</string>
+</resources>
