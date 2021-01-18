@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.sleticalboy.sample.service.DataStruct;
+import com.sleticalboy.sample.service.ITest;
 
 /**
  * Created on 21-1-5.

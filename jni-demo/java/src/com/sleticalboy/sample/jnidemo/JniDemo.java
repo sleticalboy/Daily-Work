@@ -16,9 +16,13 @@ public final class JniDemo extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.jni_demo);
-        sayHello(this);
-        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+        findViewById(R.id.btn_hello).setOnClickListener(v -> callNative());
     }
 
-    private static native void sayHello(Context context);
+    private static native void callNative();
+
+    // called by jni
+    private void sayHello(String hello) {
+        Toast.makeText(this, hello, Toast.LENGTH_SHORT).show();
+    }
 }

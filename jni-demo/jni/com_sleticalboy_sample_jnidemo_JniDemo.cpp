@@ -7,34 +7,61 @@
 #include "jni.h"
 #include "android_runtime/AndroidRuntime.h"
 
-void JniDemo_sayHello(JNIEnv *env, jclass clazz, jobject context) {
+/*
+void JniDemo_sayHello_(JNIEnv *env, jclass clazz, jobject context) {
     // native 层调用 Java 层，弹 Toast
-    jclass toastCls = env->FindClass("Landroid/widget/Toast;");
+    // Landroid/widget/Toast;
+    jclass toastCls = env->FindClass("android/widget/Toast");
     if (toastCls == nullptr) {
+        ALOGE("class android.widget.Toast not found!!");
         jniThrowRuntimeException(env, "class android.widget.Toast not found");
         return;
     }
-    jmethodID methodId = env->GetStaticMethodID(toastCls, "makeText",
-        "(Lcom/android/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;");
-    if (methodId == nullptr) {
+    ALOGI("find class Toast");
+    jmethodID makeText = env->GetStaticMethodID(toastCls, "makeText",
+        "(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;");
+    if (makeText == nullptr) {
+        ALOGE("method Toast#makeText(Context, CharSequence, int) not found!!");
         jniThrowRuntimeException(env, "method Toast#makeText(Context, CharSequence, int) not found");
         return;
     }
-    jobject toast = env->CallStaticObjectMethod(toastCls, methodId, context, "Hello Form Native", 0);
-    methodId = env->GetMethodID(toastCls, "show", "()V");
-    if (methodId == nullptr) {
+    ALOGI("find method Toast#makeText()");
+    jobject toast = env->CallStaticObjectMethod(toastCls, makeText, context, "Hello Form Native", 0);
+    jmethodID show = env->GetMethodID(toastCls, "show", "()V");
+    if (show == nullptr) {
+        ALOGE("method Toast#show() not found!!");
         jniThrowRuntimeException(env, "method Toast#show() not found");
         return;
     }
-    env->CallVoidMethod(toast, methodId);
-    ALOGI("say hello to java from native!!!");
+    ALOGI("find method Toast#show()");
+    ALOGD("say hello to java from native!!!");
+    env->CallVoidMethod(toast, show);
+}
+*/
+
+void JniDemo_sayHelloToJava(JNIEnv *env, jclass clazz) {
+    jclass jniDemo = env->FindClass("com/sleticalboy/sample/jnidemo/JniDemo");
+    if (jniDemo == nullptr) {
+        ALOGE("can not find class JniDemo");
+        jniThrowRuntimeException(env, "class com.sleticalboy.sample.jnidemo.JniDemo not found");
+        return;
+    }
+    // void sayHello(String hello)
+    jmethodID sayHello = env->GetMethodID(jniDemo, "sayHello", "(Ljava/lang/String;)V");
+    if (sayHello == nullptr) {
+        ALOGE("can not find method void sayHello(String)");
+        jniThrowRuntimeException(env, "method void sayHello(String) not found");
+        return;
+    }
+    env->CallVoidMethod(jniDemo, sayHello, "Hello From Native!");
 }
 
 // const char* name;
 // const char* signature;
 // void*       fnPtr;
 static const JNINativeMethod gMethods[] = {
-        {"jniDemo", "(Lcom/android/content/Context;)V", (void *) JniDemo_sayHello},
+    // void callNative()
+    {"callNative", "()V", (void *) JniDemo_sayHelloToJava},
 };
 
 const char *className = "com/sleticalboy/sample/jnidemo/JniDemo";

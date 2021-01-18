@@ -6,11 +6,11 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/btn_write"
+        android:id="@+id/btn_hello"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="write"
+        android:text="native say hello"
         android:textAllCaps="false"
         android:textSize="28sp" />
 

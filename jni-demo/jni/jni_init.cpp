@@ -11,6 +11,7 @@ extern "C" jint JNI_OnLoad(JavaVM *vm, void * /*reversed*/) {
         ALOGE("jni init error: get env failed");
         return -1;
     }
+    ALOGI("JNI_OnLoad() start register_com_sleticalboy_sample_jnidemo_JniDemo() functions");
     register_com_sleticalboy_sample_jnidemo_JniDemo(env);
     return JNI_VERSION_1_6;
 }
