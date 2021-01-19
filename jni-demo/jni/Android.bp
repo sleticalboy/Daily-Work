@@ -16,8 +16,8 @@ cc_library_shared {
     ],
     cflags: [
         "-Wall",
-        //"-Werror",
-        //"-Wunused",
+        "-Werror",
+        "-Wno-unused-parameter",
         "-Wunreachable-code",
     ],
 }
