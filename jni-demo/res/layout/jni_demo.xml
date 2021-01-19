@@ -6,11 +6,29 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/btn_hello"
+        android:id="@+id/btn_native_call_java"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="native say hello"
+        android:text="native 调用 Java 方法"
+        android:textAllCaps="false"
+        android:textSize="28sp" />
+
+    <Button
+        android:id="@+id/tv_text_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="text holder"
+        android:textAllCaps="false"
+        android:textSize="28sp" />
+
+    <Button
+        android:id="@+id/btn_java_call_native"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Java 调用 native 方法"
         android:textAllCaps="false"
         android:textSize="28sp" />
 
