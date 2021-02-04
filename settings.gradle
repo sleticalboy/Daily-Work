@@ -1,5 +1,6 @@
-include ':MainApp'
-include ':EmojiPanel'
+include ':sample-arch'
+// include ':MainApp'
+// include ':EmojiPanel'
 // include ':Http'
 // include ':ObjectBox'
 // include ':OkHttp2.5'
