@@ -8,7 +8,12 @@ package com.binlee.sample;
 public class Dispatcher extends Thread implements IComponent {
 
     @Override
-    public void ready() {
+    public void onStart() {
         super.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        interrupt();
     }
 }

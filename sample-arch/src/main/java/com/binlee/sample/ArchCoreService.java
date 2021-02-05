@@ -11,28 +11,33 @@ import androidx.annotation.Nullable;
  *
  * @author binlee sleticalboy@gmail.com
  */
-public class CoreService extends Service {
+public class ArchCoreService extends Service {
 
-    private IFunctions mFunc;
+    private final IFunctions mFunc;
+
+    public ArchCoreService() {
+        mFunc = new ArchManager();
+    }
 
     @Override
     public void onCreate() {
-        mFunc = new IFunctions() {
-            @Override
-            public Logger logger() {
-                return Logger.DEFAULT;
-            }
-        };
+        mFunc.init();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
+        mFunc.onStart();
+        return START_STICKY;
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        mFunc.onDestroy();
     }
 }
