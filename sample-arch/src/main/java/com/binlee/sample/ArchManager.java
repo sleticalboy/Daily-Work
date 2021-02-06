@@ -1,5 +1,6 @@
 package com.binlee.sample;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -28,17 +29,20 @@ public final class ArchManager implements IFunctions, Handler.Callback,
     };
 
     private Handler mHandler;
-    private Dispatcher mDispatcher;
     private EventHandler mEventHandler;
+    private Dispatcher mDispatcher;
+    private EventObserver mObserver;
 
     @Override
-    public void init() {
+    public void init(Context context) {
+
         HandlerThread thread = new HandlerThread(TAG);
         thread.start();
         mHandler = new InjectableHandler(thread.getLooper(), this);
 
         initEventHandlers();
 
+        mObserver = new EventObserver(context);
         mDispatcher = new Dispatcher();
     }
 
@@ -54,11 +58,13 @@ public final class ArchManager implements IFunctions, Handler.Callback,
 
     @Override
     public void onStart() {
+        mObserver.onStart();
         mDispatcher.onStart();
     }
 
     @Override
     public void onDestroy() {
+        mObserver.onDestroy();
         mDispatcher.onDestroy();
     }
 
@@ -138,7 +144,6 @@ public final class ArchManager implements IFunctions, Handler.Callback,
                 case IEvent.CLICK_DISCONNECT:
                 case IEvent.UNBIND_DISCONNECT:
                 case IEvent.OTHER_DISCONNECT:
-                case IEvent.STOP_SCAN:
                     return true;
             }
             return false;

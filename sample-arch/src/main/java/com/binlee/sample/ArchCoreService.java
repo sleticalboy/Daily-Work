@@ -2,6 +2,7 @@ package com.binlee.sample;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -11,9 +12,10 @@ import androidx.annotation.Nullable;
  *
  * @author binlee sleticalboy@gmail.com
  */
-public class ArchCoreService extends Service {
+public final class ArchCoreService extends Service {
 
     private final IFunctions mFunc;
+    private LocalBinder mBinder;
 
     public ArchCoreService() {
         mFunc = new ArchManager();
@@ -21,7 +23,7 @@ public class ArchCoreService extends Service {
 
     @Override
     public void onCreate() {
-        mFunc.init();
+        mFunc.init(this);
     }
 
     @Override
@@ -33,11 +35,17 @@ public class ArchCoreService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        if (mBinder == null) {
+            mBinder = new LocalBinder();
+        }
+        return mBinder;
     }
 
     @Override
     public void onDestroy() {
         mFunc.onDestroy();
+    }
+
+    public final class LocalBinder extends Binder {
     }
 }
