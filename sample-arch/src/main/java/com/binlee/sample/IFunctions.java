@@ -1,5 +1,6 @@
 package com.binlee.sample;
 
+import android.content.Context;
 import android.os.Handler;
 
 /**
@@ -9,7 +10,7 @@ import android.os.Handler;
  */
 public interface IFunctions {
 
-    void init();
+    void init(Context context);
 
     void onStart();
 
