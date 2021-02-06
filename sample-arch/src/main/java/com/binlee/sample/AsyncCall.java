@@ -6,4 +6,8 @@ package com.binlee.sample;
  * @author binlee sleticalboy@gmail.com
  */
 public interface AsyncCall extends Runnable {
+
+    void onFinish();
+
+    boolean isFinished();
 }
