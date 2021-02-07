@@ -8,6 +8,15 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.binlee.sample.event.ConnectEvent;
+import com.binlee.sample.event.DisconnectEvent;
+import com.binlee.sample.event.IEvent;
+import com.binlee.sample.util.Dispatcher;
+import com.binlee.sample.util.EventHandler;
+import com.binlee.sample.util.EventObserver;
+import com.binlee.sample.util.InjectableHandler;
+import com.binlee.sample.util.Logger;
+
 /**
  * Created on 21-2-5.
  *
@@ -28,17 +37,21 @@ public final class ArchManager implements IFunctions, Handler.Callback,
         }
     };
 
-    private Handler mHandler;
+    private final Handler mWorker;
+    private Context mContext;
     private EventHandler mEventHandler;
     private Dispatcher mDispatcher;
     private EventObserver mObserver;
 
-    @Override
-    public void init(Context context) {
-
+    public ArchManager() {
         HandlerThread thread = new HandlerThread(TAG);
         thread.start();
-        mHandler = new InjectableHandler(thread.getLooper(), this);
+        mWorker = new InjectableHandler(thread.getLooper(), this);
+    }
+
+    @Override
+    public void init(Context context) {
+        mContext = context;
 
         initEventHandlers();
 
@@ -48,7 +61,7 @@ public final class ArchManager implements IFunctions, Handler.Callback,
 
     @Override
     public Handler handler() {
-        return mHandler;
+        return mWorker;
     }
 
     @Override
@@ -126,6 +139,10 @@ public final class ArchManager implements IFunctions, Handler.Callback,
                 case IEvent.USB_CONNECT:
                 case IEvent.CLICK_CONNECT:
                 case IEvent.CONFIG_CONNECT:
+                    ConnectEvent call = (ConnectEvent) event;
+                    call.setContext(mContext);
+                    call.setHandler(mWorker);
+                    mDispatcher.enqueue(call);
                     return true;
             }
             return false;
@@ -143,7 +160,9 @@ public final class ArchManager implements IFunctions, Handler.Callback,
             switch (event.type()) {
                 case IEvent.CLICK_DISCONNECT:
                 case IEvent.UNBIND_DISCONNECT:
+                case IEvent.CONFIG_DISCONNECT:
                 case IEvent.OTHER_DISCONNECT:
+                    mWorker.post(((DisconnectEvent) event));
                     return true;
             }
             return false;

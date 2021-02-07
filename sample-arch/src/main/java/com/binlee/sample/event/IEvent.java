@@ -1,4 +1,4 @@
-package com.binlee.sample;
+package com.binlee.sample.event;
 
 import androidx.annotation.IntDef;
 
@@ -22,11 +22,12 @@ public interface IEvent {
 
     int CLICK_DISCONNECT = 0x10;
     int UNBIND_DISCONNECT = 0x11;
-    int OTHER_DISCONNECT = 0x12;
+    int CONFIG_DISCONNECT = 0x12;
+    int OTHER_DISCONNECT = 0x13;
 
     @IntDef({ULTRA_SCAN, REBOOT_SCAN, USB_SCAN, STOP_SCAN,
             ULTRA_CONNECT, REBOOT_CONNECT, USB_CONNECT, CLICK_CONNECT, CONFIG_CONNECT,
-            CLICK_DISCONNECT, UNBIND_DISCONNECT, OTHER_DISCONNECT
+            CLICK_DISCONNECT, UNBIND_DISCONNECT, CONFIG_DISCONNECT, OTHER_DISCONNECT
     })
     @interface Type {}
 

@@ -3,6 +3,9 @@ package com.binlee.sample;
 import android.content.Context;
 import android.os.Handler;
 
+import com.binlee.sample.event.IEvent;
+import com.binlee.sample.util.Logger;
+
 /**
  * Created on 21-2-4.
  *
