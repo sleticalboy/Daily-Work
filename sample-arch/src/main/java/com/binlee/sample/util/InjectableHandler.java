@@ -1,4 +1,4 @@
-package com.binlee.sample;
+package com.binlee.sample.util;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -16,6 +16,7 @@ import java.lang.reflect.Field;
  */
 public class InjectableHandler extends android.os.Handler {
 
+    private static Field sCallbackField;
     private Callback mCallback;
 
     public InjectableHandler(@NonNull Looper looper) {
@@ -27,11 +28,19 @@ public class InjectableHandler extends android.os.Handler {
     }
 
     public final void injectCallback(Callback callback) {
+        mCallback = Preconditions.checkNotNull(callback, "");
+        if (sCallbackField == null) {
+            try {
+                Field field = Handler.class.getDeclaredField("mCallback");
+                field.setAccessible(true);
+                sCallbackField = field;
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }
         try {
-            Field field = Handler.class.getDeclaredField("mCallback");
-            field.setAccessible(true);
-            field.set(this, new WrappedCallback(field.get(this)));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+            sCallbackField.set(this, new WrappedCallback(sCallbackField.get(this)));
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
     }

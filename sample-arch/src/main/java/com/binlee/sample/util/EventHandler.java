@@ -1,4 +1,6 @@
-package com.binlee.sample;
+package com.binlee.sample.util;
+
+import com.binlee.sample.event.IEvent;
 
 /**
  * Created on 21-2-5.

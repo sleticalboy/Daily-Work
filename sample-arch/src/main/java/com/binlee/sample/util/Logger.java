@@ -1,4 +1,4 @@
-package com.binlee.sample;
+package com.binlee.sample.util;
 
 import android.util.Log;
 

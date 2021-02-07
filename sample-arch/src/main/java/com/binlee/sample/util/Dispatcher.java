@@ -1,4 +1,7 @@
-package com.binlee.sample;
+package com.binlee.sample.util;
+
+import com.binlee.sample.AsyncCall;
+import com.binlee.sample.IComponent;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -57,7 +60,7 @@ public class Dispatcher extends Thread implements IComponent {
         }
     }
 
-    public boolean enqueueCall(AsyncCall call) {
+    public boolean enqueue(AsyncCall call) {
         if (call == null || mCall.equals(call) || mTasks.contains(call)) {
             return false;
         }

@@ -1,9 +1,11 @@
-package com.binlee.sample;
+package com.binlee.sample.util;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+
+import com.binlee.sample.IComponent;
 
 /**
  * Created on 21-2-6.
