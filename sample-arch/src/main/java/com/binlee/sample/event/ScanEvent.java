@@ -30,4 +30,8 @@ public final class ScanEvent implements IEvent {
     public long interval() {
         return mType == ULTRA_SCAN ? 10000L : 0L;
     }
+
+    public int repetition() {
+        return mType == ULTRA_SCAN || mType == USB_SCAN ? 2 : 0;
+    }
 }

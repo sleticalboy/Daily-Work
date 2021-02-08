@@ -9,7 +9,7 @@ import android.util.Log;
  */
 public abstract class Logger {
 
-    public static final Logger DEFAULT = new Logger() {
+    public static final Logger D = new Logger() {
         @Override
         protected void log(String tag, String msg, int priority) {
             Log.println(priority, tag, msg);

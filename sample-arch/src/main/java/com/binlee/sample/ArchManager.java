@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.binlee.sample.event.ConnectEvent;
 import com.binlee.sample.event.DisconnectEvent;
 import com.binlee.sample.event.IEvent;
+import com.binlee.sample.event.ScanEvent;
 import com.binlee.sample.util.Dispatcher;
 import com.binlee.sample.util.EventHandler;
 import com.binlee.sample.util.EventObserver;
@@ -42,6 +43,7 @@ public final class ArchManager implements IFunctions, Handler.Callback,
     private EventHandler mEventHandler;
     private Dispatcher mDispatcher;
     private EventObserver mObserver;
+    private BleScanner mScanner;
 
     public ArchManager() {
         HandlerThread thread = new HandlerThread(TAG);
@@ -57,6 +59,8 @@ public final class ArchManager implements IFunctions, Handler.Callback,
 
         mObserver = new EventObserver(context);
         mDispatcher = new Dispatcher();
+
+        mScanner = new BleScanner(context, mWorker);
     }
 
     @Override
@@ -119,6 +123,7 @@ public final class ArchManager implements IFunctions, Handler.Callback,
                 case IEvent.REBOOT_SCAN:
                 case IEvent.USB_SCAN:
                 case IEvent.STOP_SCAN:
+                    mScanner.start(((ScanEvent) event));
                     return true;
             }
             return false;
