@@ -1,5 +1,6 @@
 package com.binlee.sample;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Handler;
 
@@ -14,6 +15,8 @@ public interface AsyncCall extends Runnable {
     int STATUS_NOT_CONNECTED = 0x02;
     int STATUS_CONNECTING = 0x03;
     int STATUS_DISCONNECTING = 0x04;
+
+    BluetoothDevice target();
 
     void onFinish();
 

@@ -48,6 +48,7 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
         return mType;
     }
 
+    @Override
     public BluetoothDevice target() {
         return mTarget;
     }

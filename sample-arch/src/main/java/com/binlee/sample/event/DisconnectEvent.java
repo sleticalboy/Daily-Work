@@ -22,6 +22,11 @@ public final class DisconnectEvent implements IEvent, AsyncCall {
     }
 
     @Override
+    public BluetoothDevice target() {
+        return mTarget;
+    }
+
+    @Override
     public void onFinish() {
         mFinished = true;
     }

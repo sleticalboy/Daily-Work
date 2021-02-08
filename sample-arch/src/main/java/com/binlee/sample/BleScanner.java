@@ -84,7 +84,9 @@ public final class BleScanner extends ScanCallback implements Handler.Callback {
 
     @Override
     public void onScanResult(int callbackType, ScanResult result) {
-        mHandler.obtainMessage(IMessages.SCAN_RESULT, result.getDevice()).sendToTarget();
+        Message msg = mHandler.obtainMessage(IMessages.SCAN_RESULT, result.getDevice());
+        msg.arg1 = mEvent.type();
+        msg.sendToTarget();
     }
 
     @Override

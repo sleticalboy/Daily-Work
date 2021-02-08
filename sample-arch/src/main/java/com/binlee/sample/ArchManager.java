@@ -1,5 +1,6 @@
 package com.binlee.sample;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -92,7 +93,32 @@ public final class ArchManager implements IFunctions, Handler.Callback,
 
     @Override
     public boolean handleMessage(@NonNull Message msg) {
+        if (msg.what == IMessages.SCAN_RESULT) {
+            onScanResult(((BluetoothDevice) msg.obj), msg.arg1);
+            return true;
+        } else if (msg.what == IMessages.SCAN_FAILED) {
+            onScanFailed(((String) msg.obj), msg.arg1);
+            return true;
+        }
         return false;
+    }
+
+    private void onScanResult(BluetoothDevice ble, int arg1) {
+        int type;
+        if (arg1 == IEvent.ULTRA_SCAN) {
+            type = IEvent.ULTRA_CONNECT;
+        } else if (arg1 == IEvent.USB_SCAN) {
+            type = IEvent.USB_CONNECT;
+        } else if (arg1 == IEvent.REBOOT_SCAN) {
+            type = IEvent.REBOOT_CONNECT;
+        } else {
+            return;
+        }
+        postEvent(new ConnectEvent(ble, type));
+    }
+
+    private void onScanFailed(String reason, int error) {
+        logger().w(TAG, "onScanFailed() " + reason + ", " + error);
     }
 
     @Override
@@ -147,7 +173,9 @@ public final class ArchManager implements IFunctions, Handler.Callback,
                     ConnectEvent call = (ConnectEvent) event;
                     call.setContext(mContext);
                     call.setHandler(mWorker);
-                    mDispatcher.enqueue(call);
+                    if (mDispatcher.enqueue(call)) {
+                        logger().w(TAG, "enqueue " + call + " success");
+                    }
                     return true;
             }
             return false;
@@ -172,5 +200,8 @@ public final class ArchManager implements IFunctions, Handler.Callback,
             }
             return false;
         }
+    }
+
+    private static final class Record {
     }
 }

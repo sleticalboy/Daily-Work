@@ -81,6 +81,7 @@ public class Dispatcher extends Thread implements IComponent {
             synchronized (mTasks) {
                 call.onFinish();
                 mTasks.notifyAll();
+                mCall = null;
             }
         }
     }
