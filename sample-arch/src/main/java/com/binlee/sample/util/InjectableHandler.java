@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created on 21-2-5.
@@ -16,32 +18,27 @@ import java.lang.reflect.Field;
  */
 public class InjectableHandler extends android.os.Handler {
 
-    private static Field sCallbackField;
-    private Callback mCallback;
+    private final List<Callback> mCallbacks;
 
     public InjectableHandler(@NonNull Looper looper) {
-        super(looper);
+        this(looper, null);
     }
 
     public InjectableHandler(@NonNull Looper looper, @Nullable Callback callback) {
         super(looper, callback);
+        mCallbacks = new CopyOnWriteArrayList<>();
+        try {
+            Field field = Handler.class.getDeclaredField("mCallback");
+            field.setAccessible(true);
+            field.set(this, new WrappedCallback(callback));
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public final void injectCallback(Callback callback) {
-        mCallback = Preconditions.checkNotNull(callback, "");
-        if (sCallbackField == null) {
-            try {
-                Field field = Handler.class.getDeclaredField("mCallback");
-                field.setAccessible(true);
-                sCallbackField = field;
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            sCallbackField.set(this, new WrappedCallback(sCallbackField.get(this)));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        if (!mCallbacks.contains(callback)) {
+            mCallbacks.add(Preconditions.checkNotNull(callback, "callback must not be null"));
         }
     }
 
@@ -49,16 +46,23 @@ public class InjectableHandler extends android.os.Handler {
 
         private final Callback mOriginal;
 
-        public WrappedCallback(Object obj) {
-            mOriginal = obj instanceof Callback ? ((Callback) obj) : null;
+        public WrappedCallback(Callback callback) {
+            mOriginal = callback;
         }
 
         @Override
         public boolean handleMessage(@NonNull Message msg) {
-            if (mCallback != null && mCallback.handleMessage(msg)) {
+            // 原有的 Callback 处理消息的优先级最高
+            if (mOriginal != null && mOriginal.handleMessage(msg)) {
                 return true;
             }
-            return mOriginal != null && mOriginal.handleMessage(msg);
+            // 倒序遍历，后添加的 Callback 优先处理消息
+            for (int i = mCallbacks.size() - 1; i >= 0; i--) {
+                if (mCallbacks.get(i).handleMessage(msg)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
