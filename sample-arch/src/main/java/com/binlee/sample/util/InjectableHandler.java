@@ -18,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class InjectableHandler extends android.os.Handler {
 
-    private final List<Callback> mCallbacks;
+    private List<Callback> mCallbacks;
 
     public InjectableHandler(@NonNull Looper looper) {
         this(looper, null);
@@ -27,18 +27,23 @@ public class InjectableHandler extends android.os.Handler {
     public InjectableHandler(@NonNull Looper looper, @Nullable Callback callback) {
         super(looper, callback);
         mCallbacks = new CopyOnWriteArrayList<>();
-        try {
-            Field field = Handler.class.getDeclaredField("mCallback");
-            field.setAccessible(true);
-            field.set(this, new WrappedCallback(callback));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
     }
 
     public final void injectCallback(Callback callback) {
+        Preconditions.checkNotNull(callback, "callback must not be null");
+        if (mCallbacks == null) {
+            // 第一次注入 Callback 时通过反射注入 mCallback
+            mCallbacks = new CopyOnWriteArrayList<>();
+            try {
+                Field field = Handler.class.getDeclaredField("mCallback");
+                field.setAccessible(true);
+                field.set(this, new WrappedCallback(field.get(this)));
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
         if (!mCallbacks.contains(callback)) {
-            mCallbacks.add(Preconditions.checkNotNull(callback, "callback must not be null"));
+            mCallbacks.add(callback);
         }
     }
 
@@ -46,8 +51,8 @@ public class InjectableHandler extends android.os.Handler {
 
         private final Callback mOriginal;
 
-        public WrappedCallback(Callback callback) {
-            mOriginal = callback;
+        public WrappedCallback(Object obj) {
+            mOriginal = obj instanceof Callback ? ((Callback) obj) : null;
         }
 
         @Override
