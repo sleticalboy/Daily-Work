@@ -15,4 +15,9 @@ public interface IMessages {
     int RESUME_SCAN = 0x05;
     int SCAN_RESULT = 0x06;
     int SCAN_FAILED = 0x07;
+
+    int BONDED_CHANGED = 0x08;
+    int HID_PROFILE_CHANGED = 0x09;
+
+    int LOCALE_CHANGED = 0x0a;
 }

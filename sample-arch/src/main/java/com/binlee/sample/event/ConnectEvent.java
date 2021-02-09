@@ -67,7 +67,14 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
     @Override
     public void run() {
         mFinished = false;
-        mGatt = mTarget.connectGatt(mContext, false, this, BluetoothDevice.DEVICE_TYPE_LE);
+        int state = target().getBondState();
+        if (state == BluetoothDevice.BOND_BONDED) {
+            // notify GmdManager to care of this
+            mHandler.obtainMessage(IMessages.BONDED_CHANGED, state, 0, target()).sendToTarget();
+        } else if (state == BluetoothDevice.BOND_NONE) {
+            // create bond
+            mHandler.obtainMessage(IMessages.GATT_CREATE_BOND, target()).sendToTarget();
+        }
     }
 
     @Override
@@ -94,13 +101,6 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
         if (status != BluetoothGatt.GATT_SUCCESS) {
             return;
         }
-        int state = target().getBondState();
-        if (state == BluetoothDevice.BOND_BONDED) {
-            //
-        } else if (state == BluetoothDevice.BOND_NONE) {
-            // create bond
-            mHandler.obtainMessage(IMessages.GATT_CREATE_BOND, this).sendToTarget();
-        }
     }
 
     @Override
@@ -123,6 +123,10 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
         if (status != BluetoothGatt.GATT_SUCCESS) {
             return;
         }
+    }
+
+    public void connectGatt() {
+        mGatt = mTarget.connectGatt(mContext, false, this, BluetoothDevice.DEVICE_TYPE_LE);
     }
 
     private void updateConnectStatus(int status) {

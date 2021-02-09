@@ -1,7 +1,9 @@
 package com.binlee.sample;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -18,6 +20,11 @@ import com.binlee.sample.util.EventHandler;
 import com.binlee.sample.util.EventObserver;
 import com.binlee.sample.util.InjectableHandler;
 import com.binlee.sample.util.Logger;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created on 21-2-5.
@@ -36,6 +43,13 @@ public final class ArchManager implements IFunctions, Handler.Callback,
             if (DBG) {
                 Log.println(priority, tag, msg);
             }
+        }
+    };
+
+    private final List<Record> mRecords = new CopyOnWriteArrayList<Record>() {
+        @Override
+        public boolean add(Record record) {
+            return !contains(record) && super.add(record);
         }
     };
 
@@ -58,9 +72,8 @@ public final class ArchManager implements IFunctions, Handler.Callback,
 
         initEventHandlers();
 
-        mObserver = new EventObserver(context);
         mDispatcher = new Dispatcher();
-
+        mObserver = new EventObserver(context, mWorker);
         mScanner = new BleScanner(context, mWorker);
     }
 
@@ -99,8 +112,76 @@ public final class ArchManager implements IFunctions, Handler.Callback,
         } else if (msg.what == IMessages.SCAN_FAILED) {
             onScanFailed(((String) msg.obj), msg.arg1);
             return true;
+        } else if (msg.what == IMessages.BONDED_CHANGED) {
+            onBondedChanged(((BluetoothDevice) msg.obj), msg.arg1, msg.arg2);
+            return true;
+        } else if (msg.what == IMessages.GATT_CREATE_BOND) {
+            onGattCreateBond(((BluetoothDevice) msg.obj));
+            return true;
+        } else if (msg.what == IMessages.HID_PROFILE_CHANGED) {
+            onHidProfileChanged(((BluetoothDevice) msg.obj), msg.arg1);
+            return true;
+        } else if (msg.what == IMessages.LOCALE_CHANGED) {
+            onLocaleChanged();
+            return true;
         }
         return false;
+    }
+
+    private void onLocaleChanged() {
+    }
+
+    private void onHidProfileChanged(BluetoothDevice ble, int state) {
+        if (state != BluetoothProfile.STATE_CONNECTED || ble == null) {
+            return;
+        }
+        Record r = query(ble);
+        String name = ble.getName();
+        int type = ble.getType();
+        if (type != BluetoothDevice.DEVICE_TYPE_LE) {
+            return;
+        }
+        if (r == null) {
+            // a new device
+            r = new Record(ble);
+            r.mCall = new ConnectEvent(ble, IEvent.REVERSED_CONNECT);
+            mRecords.add(r);
+        } else {
+            if (r.mCall instanceof ConnectEvent) {
+                ((ConnectEvent) r.mCall).connectGatt();
+            }
+        }
+    }
+
+    private Record query(BluetoothDevice ble) {
+        for (final Record r : mRecords) {
+            if (r.mDevice.equals(ble)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    private void onGattCreateBond(BluetoothDevice ble) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            ble.createBond();
+            return;
+        }
+        try {
+            Method m = BluetoothDevice.class.getDeclaredMethod("createBond", int.class);
+            m.setAccessible(true);
+            m.invoke(ble, BluetoothDevice.TRANSPORT_LE);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onBondedChanged(BluetoothDevice ble, int state, int reason) {
+        if (state == BluetoothDevice.BOND_BONDED) {
+            //
+        } else if (state == BluetoothDevice.BOND_NONE) {
+            // check reason
+        }
     }
 
     private void onScanResult(BluetoothDevice ble, int arg1) {
@@ -203,5 +284,12 @@ public final class ArchManager implements IFunctions, Handler.Callback,
     }
 
     private static final class Record {
+
+        private final BluetoothDevice mDevice;
+        private AsyncCall mCall;
+
+        public Record(BluetoothDevice device) {
+            mDevice = device;
+        }
     }
 }
