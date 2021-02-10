@@ -108,30 +108,31 @@ public final class ArchManager implements IFunctions, Handler.Callback,
 
     @Override
     public boolean handleMessage(@NonNull Message msg) {
-        if (msg.what == IMessages.SCAN_RESULT) {
-            onScanResult(((BluetoothDevice) msg.obj), msg.arg1);
-            return true;
-        } else if (msg.what == IMessages.SCAN_FAILED) {
-            onScanFailed(((String) msg.obj), msg.arg1);
-            return true;
-        } else if (msg.what == IMessages.BONDED_CHANGED) {
-            onBondedChanged(((BluetoothDevice) msg.obj), msg.arg1, msg.arg2);
-            return true;
-        } else if (msg.what == IMessages.GATT_CREATE_BOND) {
-            onGattCreateBond(((BluetoothDevice) msg.obj));
-            return true;
-        } else if (msg.what == IMessages.HID_PROFILE_CHANGED) {
-            onHidProfileChanged(((BluetoothDevice) msg.obj), msg.arg1);
-            return true;
-        } else if (msg.what == IMessages.LOCALE_CHANGED) {
-            onLocaleChanged();
-            return true;
-        } else if (msg.what == IMessages.GATT_START_CONFIG) {
-            onGattStartConfig(((BluetoothDevice) msg.obj));
-            return true;
-        } else if (msg.what == IMessages.CONNECT_STATUS_CHANGE) {
-            onConnectStatusChanged(((ConnectEvent) msg.obj), msg.arg1);
-            return true;
+        switch (msg.what) {
+            case IMessages.SCAN_RESULT:
+                onScanResult(((BluetoothDevice) msg.obj), msg.arg1);
+                return true;
+            case IMessages.SCAN_FAILED:
+                onScanFailed(((String) msg.obj), msg.arg1);
+                return true;
+            case IMessages.BONDED_CHANGED:
+                onBondedChanged(((BluetoothDevice) msg.obj), msg.arg1, msg.arg2);
+                return true;
+            case IMessages.GATT_CREATE_BOND:
+                onGattCreateBond(((BluetoothDevice) msg.obj));
+                return true;
+            case IMessages.HID_PROFILE_CHANGED:
+                onHidProfileChanged(((BluetoothDevice) msg.obj), msg.arg1);
+                return true;
+            case IMessages.LOCALE_CHANGED:
+                onLocaleChanged();
+                return true;
+            case IMessages.GATT_START_CONFIG:
+                onGattStartConfig(((BluetoothDevice) msg.obj));
+                return true;
+            case IMessages.CONNECT_STATUS_CHANGE:
+                onConnectStatusChanged(((ConnectEvent) msg.obj), msg.arg1);
+                return true;
         }
         return false;
     }
