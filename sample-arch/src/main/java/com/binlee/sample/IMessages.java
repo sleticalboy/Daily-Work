@@ -20,4 +20,5 @@ public interface IMessages {
     int HID_PROFILE_CHANGED = 0x09;
 
     int LOCALE_CHANGED = 0x0a;
+    int GATT_START_CONFIG = 0x0b;
 }

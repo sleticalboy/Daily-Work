@@ -15,6 +15,7 @@ import com.binlee.sample.event.ConnectEvent;
 import com.binlee.sample.event.DisconnectEvent;
 import com.binlee.sample.event.IEvent;
 import com.binlee.sample.event.ScanEvent;
+import com.binlee.sample.util.ConfigAssigner;
 import com.binlee.sample.util.Dispatcher;
 import com.binlee.sample.util.EventHandler;
 import com.binlee.sample.util.EventObserver;
@@ -59,6 +60,7 @@ public final class ArchManager implements IFunctions, Handler.Callback,
     private Dispatcher mDispatcher;
     private EventObserver mObserver;
     private BleScanner mScanner;
+    private ConfigAssigner mAssigner;
 
     public ArchManager() {
         HandlerThread thread = new HandlerThread(TAG);
@@ -124,11 +126,38 @@ public final class ArchManager implements IFunctions, Handler.Callback,
         } else if (msg.what == IMessages.LOCALE_CHANGED) {
             onLocaleChanged();
             return true;
+        } else if (msg.what == IMessages.GATT_START_CONFIG) {
+            onGattStartConfig(((BluetoothDevice) msg.obj));
+            return true;
+        } else if (msg.what == IMessages.CONNECT_STATUS_CHANGE) {
+            onConnectStatusChanged(((ConnectEvent) msg.obj), msg.arg1);
+            return true;
         }
         return false;
     }
 
+    private void onConnectStatusChanged(ConnectEvent event, int status) {
+        if (status == AsyncCall.STATUS_CONFIG_OVER) {
+            //
+        }
+    }
+
+    private void onGattStartConfig(BluetoothDevice ble) {
+        Record r = query(ble);
+        if (r != null && r.mCall instanceof ConnectEvent) {
+            if (mAssigner == null) {
+                mAssigner = new ConfigAssigner();
+            }
+            if (mAssigner.assign(r.mDevice)) {
+                if (((ConnectEvent) r.mCall).startConfig(0, "a00248")) {
+                    logger().v(TAG, "onGattStartConfig() ...");
+                }
+            }
+        }
+    }
+
     private void onLocaleChanged() {
+        // 更新 dialog 等
     }
 
     private void onHidProfileChanged(BluetoothDevice ble, int state) {

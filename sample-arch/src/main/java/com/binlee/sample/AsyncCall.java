@@ -15,6 +15,9 @@ public interface AsyncCall extends Runnable {
     int STATUS_NOT_CONNECTED = 0x02;
     int STATUS_CONNECTING = 0x03;
     int STATUS_DISCONNECTING = 0x04;
+    int STATUS_CONFIG_START = 0x05;
+    int STATUS_CONFIG_SECOND = 0x06;
+    int STATUS_CONFIG_OVER = 0x06;
 
     BluetoothDevice target();
 

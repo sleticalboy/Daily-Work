@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.Handler;
@@ -11,6 +12,9 @@ import android.os.Message;
 
 import com.binlee.sample.AsyncCall;
 import com.binlee.sample.IMessages;
+
+import java.nio.charset.Charset;
+import java.util.UUID;
 
 /**
  * Created on 21-2-7.
@@ -112,6 +116,8 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
         if (status != BluetoothGatt.GATT_SUCCESS) {
             return;
         }
+        // 当所有信息读取回来之后，再开始给对端写配置信息
+        mHandler.obtainMessage(IMessages.GATT_START_CONFIG, target()).sendToTarget();
     }
 
     @Override
@@ -123,23 +129,33 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
         if (status != BluetoothGatt.GATT_SUCCESS) {
             return;
         }
+        // 一个属性写成功后再写下一个，知道全部写完
+        updateConnectStatus(STATUS_CONFIG_START);
+        updateConnectStatus(STATUS_CONFIG_SECOND);
+        updateConnectStatus(STATUS_CONFIG_OVER);
     }
 
     public void connectGatt() {
         mGatt = mTarget.connectGatt(mContext, false, this, BluetoothDevice.DEVICE_TYPE_LE);
     }
 
+    public boolean startConfig(int pipe, String channels) {
+        if (mGatt == null) return false;
+        BluetoothGattService service = mGatt.getService(UUID.randomUUID());
+        if (service == null) return false;
+        BluetoothGattCharacteristic bgc = service.getCharacteristic(UUID.randomUUID());
+        if (bgc == null) return false;
+        bgc.setValue((pipe + channels).getBytes(Charset.defaultCharset()));
+        return mGatt.writeCharacteristic(bgc);
+    }
+
     private void updateConnectStatus(int status) {
         mStatus = status;
-        Message msg = mHandler.obtainMessage(IMessages.CONNECT_STATUS_CHANGE, this);
-        msg.arg1 = status;
-        msg.sendToTarget();
+        mHandler.obtainMessage(IMessages.CONNECT_STATUS_CHANGE, status, 0, this).sendToTarget();
     }
 
     private void reportGattStatus(int status) {
-        Message msg = mHandler.obtainMessage(IMessages.GATT_STATUS_REPORTED, this);
-        msg.arg1 = status;
-        msg.sendToTarget();
+        mHandler.obtainMessage(IMessages.GATT_STATUS_REPORTED, status, 0, this).sendToTarget();
     }
 
     private void release() {
