@@ -1,8 +1,7 @@
 package com.binlee.emoji
 
 import android.content.Intent
-import android.os.Build
-import android.os.Bundle
+import android.os.*
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -14,6 +13,11 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    private val TAG = "MainActivity"
+
+    private val mHandler = ClientHandler(Looper.myLooper())
+    private val mClientMessenger = Messenger(mHandler)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +93,7 @@ class MainActivity : AppCompatActivity() {
         service.setClassName("com.sleticalboy.learning", "com.sleticalboy.learning.components.service.UpgradeService")
         service.putExtra("_mac", "fake mac address")
         service.putExtra("_file_url", "fake file url")
+        service.putExtra("_messenger", mClientMessenger)
         val component = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(service)
         } else {
@@ -97,7 +102,27 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "requestUpgrade() $component")
     }
 
-    companion object {
-        private const val TAG = "MainActivity"
+    private fun postRemote(replyTo: Messenger?, what: Int, obj: String) {
+        val msg = Message.obtain()
+        msg.what = what
+        msg.replyTo = mClientMessenger
+        // 不能使用 msg.obj 传递数据，否则："Can't marshal non-Parcelable objects across processes."
+        msg.data.putString("msg_obj", obj)
+        try {
+            replyTo?.send(msg)
+        } catch (e: RemoteException) {
+            Log.d(TAG, "post() error", e)
+        }
+    }
+
+    private inner class ClientHandler(looper: Looper? = Looper.getMainLooper()): Handler() {
+
+        override fun handleMessage(msg: Message) {
+            Log.d(TAG, "handleMessage() called with: what = ${msg.what}")
+            if (msg.what == 1) {
+                Log.d(TAG, "handleMessage() obj: " + msg.data.getString("msg_obj"))
+                postRemote(msg.replyTo, 2, "client receive server")
+            }
+        }
     }
 }
