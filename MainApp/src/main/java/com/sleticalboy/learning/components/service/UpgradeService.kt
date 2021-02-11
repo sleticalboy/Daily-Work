@@ -5,8 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
-import android.os.Build
-import android.os.IBinder
+import android.os.*
 import android.util.Log
 
 /**
@@ -15,6 +14,10 @@ import android.util.Log
  * @author binlee sleticalboy@gmail.com
  */
 class UpgradeService : Service() {
+
+    private val mHandler = ServerHandler()
+    private val mServerMessenger = Messenger(mHandler)
+    private var mClientMessenger: Messenger? = null
 
     override fun onCreate() {
         Log.d(TAG, "onCreate() called")
@@ -33,8 +36,24 @@ class UpgradeService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val mac = intent?.getStringExtra("_mac")
         val fileUrl = intent?.getStringExtra("_file_url")
-        Log.d(TAG, "onStartCommand() intent = $intent, mac = $mac, file url = $fileUrl")
-        return super.onStartCommand(intent, flags, startId)
+        mClientMessenger = intent?.getParcelableExtra("_messenger")
+        Log.d(TAG, "onStartCommand() intent = $intent, mac = $mac, file url = $fileUrl" +
+                ", messenger: $mClientMessenger")
+        postRemote(1, "client binds to server")
+        return START_STICKY
+    }
+
+    private fun postRemote(what: Int, obj: String) {
+        val msg = Message.obtain()
+        msg.what = what
+        msg.replyTo = mServerMessenger
+        // 不能使用 msg.obj 传递数据，否则："Can't marshal non-Parcelable objects across processes."
+        msg.data.putString("msg_obj", obj)
+        try {
+            mClientMessenger?.send(msg)
+        } catch (e: RemoteException) {
+            Log.d(TAG, "post() error", e)
+        }
     }
 
     override fun onDestroy() {
@@ -44,5 +63,15 @@ class UpgradeService : Service() {
     companion object {
         private const val CHANNEL_ID = "Upgrade channel"
         private const val TAG = "UpgradeService"
+    }
+
+    private inner class ServerHandler(looper: Looper? = Looper.myLooper()) : Handler() {
+
+        override fun handleMessage(msg: Message) {
+            Log.d(TAG, "handleMessage() called with: msg = $msg")
+            if (msg.what == 2) {
+                Log.d(TAG, "handleMessage() obj: " + msg.data.getString("msg_obj"))
+            }
+        }
     }
 }
