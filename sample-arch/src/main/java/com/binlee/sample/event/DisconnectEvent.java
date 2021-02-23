@@ -2,8 +2,6 @@ package com.binlee.sample.event;
 
 import android.bluetooth.BluetoothDevice;
 
-import com.binlee.sample.AsyncCall;
-
 /**
  * Created on 21-2-7.
  *

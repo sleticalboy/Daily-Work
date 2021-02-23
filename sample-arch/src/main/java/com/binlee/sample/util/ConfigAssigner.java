@@ -1,6 +1,6 @@
 package com.binlee.sample.util;
 
-import android.bluetooth.BluetoothDevice;
+import com.binlee.sample.core.DataSource;
 
 /**
  * Created on 21-2-10.
@@ -13,7 +13,7 @@ public final class ConfigAssigner {
         //
     }
 
-    public boolean assign(BluetoothDevice ble) {
+    public boolean assign(DataSource.Device device) {
         return false;
     }
 }

@@ -1,7 +1,7 @@
 package com.binlee.sample.util;
 
-import com.binlee.sample.AsyncCall;
-import com.binlee.sample.IComponent;
+import com.binlee.sample.event.AsyncCall;
+import com.binlee.sample.core.IComponent;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

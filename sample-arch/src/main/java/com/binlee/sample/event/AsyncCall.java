@@ -1,4 +1,4 @@
-package com.binlee.sample;
+package com.binlee.sample.event;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;

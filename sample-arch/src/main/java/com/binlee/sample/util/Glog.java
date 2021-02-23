@@ -7,34 +7,64 @@ import android.util.Log;
  *
  * @author binlee sleticalboy@gmail.com
  */
-public abstract class Logger {
+public final class Glog {
 
-    public static final Logger D = new Logger() {
-        @Override
-        protected void log(String tag, String msg, int priority) {
-            Log.println(priority, tag, msg);
+    private static Config sConfig;
+
+    private Glog() {
+        sConfig = new Config(true, true, true);
+    }
+
+    public static final class Config {
+
+        private final boolean mVerbose;
+        private final boolean mDebug;
+        private final boolean mInfo;
+
+        public Config(boolean verbose, boolean debug, boolean info) {
+            mVerbose = verbose;
+            mDebug = debug;
+            mInfo = info;
         }
-    };
-
-    protected abstract void log(String tag, String msg, int priority);
-
-    public void v(String tag, String msg) {
-        log(tag, msg, Log.VERBOSE);
     }
 
-    public void d(String tag, String msg) {
-        log(tag, msg, Log.DEBUG);
+    public static void setConfig(Config config) {
+        if (config != null) sConfig = config;
     }
 
-    public void i(String tag, String msg) {
-        log(tag, msg, Log.INFO);
+    public static boolean isLoggable() {
+        return sConfig.mVerbose && (sConfig.mDebug || sConfig.mInfo);
     }
 
-    public void w(String tag, String msg) {
+    public static void v(String tag, String msg) {
+        if (sConfig.mVerbose) log(tag, msg, Log.VERBOSE);
+    }
+
+    public static void d(String tag, String msg) {
+        if (sConfig.mDebug) log(tag, msg, Log.DEBUG);
+    }
+
+    public static void i(String tag, String msg) {
+        if (sConfig.mInfo) log(tag, msg, Log.INFO);
+    }
+
+    public static void w(String tag, String msg) {
         log(tag, msg, Log.WARN);
     }
 
-    public void e(String tag, String msg) {
+    public static void e(String tag, String msg) {
         log(tag, msg, Log.ERROR);
+    }
+
+    public static void e(String tag, String msg, Throwable t) {
+        if (t != null) {
+            log(tag, msg + "\n" + Log.getStackTraceString(t), Log.ERROR);
+        } else {
+            log(tag, msg, Log.ERROR);
+        }
+    }
+
+    private static void log(String tag, String msg, int priority) {
+        Log.println(priority, tag, msg);
     }
 }

@@ -1,8 +1,6 @@
 package com.binlee.sample.util;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothHidDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,8 +9,8 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 
-import com.binlee.sample.IComponent;
-import com.binlee.sample.IMessages;
+import com.binlee.sample.core.IComponent;
+import com.binlee.sample.core.IWhat;
 
 /**
  * Created on 21-2-6.
@@ -39,12 +37,12 @@ public final class EventObserver extends BroadcastReceiver implements IComponent
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if ("android.bluetooth.input.profile.action.CONNECTION_STATE_CHANGED".equals(action)) {
-            Message msg = mCallback.obtainMessage(IMessages.HID_PROFILE_CHANGED);
+            Message msg = mCallback.obtainMessage(IWhat.HID_PROFILE_CHANGED);
             msg.obj = intent.getParcelableExtra(BluetoothDevice.EXTRA_NAME);
             msg.arg1 = intent.getIntExtra(BluetoothProfile.EXTRA_STATE, -1);
             msg.sendToTarget();
         } else if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
-            mCallback.obtainMessage(IMessages.LOCALE_CHANGED).sendToTarget();
+            mCallback.obtainMessage(IWhat.LOCALE_CHANGED).sendToTarget();
         }
     }
 

@@ -8,10 +8,8 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.Handler;
-import android.os.Message;
 
-import com.binlee.sample.AsyncCall;
-import com.binlee.sample.IMessages;
+import com.binlee.sample.core.IWhat;
 
 import java.nio.charset.Charset;
 import java.util.UUID;
@@ -74,10 +72,10 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
         int state = target().getBondState();
         if (state == BluetoothDevice.BOND_BONDED) {
             // notify GmdManager to care of this
-            mHandler.obtainMessage(IMessages.BONDED_CHANGED, state, 0, target()).sendToTarget();
+            mHandler.obtainMessage(IWhat.BONDED_CHANGED, state, 0, target()).sendToTarget();
         } else if (state == BluetoothDevice.BOND_NONE) {
             // create bond
-            mHandler.obtainMessage(IMessages.GATT_CREATE_BOND, target()).sendToTarget();
+            mHandler.obtainMessage(IWhat.GATT_CREATE_BOND, target()).sendToTarget();
         }
     }
 
@@ -117,7 +115,7 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
             return;
         }
         // 当所有信息读取回来之后，再开始给对端写配置信息
-        mHandler.obtainMessage(IMessages.GATT_START_CONFIG, target()).sendToTarget();
+        mHandler.obtainMessage(IWhat.GATT_START_CONFIG, target()).sendToTarget();
     }
 
     @Override
@@ -151,11 +149,11 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
 
     private void updateConnectStatus(int status) {
         mStatus = status;
-        mHandler.obtainMessage(IMessages.CONNECT_STATUS_CHANGE, status, 0, this).sendToTarget();
+        mHandler.obtainMessage(IWhat.CONNECT_STATUS_CHANGE, status, 0, this).sendToTarget();
     }
 
     private void reportGattStatus(int status) {
-        mHandler.obtainMessage(IMessages.GATT_STATUS_REPORTED, status, 0, this).sendToTarget();
+        mHandler.obtainMessage(IWhat.GATT_STATUS_REPORTED, status, 0, this).sendToTarget();
     }
 
     private void release() {

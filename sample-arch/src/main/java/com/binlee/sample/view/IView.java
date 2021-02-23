@@ -9,5 +9,9 @@ import com.binlee.sample.core.DataSource;
  */
 public interface IView {
 
+    void onScanTimeout();
+
+    void onConnectTimeout();
+
     void onClearInfo(DataSource.Device device, boolean remote);
 }

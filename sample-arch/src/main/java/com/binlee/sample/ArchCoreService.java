@@ -1,11 +1,15 @@
 package com.binlee.sample;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
-import androidx.annotation.Nullable;
+import com.binlee.sample.core.ArchManager;
+import com.binlee.sample.core.DataSource;
+import com.binlee.sample.core.IArchManager;
+import com.binlee.sample.view.IView;
 
 /**
  * Created on 21-2-4.
@@ -14,38 +18,61 @@ import androidx.annotation.Nullable;
  */
 public final class ArchCoreService extends Service {
 
-    private final IFunctions mFunc;
+    private final IArchManager mManager;
     private LocalBinder mBinder;
 
+    public static void onBootCompleted(Context context) {
+        DataSource.get().init(context, hasCache -> {
+            // do stuff
+        });
+
+        final Intent service = new Intent(context, ArchCoreService.class)
+                .putExtra("_bootstrap", true);
+        context.startService(service);
+    }
+
     public ArchCoreService() {
-        mFunc = new ArchManager();
+        mManager = new ArchManager();
     }
 
     @Override
     public void onCreate() {
-        mFunc.init(this);
+        mManager.onCreate(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mFunc.onStart();
+        mManager.onStart();
         return START_STICKY;
     }
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         if (mBinder == null) {
-            mBinder = new LocalBinder();
+            mBinder = new LocalBinder(mManager);
         }
         return mBinder;
     }
 
     @Override
     public void onDestroy() {
-        mFunc.onDestroy();
+        mManager.onDestroy();
     }
 
-    public final class LocalBinder extends Binder {
+    public static final class LocalBinder extends Binder {
+
+        private final IArchManager mService;
+
+        public LocalBinder(IArchManager service) {
+            mService = service;
+        }
+
+        public void attachView(IView view) {
+            mService.attachView(view);
+        }
+
+        public void detachView() {
+            mService.detachView();
+        }
     }
 }

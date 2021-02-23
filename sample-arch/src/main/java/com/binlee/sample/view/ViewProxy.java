@@ -21,6 +21,20 @@ public class ViewProxy implements IView {
     }
 
     @Override
+    public void onScanTimeout() {
+        if (mTarget != null) {
+            MAIN_HANDLER.post(() -> mTarget.onScanTimeout());
+        }
+    }
+
+    @Override
+    public void onConnectTimeout() {
+        if (mTarget != null) {
+            MAIN_HANDLER.post(() -> mTarget.onConnectTimeout());
+        }
+    }
+
+    @Override
     public void onClearInfo(DataSource.Device device, boolean remote) {
         if (mTarget != null) {
             MAIN_HANDLER.post(() -> mTarget.onClearInfo(device, remote));
