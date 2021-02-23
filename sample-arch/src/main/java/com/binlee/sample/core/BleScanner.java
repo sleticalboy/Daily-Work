@@ -1,4 +1,4 @@
-package com.binlee.sample;
+package com.binlee.sample.core;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 import com.binlee.sample.event.IEvent;
 import com.binlee.sample.event.ScanEvent;
 import com.binlee.sample.util.InjectableHandler;
-import com.binlee.sample.util.Logger;
+import com.binlee.sample.util.Glog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,37 +74,37 @@ public final class BleScanner extends ScanCallback implements Handler.Callback {
         mEvent = event;
         mRepetition++;
         if (event.useUltra()) {
-            Logger.D.d(TAG, "start() send ultra before ble scan");
+            Glog.d(TAG, "start() send ultra before ble scan");
         }
         if (event.duration() > 0) {
-            mHandler.sendEmptyMessageDelayed(IMessages.STOP_SCAN, event.duration());
+            mHandler.sendEmptyMessageDelayed(IWhat.STOP_SCAN, event.duration());
         }
         mScanner.startScan(mFilters, mSettings, this);
     }
 
     @Override
     public void onScanResult(int callbackType, ScanResult result) {
-        Message msg = mHandler.obtainMessage(IMessages.SCAN_RESULT, result.getDevice());
+        Message msg = mHandler.obtainMessage(IWhat.SCAN_RESULT, result.getDevice());
         msg.arg1 = mEvent.type();
         msg.sendToTarget();
     }
 
     @Override
     public void onScanFailed(int errorCode) {
-        Message msg = mHandler.obtainMessage(IMessages.SCAN_FAILED, mEvent);
+        Message msg = mHandler.obtainMessage(IWhat.SCAN_FAILED, mEvent);
         msg.arg1 = errorCode;
         msg.sendToTarget();
     }
 
     @Override
     public boolean handleMessage(@NonNull Message msg) {
-        if (msg.what == IMessages.STOP_SCAN) {
+        if (msg.what == IWhat.STOP_SCAN) {
             if (mRepetition < mEvent.repetition()) {
-                mHandler.sendEmptyMessageDelayed(IMessages.RESUME_SCAN, mEvent.interval());
+                mHandler.sendEmptyMessageDelayed(IWhat.RESUME_SCAN, mEvent.interval());
             }
             stop();
             return true;
-        } else if (msg.what == IMessages.RESUME_SCAN) {
+        } else if (msg.what == IWhat.RESUME_SCAN) {
             start(mEvent);
             return true;
         }

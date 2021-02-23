@@ -1,11 +1,11 @@
-package com.binlee.sample;
+package com.binlee.sample.core;
 
 /**
  * Created on 21-2-7.
  *
  * @author binlee sleticalboy@gmail.com
  */
-public interface IMessages {
+public interface IWhat {
 
     int GATT_STATUS_REPORTED = 0x01;
     int CONNECT_STATUS_CHANGE = 0x02;

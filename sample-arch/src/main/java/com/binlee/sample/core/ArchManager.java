@@ -1,4 +1,4 @@
-package com.binlee.sample;
+package com.binlee.sample.core;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
@@ -7,10 +7,10 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.binlee.sample.event.AsyncCall;
 import com.binlee.sample.event.ConnectEvent;
 import com.binlee.sample.event.DisconnectEvent;
 import com.binlee.sample.event.IEvent;
@@ -19,42 +19,27 @@ import com.binlee.sample.util.ConfigAssigner;
 import com.binlee.sample.util.Dispatcher;
 import com.binlee.sample.util.EventHandler;
 import com.binlee.sample.util.EventObserver;
+import com.binlee.sample.util.Glog;
 import com.binlee.sample.util.InjectableHandler;
-import com.binlee.sample.util.Logger;
+import com.binlee.sample.view.IView;
+import com.binlee.sample.view.ViewProxy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created on 21-2-5.
  *
  * @author binlee sleticalboy@gmail.com
  */
-public final class ArchManager implements IFunctions, Handler.Callback,
+public final class ArchManager implements IArchManager, Handler.Callback,
         EventHandler.OnUnhandledCallback {
 
     private static final String TAG = "ArchManager";
-    private static final boolean DBG = true;
 
-    private final Logger mLogger = new Logger() {
-        @Override
-        protected void log(String tag, String msg, int priority) {
-            if (DBG) {
-                Log.println(priority, tag, msg);
-            }
-        }
-    };
-
-    private final List<Record> mRecords = new CopyOnWriteArrayList<Record>() {
-        @Override
-        public boolean add(Record record) {
-            return !contains(record) && super.add(record);
-        }
-    };
-
+    private final ViewProxy mViewProxy;
     private final Handler mWorker;
+    private final DataSource mSource;
     private Context mContext;
     private EventHandler mEventHandler;
     private Dispatcher mDispatcher;
@@ -63,13 +48,15 @@ public final class ArchManager implements IFunctions, Handler.Callback,
     private ConfigAssigner mAssigner;
 
     public ArchManager() {
+        mSource = DataSource.get();
         HandlerThread thread = new HandlerThread(TAG);
         thread.start();
         mWorker = new InjectableHandler(thread.getLooper(), this);
+        mViewProxy = new ViewProxy();
     }
 
     @Override
-    public void init(Context context) {
+    public void onCreate(Context context) {
         mContext = context;
 
         initEventHandlers();
@@ -102,35 +89,43 @@ public final class ArchManager implements IFunctions, Handler.Callback,
     }
 
     @Override
-    public Logger logger() {
-        return mLogger;
+    public void attachView(IView view) {
+        mViewProxy.setTarget(view);
+
+        // in worker handler
+        mSource.fetchCaches(mWorker);
+    }
+
+    @Override
+    public void detachView() {
+        mViewProxy.setTarget(null);
     }
 
     @Override
     public boolean handleMessage(@NonNull Message msg) {
         switch (msg.what) {
-            case IMessages.SCAN_RESULT:
+            case IWhat.SCAN_RESULT:
                 onScanResult(((BluetoothDevice) msg.obj), msg.arg1);
                 return true;
-            case IMessages.SCAN_FAILED:
+            case IWhat.SCAN_FAILED:
                 onScanFailed(((String) msg.obj), msg.arg1);
                 return true;
-            case IMessages.BONDED_CHANGED:
+            case IWhat.BONDED_CHANGED:
                 onBondedChanged(((BluetoothDevice) msg.obj), msg.arg1, msg.arg2);
                 return true;
-            case IMessages.GATT_CREATE_BOND:
+            case IWhat.GATT_CREATE_BOND:
                 onGattCreateBond(((BluetoothDevice) msg.obj));
                 return true;
-            case IMessages.HID_PROFILE_CHANGED:
+            case IWhat.HID_PROFILE_CHANGED:
                 onHidProfileChanged(((BluetoothDevice) msg.obj), msg.arg1);
                 return true;
-            case IMessages.LOCALE_CHANGED:
+            case IWhat.LOCALE_CHANGED:
                 onLocaleChanged();
                 return true;
-            case IMessages.GATT_START_CONFIG:
+            case IWhat.GATT_START_CONFIG:
                 onGattStartConfig(((BluetoothDevice) msg.obj));
                 return true;
-            case IMessages.CONNECT_STATUS_CHANGE:
+            case IWhat.CONNECT_STATUS_CHANGE:
                 onConnectStatusChanged(((ConnectEvent) msg.obj), msg.arg1);
                 return true;
         }
@@ -144,14 +139,14 @@ public final class ArchManager implements IFunctions, Handler.Callback,
     }
 
     private void onGattStartConfig(BluetoothDevice ble) {
-        Record r = query(ble);
+        DataSource.Record r = mSource.getRecord(ble);
         if (r != null && r.mCall instanceof ConnectEvent) {
             if (mAssigner == null) {
                 mAssigner = new ConfigAssigner();
             }
             if (mAssigner.assign(r.mDevice)) {
                 if (((ConnectEvent) r.mCall).startConfig(0, "a00248")) {
-                    logger().v(TAG, "onGattStartConfig() ...");
+                    Glog.v(TAG, "onGattStartConfig() ...");
                 }
             }
         }
@@ -165,7 +160,7 @@ public final class ArchManager implements IFunctions, Handler.Callback,
         if (state != BluetoothProfile.STATE_CONNECTED || ble == null) {
             return;
         }
-        Record r = query(ble);
+        DataSource.Record r = mSource.getRecord(ble);
         String name = ble.getName();
         int type = ble.getType();
         if (type != BluetoothDevice.DEVICE_TYPE_LE) {
@@ -173,23 +168,13 @@ public final class ArchManager implements IFunctions, Handler.Callback,
         }
         if (r == null) {
             // a new device
-            r = new Record(ble);
+            mSource.put(r = new DataSource.Record(new DataSource.Device(ble)));
             r.mCall = new ConnectEvent(ble, IEvent.REVERSED_CONNECT);
-            mRecords.add(r);
         } else {
             if (r.mCall instanceof ConnectEvent) {
                 ((ConnectEvent) r.mCall).connectGatt();
             }
         }
-    }
-
-    private Record query(BluetoothDevice ble) {
-        for (final Record r : mRecords) {
-            if (r.mDevice.equals(ble)) {
-                return r;
-            }
-        }
-        return null;
     }
 
     private void onGattCreateBond(BluetoothDevice ble) {
@@ -229,12 +214,12 @@ public final class ArchManager implements IFunctions, Handler.Callback,
     }
 
     private void onScanFailed(String reason, int error) {
-        logger().w(TAG, "onScanFailed() " + reason + ", " + error);
+        Glog.w(TAG, "onScanFailed() " + reason + ", " + error);
     }
 
     @Override
     public void onUnhandledEvent(IEvent event) {
-        logger().w(TAG, "onUnhandledEvent() " + event);
+        Glog.w(TAG, "onUnhandledEvent() " + event);
     }
 
     private void initEventHandlers() {
@@ -247,6 +232,7 @@ public final class ArchManager implements IFunctions, Handler.Callback,
         mEventHandler = handler;
     }
 
+    // 处理扫描事件
     private final class ScanEventHandler extends EventHandler {
 
         private ScanEventHandler(EventHandler next) {
@@ -255,18 +241,13 @@ public final class ArchManager implements IFunctions, Handler.Callback,
 
         @Override
         public boolean onProcess(IEvent event) {
-            switch (event.type()) {
-                case IEvent.ULTRA_SCAN:
-                case IEvent.REBOOT_SCAN:
-                case IEvent.USB_SCAN:
-                case IEvent.STOP_SCAN:
-                    mScanner.start(((ScanEvent) event));
-                    return true;
-            }
-            return false;
+            if (!(event instanceof ScanEvent)) return false;
+            mScanner.start(((ScanEvent) event));
+            return true;
         }
     }
 
+    // 处理连接事件
     private final class ConnectEventHandler extends EventHandler {
 
         private ConnectEventHandler(EventHandler next) {
@@ -275,24 +256,18 @@ public final class ArchManager implements IFunctions, Handler.Callback,
 
         @Override
         public boolean onProcess(IEvent event) {
-            switch (event.type()) {
-                case IEvent.ULTRA_CONNECT:
-                case IEvent.REBOOT_CONNECT:
-                case IEvent.USB_CONNECT:
-                case IEvent.CLICK_CONNECT:
-                case IEvent.CONFIG_CONNECT:
-                    ConnectEvent call = (ConnectEvent) event;
-                    call.setContext(mContext);
-                    call.setHandler(mWorker);
-                    if (mDispatcher.enqueue(call)) {
-                        logger().w(TAG, "enqueue " + call + " success");
-                    }
-                    return true;
+            if (!(event instanceof ConnectEvent)) return false;
+            ConnectEvent call = (ConnectEvent) event;
+            call.setContext(mContext);
+            call.setHandler(mWorker);
+            if (mDispatcher.enqueue(call)) {
+                Glog.w(TAG, "enqueue " + call + " success");
             }
-            return false;
+            return true;
         }
     }
 
+    // 处理断开事件
     private final class DisconnectEventHandler extends EventHandler {
 
         private DisconnectEventHandler() {
@@ -301,25 +276,9 @@ public final class ArchManager implements IFunctions, Handler.Callback,
 
         @Override
         public boolean onProcess(IEvent event) {
-            switch (event.type()) {
-                case IEvent.CLICK_DISCONNECT:
-                case IEvent.UNBIND_DISCONNECT:
-                case IEvent.CONFIG_DISCONNECT:
-                case IEvent.OTHER_DISCONNECT:
-                    mWorker.post(((DisconnectEvent) event));
-                    return true;
-            }
-            return false;
-        }
-    }
-
-    private static final class Record {
-
-        private final BluetoothDevice mDevice;
-        private AsyncCall mCall;
-
-        public Record(BluetoothDevice device) {
-            mDevice = device;
+            if (!(event instanceof DisconnectEvent)) return false;
+            mWorker.post(((DisconnectEvent) event));
+            return true;
         }
     }
 }

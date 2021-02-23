@@ -1,4 +1,4 @@
-package com.binlee.sample;
+package com.binlee.sample.core;
 
 /**
  * Created on 21-2-4.

@@ -1,19 +1,19 @@
-package com.binlee.sample;
+package com.binlee.sample.core;
 
 import android.content.Context;
 import android.os.Handler;
 
 import com.binlee.sample.event.IEvent;
-import com.binlee.sample.util.Logger;
+import com.binlee.sample.view.IView;
 
 /**
  * Created on 21-2-4.
  *
  * @author binlee sleticalboy@gmail.com
  */
-public interface IFunctions {
+public interface IArchManager {
 
-    void init(Context context);
+    void onCreate(Context context);
 
     void onStart();
 
@@ -23,5 +23,7 @@ public interface IFunctions {
 
     void postEvent(IEvent event);
 
-    Logger logger();
+    void attachView(IView view);
+
+    void detachView();
 }
