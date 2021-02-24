@@ -1,4 +1,4 @@
-package com.binlee.sample.util;
+package com.binlee.sample.core;
 
 import com.binlee.sample.event.AsyncCall;
 import com.binlee.sample.core.IComponent;
