@@ -21,4 +21,7 @@ public interface IWhat {
 
     int LOCALE_CHANGED = 0x0a;
     int GATT_START_CONFIG = 0x0b;
+    int TRACE_RESULT = 0x0c;
+    int CACHE_FETCHED = 0x0d;
+    int LIFECYCLE_CHANGE = 0x0e;
 }

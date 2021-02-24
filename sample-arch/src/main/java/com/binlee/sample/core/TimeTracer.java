@@ -5,12 +5,16 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import com.binlee.sample.util.Glog;
+
 /**
  * Created on 21-2-24.
  *
  * @author binlee sleticalboy@gmail.com
  */
 public final class TimeTracer implements Handler.Callback {
+
+    private static final String TAG = "TimeTracer";
 
     private final Handler mHandler;
 
@@ -23,6 +27,13 @@ public final class TimeTracer implements Handler.Callback {
 
     @Override
     public boolean handleMessage(@NonNull Message msg) {
+        Glog.i(TAG, "handleMessage() " + mHandler.getMessageName(msg));
         return false;
     }
+
+    private void finish() {
+        mHandler.obtainMessage(IWhat.TRACE_RESULT, new Result()).sendToTarget();
+    }
+
+    public static final class Result {}
 }

@@ -1,7 +1,6 @@
 package com.binlee.sample.core;
 
-import com.binlee.sample.event.AsyncCall;
-import com.binlee.sample.core.IComponent;
+import com.binlee.sample.event.AsyncEvent;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -10,15 +9,17 @@ import java.util.concurrent.ArrayBlockingQueue;
  *
  * @author binlee sleticalboy@gmail.com
  */
-public class Dispatcher extends Thread implements IComponent {
+public class EventExecutor extends Thread implements IComponent {
+
+    private static final String TAG = "Dispatcher";
 
     private static final int CAPACITY = 2;
 
-    private final ArrayBlockingQueue<AsyncCall> mTasks = new ArrayBlockingQueue<>(CAPACITY);
+    private final ArrayBlockingQueue<AsyncEvent> mTasks = new ArrayBlockingQueue<>(CAPACITY);
     private boolean mReleased = false;
-    private AsyncCall mCall;
+    private AsyncEvent mEvent;
 
-    public Dispatcher() {
+    public EventExecutor() {
     }
 
     @Override
@@ -36,14 +37,14 @@ public class Dispatcher extends Thread implements IComponent {
     @Override
     public void run() {
         while (!isInterrupted() && !mReleased) {
-            AsyncCall call = null;
+            AsyncEvent call = null;
             try {
                 call = mTasks.take();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             if (call != null) {
-                mCall = call;
+                mEvent = call;
                 try {
                     call.run();
                 } catch (Exception e) {
@@ -60,12 +61,12 @@ public class Dispatcher extends Thread implements IComponent {
         }
     }
 
-    public boolean enqueue(AsyncCall call) {
-        if (call == null || mCall.equals(call) || mTasks.contains(call)) {
+    public boolean submit(AsyncEvent event) {
+        if (event == null || mEvent.equals(event) || mTasks.contains(event)) {
             return false;
         }
         try {
-            mTasks.put(call);
+            mTasks.put(event);
             return true;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -73,22 +74,22 @@ public class Dispatcher extends Thread implements IComponent {
         return false;
     }
 
-    public void finish(AsyncCall call) {
-        if (call == null || mCall == null) {
+    public void finish(AsyncEvent event, int reason) {
+        if (event == null || mEvent == null) {
             return;
         }
-        if (mCall.equals(call)) {
+        if (mEvent.equals(event) && !event.isFinished()) {
             synchronized (mTasks) {
-                call.onFinish();
+                event.onFinish(reason);
+                mEvent = null;
                 mTasks.notifyAll();
-                mCall = null;
             }
         }
     }
 
     public void abortAll() {
-        for (final AsyncCall task : mTasks) {
-            finish(task);
+        for (final AsyncEvent event : mTasks) {
+            finish(event, AsyncEvent.REASON_ABORTED);
         }
     }
 }

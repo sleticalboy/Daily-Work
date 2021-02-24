@@ -10,17 +10,12 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.binlee.sample.event.AsyncCall;
+import com.binlee.sample.event.AsyncEvent;
 import com.binlee.sample.event.ConnectEvent;
-import com.binlee.sample.event.DisconnectEvent;
 import com.binlee.sample.event.IEvent;
 import com.binlee.sample.event.ScanEvent;
 import com.binlee.sample.util.ConfigAssigner;
-import com.binlee.sample.util.Dispatcher;
-import com.binlee.sample.util.EventHandler;
-import com.binlee.sample.util.EventObserver;
 import com.binlee.sample.util.Glog;
-import com.binlee.sample.util.InjectableHandler;
 import com.binlee.sample.view.IView;
 import com.binlee.sample.view.ViewProxy;
 
@@ -33,7 +28,7 @@ import java.lang.reflect.Method;
  * @author binlee sleticalboy@gmail.com
  */
 public final class ArchManager implements IArchManager, Handler.Callback,
-        EventHandler.OnUnhandledCallback {
+        EventDispatcher.OnUnhandledCallback {
 
     private static final String TAG = "ArchManager";
 
@@ -41,8 +36,8 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     private final Handler mWorker;
     private final DataSource mSource;
     private Context mContext;
-    private EventHandler mEventHandler;
-    private Dispatcher mDispatcher;
+    private EventDispatcher mEventDispatcher;
+    private EventExecutor mEventExecutor;
     private EventObserver mObserver;
     private BleScanner mScanner;
     private ConfigAssigner mAssigner;
@@ -59,9 +54,9 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     public void onCreate(Context context) {
         mContext = context;
 
-        initEventHandlers();
+        initDispatchers();
 
-        mDispatcher = new Dispatcher();
+        mEventExecutor = new EventExecutor();
         mObserver = new EventObserver(context, mWorker);
         mScanner = new BleScanner(context, mWorker);
     }
@@ -73,19 +68,19 @@ public final class ArchManager implements IArchManager, Handler.Callback,
 
     @Override
     public void postEvent(IEvent event) {
-        mEventHandler.handleEvent(event);
+        mEventDispatcher.deliver(event);
     }
 
     @Override
     public void onStart() {
         mObserver.onStart();
-        mDispatcher.onStart();
+        mEventExecutor.onStart();
     }
 
     @Override
     public void onDestroy() {
         mObserver.onDestroy();
-        mDispatcher.onDestroy();
+        mEventExecutor.onDestroy();
     }
 
     @Override
@@ -133,7 +128,7 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     }
 
     private void onConnectStatusChanged(ConnectEvent event, int status) {
-        if (status == AsyncCall.STATUS_CONFIG_OVER) {
+        if (status == AsyncEvent.STATUS_CONFIG_OVER) {
             //
         }
     }
@@ -218,24 +213,24 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     }
 
     @Override
-    public void onUnhandledEvent(IEvent event) {
+    public void onUnhandled(IEvent event) {
         Glog.w(TAG, "onUnhandledEvent() " + event);
     }
 
-    private void initEventHandlers() {
-        EventHandler handler = new DisconnectEventHandler();
+    private void initDispatchers() {
+
+        EventDispatcher handler = new AsyncEventDispatcher();
         handler.setOnUnhandledCallback(this);
-        handler = new ConnectEventHandler(handler);
+
+        handler = new ScanEventDispatcher(handler);
         handler.setOnUnhandledCallback(this);
-        handler = new ScanEventHandler(handler);
-        handler.setOnUnhandledCallback(this);
-        mEventHandler = handler;
+        mEventDispatcher = handler;
     }
 
     // 处理扫描事件
-    private final class ScanEventHandler extends EventHandler {
+    private final class ScanEventDispatcher extends EventDispatcher {
 
-        private ScanEventHandler(EventHandler next) {
+        private ScanEventDispatcher(EventDispatcher next) {
             super(next);
         }
 
@@ -247,38 +242,28 @@ public final class ArchManager implements IArchManager, Handler.Callback,
         }
     }
 
-    // 处理连接事件
-    private final class ConnectEventHandler extends EventHandler {
+    // 处理连接 && 断开事件
+    private final class AsyncEventDispatcher extends EventDispatcher {
 
-        private ConnectEventHandler(EventHandler next) {
-            super(next);
-        }
-
-        @Override
-        public boolean onProcess(IEvent event) {
-            if (!(event instanceof ConnectEvent)) return false;
-            ConnectEvent call = (ConnectEvent) event;
-            call.setContext(mContext);
-            call.setHandler(mWorker);
-            if (mDispatcher.enqueue(call)) {
-                Glog.w(TAG, "enqueue " + call + " success");
-            }
-            return true;
-        }
-    }
-
-    // 处理断开事件
-    private final class DisconnectEventHandler extends EventHandler {
-
-        private DisconnectEventHandler() {
+        public AsyncEventDispatcher() {
             super(null);
         }
 
         @Override
-        public boolean onProcess(IEvent event) {
-            if (!(event instanceof DisconnectEvent)) return false;
-            mWorker.post(((DisconnectEvent) event));
+        protected boolean onProcess(IEvent event) {
+            if (!(event instanceof AsyncEvent)) return false;
+
+            execEvent(((AsyncEvent) event));
+
             return true;
+        }
+
+        private void execEvent(AsyncEvent event) {
+            event.setContext(mContext);
+            event.setHandler(mWorker);
+            if (mEventExecutor.submit(event) && event instanceof ConnectEvent) {
+                // start fast loop read
+            }
         }
     }
 }

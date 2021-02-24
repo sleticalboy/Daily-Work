@@ -19,7 +19,7 @@ import java.util.UUID;
  *
  * @author binlee sleticalboy@gmail.com
  */
-public final class ConnectEvent extends BluetoothGattCallback implements IEvent, AsyncCall {
+public final class ConnectEvent extends BluetoothGattCallback implements AsyncEvent {
 
     private final BluetoothDevice mTarget;
     @Type
@@ -56,7 +56,7 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
     }
 
     @Override
-    public void onFinish() {
+    public void onFinish(int reason) {
         mFinished = true;
         release();
     }
@@ -92,7 +92,7 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
             return;
         }
         reportGattStatus(status);
-        updateConnectStatus(STATUS_CONNECTING);
+        reportConnectStatus(STATUS_CONNECTING);
     }
 
     @Override
@@ -128,9 +128,9 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
             return;
         }
         // 一个属性写成功后再写下一个，知道全部写完
-        updateConnectStatus(STATUS_CONFIG_START);
-        updateConnectStatus(STATUS_CONFIG_SECOND);
-        updateConnectStatus(STATUS_CONFIG_OVER);
+        reportConnectStatus(STATUS_CONFIG_START);
+        reportConnectStatus(STATUS_CONFIG_SECOND);
+        reportConnectStatus(STATUS_CONFIG_OVER);
     }
 
     public void connectGatt() {
@@ -147,7 +147,7 @@ public final class ConnectEvent extends BluetoothGattCallback implements IEvent,
         return mGatt.writeCharacteristic(bgc);
     }
 
-    private void updateConnectStatus(int status) {
+    private void reportConnectStatus(int status) {
         mStatus = status;
         mHandler.obtainMessage(IWhat.CONNECT_STATUS_CHANGE, status, 0, this).sendToTarget();
     }

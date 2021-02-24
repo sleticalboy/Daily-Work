@@ -9,7 +9,7 @@ import android.os.Handler;
  *
  * @author binlee sleticalboy@gmail.com
  */
-public interface AsyncCall extends Runnable, IEvent {
+public interface AsyncEvent extends Runnable, IEvent {
 
     // connect status
     int STATUS_CONNECTED = 0x01;
@@ -28,8 +28,6 @@ public interface AsyncCall extends Runnable, IEvent {
     int REASON_ABORTED = 0x05;
 
     BluetoothDevice target();
-
-    void onFinish();
 
     void onFinish(int reason);
 

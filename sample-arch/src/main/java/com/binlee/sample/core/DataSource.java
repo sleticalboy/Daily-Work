@@ -1,20 +1,19 @@
 package com.binlee.sample.core;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 import android.os.Handler;
 import android.util.ArrayMap;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
-import com.binlee.sample.event.AsyncCall;
+import com.binlee.sample.event.AsyncEvent;
 import com.binlee.sample.util.Glog;
 
 import java.lang.reflect.Field;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -106,12 +106,30 @@ public final class DataSource {
     }
 
     public void fetchCaches(Handler callback) {
+        Set<BluetoothDevice> devices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
+        if (devices == null || devices.size() == 0) return;
+        List<Device> list = new ArrayList<>();
+        for (final BluetoothDevice ble : devices) {
+            CacheEntry entry = getCache(ble.getAddress());
+            if (entry == null) continue;
+            list.add(new Device(ble));
+        }
+        if (callback != null) {
+            callback.obtainMessage(IWhat.CACHE_FETCHED, list).sendToTarget();
+        }
+    }
+
+    private CacheEntry getCache(String address) {
+        for (final CacheEntry entry : mEntries) {
+            if (address.equals(entry.mac)) return entry;
+        }
+        return null;
     }
 
     public static final class Record {
 
         public final Device mDevice;
-        public AsyncCall mCall;
+        public AsyncEvent mCall;
 
         public Record(Device device) {
             mDevice = device;
@@ -148,8 +166,8 @@ public final class DataSource {
 
         private static final int DB_VERSION = 1;
         private static final String DB_NAME = "arch-settings.db";
-        private static Class<?>[] TABLE_CLASSES = {CacheEntry.class};
-        private static Map<Class<?>, TableInfo> sTables = new ArrayMap<>();
+        private static final Class<?>[] TABLE_CLASSES = {CacheEntry.class};
+        private static final Map<Class<?>, TableInfo> TABLES = new ArrayMap<>();
 
         public Database(@Nullable Context context) {
             super(context, DB_NAME, null, DB_VERSION);
@@ -174,7 +192,7 @@ public final class DataSource {
         }
 
         public <T> List<T> queryAll(Class<T> clazz) {
-            TableInfo info = sTables.get(clazz);
+            TableInfo info = TABLES.get(clazz);
             if (info == null) throw new IllegalStateException("tables are null");
             try (Cursor c = getReadableDatabase().rawQuery("SELECT * FROM " + info.name, null)) {
                 List<T> list = new ArrayList<>();
@@ -193,7 +211,7 @@ public final class DataSource {
         }
 
         public <T> void update(T obj) {
-            TableInfo info = sTables.get(obj.getClass());
+            TableInfo info = TABLES.get(obj.getClass());
             if (info == null) return;
             try {
                 long id = getWritableDatabase().insert(info.name, null, objToValues(obj));
@@ -203,14 +221,14 @@ public final class DataSource {
         }
 
         public <T> void delete(T obj) {
-            TableInfo info = sTables.get(obj.getClass());
+            TableInfo info = TABLES.get(obj.getClass());
             if (info == null) return;
             int id = getWritableDatabase().delete(info.name, "", new String[]{});
         }
 
         private static void parseTables() {
             for (final Class<?> clazz : TABLE_CLASSES) {
-                TableInfo info = sTables.get(clazz);
+                TableInfo info = TABLES.get(clazz);
                 if (info != null) continue;
                 Table table = clazz.getDeclaredAnnotation(Table.class);
                 if (table == null) throw new IllegalArgumentException("has no @Table annotation");
@@ -220,7 +238,7 @@ public final class DataSource {
                     if (column == null) continue;
                     columns.add(Pair.create(field, column));
                 }
-                sTables.put(clazz, new TableInfo(table.name(), columns));
+                TABLES.put(clazz, new TableInfo(table.name(), columns));
             }
         }
 
@@ -232,7 +250,7 @@ public final class DataSource {
 
         private static ContentValues objToValues(Object obj) throws IllegalAccessException {
             if (obj == null) return null;
-            TableInfo info = sTables.get(obj.getClass());
+            TableInfo info = TABLES.get(obj.getClass());
             if (info == null) return null;
             ContentValues cv = new ContentValues(info.columns.size());
             for (final Pair<Field, Column> p : info.columns) {
@@ -253,7 +271,7 @@ public final class DataSource {
 
         private static <T> T cursorToObj(Cursor c, Class<T> clazz) throws NoSuchMethodException,
                 IllegalAccessException, InvocationTargetException, InstantiationException {
-            TableInfo info = sTables.get(clazz);
+            TableInfo info = TABLES.get(clazz);
             if (info == null) return null;
             T obj = clazz.getDeclaredConstructor().newInstance();
             for (final Pair<Field, Column> p : info.columns) {

@@ -7,12 +7,13 @@ import android.bluetooth.BluetoothDevice;
  *
  * @author binlee sleticalboy@gmail.com
  */
-public final class DisconnectEvent implements IEvent, AsyncCall {
+public final class DisconnectEvent implements AsyncEvent {
 
     private final BluetoothDevice mTarget;
     @Type
     private final int mType;
     private boolean mFinished;
+    private int mStatus;
 
     public DisconnectEvent(BluetoothDevice target, @Type int type) {
         mTarget = target;
@@ -25,7 +26,7 @@ public final class DisconnectEvent implements IEvent, AsyncCall {
     }
 
     @Override
-    public void onFinish() {
+    public void onFinish(int reason) {
         mFinished = true;
     }
 
@@ -42,14 +43,15 @@ public final class DisconnectEvent implements IEvent, AsyncCall {
     @Override
     public void run() {
         mFinished = true;
-        if (mType == CLICK_DISCONNECT) {
-            //
-        } else if (mType == UNBIND_DISCONNECT) {
-            //
-        } else if (mType == CONFIG_DISCONNECT) {
-            //
-        } else if (mType == OTHER_DISCONNECT) {
-            //
-        }
+        disconnectNrf();
+        mStatus = mStatus == STATUS_CONNECTED ? STATUS_DISCONNECTING : STATUS_NOT_CONNECTED;
+    }
+
+    public void setStatus(int status) {
+        mStatus = status;
+    }
+
+    private void disconnectNrf() {
+        //
     }
 }

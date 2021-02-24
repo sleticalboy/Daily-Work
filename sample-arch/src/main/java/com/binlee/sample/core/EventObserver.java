@@ -1,4 +1,4 @@
-package com.binlee.sample.util;
+package com.binlee.sample.core;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;

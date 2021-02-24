@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 
 import com.binlee.sample.event.IEvent;
 import com.binlee.sample.event.ScanEvent;
-import com.binlee.sample.util.InjectableHandler;
 import com.binlee.sample.util.Glog;
 
 import java.util.ArrayList;

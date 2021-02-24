@@ -7,12 +7,12 @@ import com.binlee.sample.event.IEvent;
  *
  * @author binlee sleticalboy@gmail.com
  */
-public abstract class EventHandler {
+public abstract class EventDispatcher {
 
-    private final EventHandler mNext;
+    private final EventDispatcher mNext;
     private OnUnhandledCallback mCallback;
 
-    public EventHandler(EventHandler next) {
+    public EventDispatcher(EventDispatcher next) {
         mNext = next;
     }
 
@@ -20,23 +20,24 @@ public abstract class EventHandler {
         mCallback = callback;
     }
 
-    public final boolean handleEvent(IEvent event) {
-        if (onProcess(event)) {
-            return true;
-        }
-        if (mNext != null && mNext.handleEvent(event)) {
-            return true;
+    public final void deliver(IEvent event) {
+
+        EventDispatcher next = this;
+        while (next != null) {
+            if (next.onProcess(event)) {
+                return;
+            }
+            next = next.mNext;
         }
         if (mCallback != null) {
-            mCallback.onUnhandledEvent(event);
+            mCallback.onUnhandled(event);
         }
-        return false;
     }
 
     protected abstract boolean onProcess(IEvent event);
 
     public interface OnUnhandledCallback {
 
-        void onUnhandledEvent(IEvent event);
+        void onUnhandled(IEvent event);
     }
 }
