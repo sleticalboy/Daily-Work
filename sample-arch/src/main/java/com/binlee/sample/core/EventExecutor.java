@@ -1,62 +1,71 @@
 package com.binlee.sample.core;
 
 import com.binlee.sample.event.AsyncEvent;
+import com.binlee.sample.util.Glog;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created on 21-2-4.
  *
  * @author binlee sleticalboy@gmail.com
  */
-public class EventExecutor extends Thread implements IComponent {
+public final class EventExecutor extends Thread implements IComponent {
 
     private static final String TAG = "Dispatcher";
 
     private static final int CAPACITY = 2;
 
     private final ArrayBlockingQueue<AsyncEvent> mTasks = new ArrayBlockingQueue<>(CAPACITY);
-    private boolean mReleased = false;
+    private final AtomicBoolean mReleased;
     private AsyncEvent mEvent;
 
     public EventExecutor() {
+        mReleased = new AtomicBoolean(false);
     }
 
     @Override
     public void onStart() {
-        mReleased = false;
-        super.start();
+        if (!mReleased.getAndSet(false)) {
+            super.start();
+        }
     }
 
     @Override
     public void onDestroy() {
+        mReleased.getAndSet(true);
         interrupt();
-        mReleased = true;
     }
 
     @Override
     public void run() {
-        while (!isInterrupted() && !mReleased) {
-            AsyncEvent call = null;
+        while (!mReleased.get() && !isInterrupted()) {
+            AsyncEvent event = null;
             try {
-                call = mTasks.take();
+                event = mTasks.take();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Glog.e(TAG, "run() take error.", e);
             }
-            if (call != null) {
-                mEvent = call;
+            if (event == null) continue;
+            Glog.v(TAG, "run() take and exec " + event + " from queue");
+            mEvent = event;
+            try {
+                event.run();
+            } catch (Throwable e) {
+                Glog.e(TAG, "exec event " + event.action() + " error");
+            }
+            Glog.v(TAG, "run() wait " + event.action() + " 40s for timeout...");
+            synchronized (mTasks) {
                 try {
-                    call.run();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    mTasks.wait(40000L);
+                } catch (InterruptedException e) {
+                    Glog.e(TAG, "queue wait error.", e);
                 }
-                synchronized (mTasks) {
-                    try {
-                        mTasks.wait(40000L);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+            }
+            if (event.equals(mEvent) && !event.isFinished()) {
+                Glog.v(TAG, "run() after 40s, " + event.action() + " timeout...");
+                event.onFinish(AsyncEvent.REASON_TIMEOUT);
             }
         }
     }
@@ -69,16 +78,14 @@ public class EventExecutor extends Thread implements IComponent {
             mTasks.put(event);
             return true;
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Glog.e(TAG, "submit() error.", e);
         }
         return false;
     }
 
     public void finish(AsyncEvent event, int reason) {
-        if (event == null || mEvent == null) {
-            return;
-        }
-        if (mEvent.equals(event) && !event.isFinished()) {
+        if (event == null || mEvent == null) return;
+        if (event.equals(mEvent) && !event.isFinished()) {
             synchronized (mTasks) {
                 event.onFinish(reason);
                 mEvent = null;
@@ -88,8 +95,7 @@ public class EventExecutor extends Thread implements IComponent {
     }
 
     public void abortAll() {
-        for (final AsyncEvent event : mTasks) {
-            finish(event, AsyncEvent.REASON_ABORTED);
-        }
+        finish(mEvent, AsyncEvent.REASON_ABORTED);
+        mTasks.clear();
     }
 }

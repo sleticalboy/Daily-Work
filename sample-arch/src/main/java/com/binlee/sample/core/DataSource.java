@@ -69,9 +69,7 @@ public final class DataSource {
     public interface InitCallback {
 
         void onCompleted(boolean hasCache);
-
     }
-
     public static DataSource get() {
         return Holder.sModel;
     }
@@ -93,11 +91,15 @@ public final class DataSource {
         mRecords.add(record);
     }
 
-    public Record getRecord(BluetoothDevice ble) {
+    public Record getRecord(String mac) {
         for (final Record r : mRecords) {
-            if (r.mDevice.target().equals(ble)) return r;
+            if (r.mDevice.target().getAddress().equals(mac)) return r;
         }
         return null;
+    }
+
+    public boolean hasCache() {
+        return mEntries.size() != 0;
     }
 
     public List<CacheEntry> getCaches() {
@@ -129,7 +131,7 @@ public final class DataSource {
     public static final class Record {
 
         public final Device mDevice;
-        public AsyncEvent mCall;
+        public AsyncEvent mEvent;
 
         public Record(Device device) {
             mDevice = device;

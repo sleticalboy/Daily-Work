@@ -16,12 +16,7 @@ public abstract class EventDispatcher {
         mNext = next;
     }
 
-    public final void setOnUnhandledCallback(OnUnhandledCallback callback) {
-        mCallback = callback;
-    }
-
     public final void deliver(IEvent event) {
-
         EventDispatcher next = this;
         while (next != null) {
             if (next.onProcess(event)) {
@@ -32,6 +27,10 @@ public abstract class EventDispatcher {
         if (mCallback != null) {
             mCallback.onUnhandled(event);
         }
+    }
+
+    public final void setOnUnhandledCallback(OnUnhandledCallback callback) {
+        mCallback = callback;
     }
 
     protected abstract boolean onProcess(IEvent event);

@@ -29,9 +29,12 @@ public interface AsyncEvent extends Runnable, IEvent {
 
     BluetoothDevice target();
 
+    boolean isFinished();
+
     void onFinish(int reason);
 
-    boolean isFinished();
+    @Override
+    int type();
 
     @Override
     void run();
@@ -43,55 +46,21 @@ public interface AsyncEvent extends Runnable, IEvent {
     }
 
     default String getStatus(int status) {
-        String format;
-        switch (status) {
-            default:
-                format = "Unknown status(%02x)";
-                break;
-            case STATUS_CONNECTED:
-                format = "STATUS_CONNECTED(%02x)";
-                break;
-            case STATUS_NOT_CONNECTED:
-                format = "STATUS_NOT_CONNECTED(%02x)";
-                break;
-            case STATUS_CONNECTING:
-                format = "STATUS_CONNECTING(%02x)";
-                break;
-            case STATUS_DISCONNECTING:
-                format = "STATUS_DISCONNECTING(%02x)";
-                break;
-            case STATUS_CONFIG_START:
-                format = "STATUS_CONFIG_START(%02x)";
-                break;
-            case STATUS_CONFIG_OVER:
-                format = "STATUS_CONFIG_OVER(%02x)";
-                break;
-        }
-        return String.format(format, status);
+        if (status == STATUS_CONNECTED) return String.format("STATUS_CONNECTED(%02x)", status);
+        if (status == STATUS_NOT_CONNECTED) return String.format("STATUS_NOT_CONNECTED(%02x)", status);
+        if (status == STATUS_CONNECTING) return String.format("STATUS_CONNECTING(%02x)", status);
+        if (status == STATUS_DISCONNECTING) return String.format("STATUS_DISCONNECTING(%02x)", status);
+        if (status == STATUS_CONFIG_START) return String.format("STATUS_CONFIG_START(%02x)", status);
+        if (status == STATUS_CONFIG_OVER) return String.format("STATUS_CONFIG_OVER(%02x)", status);
+        return String.format("Unknown status(%02x)", status);
     }
 
     default String getReason(int reason) {
-        String format;
-        switch (reason) {
-            default:
-                format = "Unknown reason(%02x)";
-                break;
-            case REASON_CONNECT_DONE:
-                format = "REASON_CONNECT_DONE(%02x)";
-                break;
-            case REASON_DISCONNECT_DONE:
-                format = "REASON_DISCONNECT_DONE(%02x)";
-                break;
-            case REASON_TIMEOUT:
-                format = "REASON_TIMEOUT(%02x)";
-                break;
-            case REASON_FAILED:
-                format = "REASON_FAILED(%02x)";
-                break;
-            case REASON_ABORTED:
-                format = "REASON_ABORTED(%02x)";
-                break;
-        }
-        return String.format(format, reason);
+        if (reason == REASON_CONNECT_DONE) return String.format("REASON_CONNECT_DONE(%02x)", reason);
+        if (reason == REASON_DISCONNECT_DONE) return String.format("REASON_DISCONNECT_DONE(%02x)", reason);
+        if (reason == REASON_TIMEOUT) return String.format("REASON_TIMEOUT(%02x)", reason);
+        if (reason == REASON_FAILED) return String.format("REASON_FAILED(%02x)", reason);
+        if (reason == REASON_ABORTED) return String.format("REASON_ABORTED(%02x)", reason);
+        return String.format("Unknown status(%02x)", reason);
     }
 }

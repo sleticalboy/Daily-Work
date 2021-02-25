@@ -24,4 +24,5 @@ public interface IWhat {
     int TRACE_RESULT = 0x0c;
     int CACHE_FETCHED = 0x0d;
     int LIFECYCLE_CHANGE = 0x0e;
+    int POST_EVENT = 0x0f;
 }

@@ -12,9 +12,9 @@ import androidx.annotation.NonNull;
 
 import com.binlee.sample.event.AsyncEvent;
 import com.binlee.sample.event.ConnectEvent;
+import com.binlee.sample.event.DisconnectEvent;
 import com.binlee.sample.event.IEvent;
 import com.binlee.sample.event.ScanEvent;
-import com.binlee.sample.util.ConfigAssigner;
 import com.binlee.sample.util.Glog;
 import com.binlee.sample.view.IView;
 import com.binlee.sample.view.ViewProxy;
@@ -36,16 +36,19 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     private final Handler mWorker;
     private final DataSource mSource;
     private Context mContext;
-    private EventDispatcher mEventDispatcher;
+    // IComponents
     private EventExecutor mEventExecutor;
     private EventObserver mObserver;
+    private NrfStateReader mStateReader;
+    // other component
+    private EventDispatcher mEventDispatcher;
     private BleScanner mScanner;
     private ConfigAssigner mAssigner;
 
     public ArchManager() {
-        mSource = DataSource.get();
         HandlerThread thread = new HandlerThread(TAG);
         thread.start();
+        mSource = DataSource.get();
         mWorker = new InjectableHandler(thread.getLooper(), this);
         mViewProxy = new ViewProxy();
     }
@@ -55,10 +58,9 @@ public final class ArchManager implements IArchManager, Handler.Callback,
         mContext = context;
 
         initDispatchers();
+        initComponents();
 
-        mEventExecutor = new EventExecutor();
-        mObserver = new EventObserver(context, mWorker);
-        mScanner = new BleScanner(context, mWorker);
+        mScanner = new BleScanner(mContext, mWorker);
     }
 
     @Override
@@ -68,7 +70,7 @@ public final class ArchManager implements IArchManager, Handler.Callback,
 
     @Override
     public void postEvent(IEvent event) {
-        mEventDispatcher.deliver(event);
+        mWorker.obtainMessage(IWhat.POST_EVENT, event).sendToTarget();
     }
 
     @Override
@@ -94,6 +96,12 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     @Override
     public void detachView() {
         mViewProxy.setTarget(null);
+        mEventExecutor.abortAll();
+    }
+
+    @Override
+    public void onUnhandled(IEvent event) {
+        Glog.w(TAG, "onUnhandledEvent() " + event);
     }
 
     @Override
@@ -123,8 +131,16 @@ public final class ArchManager implements IArchManager, Handler.Callback,
             case IWhat.CONNECT_STATUS_CHANGE:
                 onConnectStatusChanged(((ConnectEvent) msg.obj), msg.arg1);
                 return true;
+            case IWhat.POST_EVENT:
+                onPostEvent(((IEvent) msg.obj));
+                return true;
         }
         return false;
+    }
+
+    private void onPostEvent(IEvent event) {
+        if (event instanceof AsyncEvent || !prepareEvent(((AsyncEvent) event)))  return;
+        mEventDispatcher.deliver(event);
     }
 
     private void onConnectStatusChanged(ConnectEvent event, int status) {
@@ -134,15 +150,13 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     }
 
     private void onGattStartConfig(BluetoothDevice ble) {
-        DataSource.Record r = mSource.getRecord(ble);
-        if (r != null && r.mCall instanceof ConnectEvent) {
-            if (mAssigner == null) {
-                mAssigner = new ConfigAssigner();
-            }
-            if (mAssigner.assign(r.mDevice)) {
-                if (((ConnectEvent) r.mCall).startConfig(0, "a00248")) {
-                    Glog.v(TAG, "onGattStartConfig() ...");
-                }
+        DataSource.Record r = mSource.getRecord(ble.getAddress());
+        if (r == null || !(r.mEvent instanceof ConnectEvent)) return;
+
+        if (mAssigner == null) mAssigner = new ConfigAssigner();
+        if (mAssigner.assign(r.mDevice)) {
+            if (((ConnectEvent) r.mEvent).startConfig(0, "a00248")) {
+                Glog.v(TAG, "onGattStartConfig() ...");
             }
         }
     }
@@ -152,23 +166,14 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     }
 
     private void onHidProfileChanged(BluetoothDevice ble, int state) {
-        if (state != BluetoothProfile.STATE_CONNECTED || ble == null) {
-            return;
-        }
-        DataSource.Record r = mSource.getRecord(ble);
+        if (state != BluetoothProfile.STATE_CONNECTED || ble == null) return;
         String name = ble.getName();
         int type = ble.getType();
-        if (type != BluetoothDevice.DEVICE_TYPE_LE) {
-            return;
-        }
-        if (r == null) {
-            // a new device
-            mSource.put(r = new DataSource.Record(new DataSource.Device(ble)));
-            r.mCall = new ConnectEvent(ble, IEvent.REVERSED_CONNECT);
-        } else {
-            if (r.mCall instanceof ConnectEvent) {
-                ((ConnectEvent) r.mCall).connectGatt();
-            }
+        if (type != BluetoothDevice.DEVICE_TYPE_LE) return;
+        DataSource.Record r = mSource.getRecord(ble.getAddress());
+        if (r == null || r.mEvent == null) return;
+        if (r.mEvent instanceof ConnectEvent) {
+            ((ConnectEvent) r.mEvent).connectGatt();
         }
     }
 
@@ -205,20 +210,20 @@ public final class ArchManager implements IArchManager, Handler.Callback,
         } else {
             return;
         }
-        postEvent(new ConnectEvent(ble, type));
+        onPostEvent(new ConnectEvent(ble, type));
     }
 
     private void onScanFailed(String reason, int error) {
         Glog.w(TAG, "onScanFailed() " + reason + ", " + error);
     }
 
-    @Override
-    public void onUnhandled(IEvent event) {
-        Glog.w(TAG, "onUnhandledEvent() " + event);
+    private void initComponents() {
+        mEventExecutor = new EventExecutor();
+        mObserver = new EventObserver(mContext, mWorker);
+        mStateReader = new NrfStateReader(this);
     }
 
     private void initDispatchers() {
-
         EventDispatcher handler = new AsyncEventDispatcher();
         handler.setOnUnhandledCallback(this);
 
@@ -226,6 +231,24 @@ public final class ArchManager implements IArchManager, Handler.Callback,
         handler.setOnUnhandledCallback(this);
         mEventDispatcher = handler;
     }
+
+    private boolean prepareEvent(AsyncEvent event) {
+        DataSource.Record r = mSource.getRecord(event.target().getAddress());
+        if (r != null && event.equals(r.mEvent)) return false;
+
+        if (r == null) mSource.put(new DataSource.Record(new DataSource.Device(event.target())));
+
+        if (event instanceof DisconnectEvent) {
+            setFlags();
+        } else if (event instanceof ConnectEvent) {
+            setFlags();
+        }
+        event.setContext(mContext);
+        event.setHandler(mWorker);
+        return true;
+    }
+
+    private void setFlags() {}
 
     // 处理扫描事件
     private final class ScanEventDispatcher extends EventDispatcher {
@@ -252,17 +275,14 @@ public final class ArchManager implements IArchManager, Handler.Callback,
         @Override
         protected boolean onProcess(IEvent event) {
             if (!(event instanceof AsyncEvent)) return false;
-
             execEvent(((AsyncEvent) event));
-
             return true;
         }
 
         private void execEvent(AsyncEvent event) {
-            event.setContext(mContext);
-            event.setHandler(mWorker);
             if (mEventExecutor.submit(event) && event instanceof ConnectEvent) {
                 // start fast loop read
+                mStateReader.startIfNeeded();
             }
         }
     }

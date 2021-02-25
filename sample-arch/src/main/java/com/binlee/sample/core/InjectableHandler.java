@@ -67,7 +67,7 @@ public class InjectableHandler extends android.os.Handler {
 
     @NonNull
     @Override
-    public String getMessageName(@NonNull Message msg) {
+    public final String getMessageName(@NonNull Message msg) {
         return WHAT_ARRAY.get(msg.what, String.format("no name for(0x%02x)", msg.what));
     }
 

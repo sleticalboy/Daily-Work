@@ -56,14 +56,17 @@ public final class ConnectEvent extends BluetoothGattCallback implements AsyncEv
     }
 
     @Override
-    public void onFinish(int reason) {
-        mFinished = true;
-        release();
+    public boolean isFinished() {
+        return mFinished;
     }
 
     @Override
-    public boolean isFinished() {
-        return mFinished;
+    public void onFinish(int reason) {
+        if (isFinished()) return;
+        releaseGatt();
+        mFinished = true;
+        mStatus = reason == REASON_CONNECT_DONE ? STATUS_CONNECTED : STATUS_NOT_CONNECTED;
+        reportConnectStatus(mStatus);
     }
 
     @Override
@@ -81,39 +84,27 @@ public final class ConnectEvent extends BluetoothGattCallback implements AsyncEv
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-        if (!target().equals(gatt.getDevice())) {
-            return;
-        }
+        if (!target().equals(gatt.getDevice())) return;
         if (status != BluetoothGatt.GATT_SUCCESS) {
             // status 8/19/22/133
             return;
         }
-        if (newState != BluetoothProfile.STATE_CONNECTED) {
-            return;
-        }
+        if (newState != BluetoothProfile.STATE_CONNECTED) return;
         reportGattStatus(status);
         reportConnectStatus(STATUS_CONNECTING);
     }
 
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-        if (!target().equals(gatt.getDevice())) {
-            return;
-        }
-        if (status != BluetoothGatt.GATT_SUCCESS) {
-            return;
-        }
+        if (!target().equals(gatt.getDevice())) return;
+        if (status != BluetoothGatt.GATT_SUCCESS) return;
     }
 
     @Override
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic bgc,
                                      int status) {
-        if (!target().equals(gatt.getDevice())) {
-            return;
-        }
-        if (status != BluetoothGatt.GATT_SUCCESS) {
-            return;
-        }
+        if (!target().equals(gatt.getDevice())) return;
+        if (status != BluetoothGatt.GATT_SUCCESS) return;
         // 当所有信息读取回来之后，再开始给对端写配置信息
         mHandler.obtainMessage(IWhat.GATT_START_CONFIG, target()).sendToTarget();
     }
@@ -121,12 +112,8 @@ public final class ConnectEvent extends BluetoothGattCallback implements AsyncEv
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic bgc,
                                       int status) {
-        if (!target().equals(gatt.getDevice())) {
-            return;
-        }
-        if (status != BluetoothGatt.GATT_SUCCESS) {
-            return;
-        }
+        if (!target().equals(gatt.getDevice())) return;
+        if (status != BluetoothGatt.GATT_SUCCESS) return;
         // 一个属性写成功后再写下一个，知道全部写完
         reportConnectStatus(STATUS_CONFIG_START);
         reportConnectStatus(STATUS_CONFIG_SECOND);
@@ -148,6 +135,7 @@ public final class ConnectEvent extends BluetoothGattCallback implements AsyncEv
     }
 
     private void reportConnectStatus(int status) {
+        // if (mStatus == status) return;
         mStatus = status;
         mHandler.obtainMessage(IWhat.CONNECT_STATUS_CHANGE, status, 0, this).sendToTarget();
     }
@@ -156,11 +144,10 @@ public final class ConnectEvent extends BluetoothGattCallback implements AsyncEv
         mHandler.obtainMessage(IWhat.GATT_STATUS_REPORTED, status, 0, this).sendToTarget();
     }
 
-    private void release() {
-        if (mGatt != null) {
-            mGatt.disconnect();
-            mGatt.close();
-            mGatt = null;
-        }
+    private void releaseGatt() {
+        if (mGatt == null) return;
+        mGatt.disconnect();
+        mGatt.close();
+        mGatt = null;
     }
 }

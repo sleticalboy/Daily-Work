@@ -1,4 +1,4 @@
-package com.binlee.sample.util;
+package com.binlee.sample.core;
 
 import com.binlee.sample.core.DataSource;
 
