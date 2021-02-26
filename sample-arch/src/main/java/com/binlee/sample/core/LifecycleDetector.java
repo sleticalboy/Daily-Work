@@ -48,12 +48,12 @@ public final class LifecycleDetector implements IComponent, Application.Activity
         mCb = new FragmentManager.FragmentLifecycleCallbacks() {
             @Override
             public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
-                mCallback.obtainMessage(IWhat.LIFECYCLE_CHANGE, 1).sendToTarget();
+                mCallback.obtainMessage(IWhat.LIFECYCLE_CHANGE, 1, 0).sendToTarget();
             }
 
             @Override
             public void onFragmentPaused(@NonNull FragmentManager fm, @NonNull Fragment f) {
-                mCallback.obtainMessage(IWhat.LIFECYCLE_CHANGE, 0).sendToTarget();
+                mCallback.obtainMessage(IWhat.LIFECYCLE_CHANGE, 0, 0).sendToTarget();
             }
         };
         ((FragmentActivity) activity).getSupportFragmentManager()

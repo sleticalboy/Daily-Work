@@ -25,5 +25,5 @@ public interface IArchManager {
 
     void attachView(IView view);
 
-    void detachView();
+    void detachView(IView view);
 }

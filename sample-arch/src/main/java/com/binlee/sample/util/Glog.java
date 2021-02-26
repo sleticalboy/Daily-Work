@@ -64,6 +64,10 @@ public final class Glog {
         }
     }
 
+    public static String wrapTag(String tag) {
+        return !tag.startsWith("Arch-") ? String.format("Arch-%s", tag) : tag;
+    }
+
     private static void log(String tag, String msg, int priority) {
         Log.println(priority, tag, msg);
     }

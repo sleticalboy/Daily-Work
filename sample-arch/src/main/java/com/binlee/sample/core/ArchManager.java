@@ -44,6 +44,8 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     private EventDispatcher mEventDispatcher;
     private BleScanner mScanner;
     private ConfigAssigner mAssigner;
+    // some flag
+    private boolean mForeground;
 
     public ArchManager() {
         HandlerThread thread = new HandlerThread(TAG);
@@ -87,15 +89,15 @@ public final class ArchManager implements IArchManager, Handler.Callback,
 
     @Override
     public void attachView(IView view) {
-        mViewProxy.setTarget(view);
+        mViewProxy.attach(view);
 
         // in worker handler
         mSource.fetchCaches(mWorker);
     }
 
     @Override
-    public void detachView() {
-        mViewProxy.setTarget(null);
+    public void detachView(IView view) {
+        mViewProxy.detach(view);
         mEventExecutor.abortAll();
     }
 
@@ -131,6 +133,9 @@ public final class ArchManager implements IArchManager, Handler.Callback,
             case IWhat.CONNECT_STATUS_CHANGE:
                 onConnectStatusChanged(((ConnectEvent) msg.obj), msg.arg1);
                 return true;
+            case IWhat.LIFECYCLE_CHANGE:
+                onLifecycleChanged(msg.arg1 == 1);
+                return true;
             case IWhat.POST_EVENT:
                 onPostEvent(((IEvent) msg.obj));
                 return true;
@@ -139,8 +144,12 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     }
 
     private void onPostEvent(IEvent event) {
-        if (event instanceof AsyncEvent || !prepareEvent(((AsyncEvent) event)))  return;
+        if (event instanceof AsyncEvent && !prepareEvent(((AsyncEvent) event))) return;
         mEventDispatcher.deliver(event);
+    }
+
+    private void onLifecycleChanged(boolean foreground) {
+        mForeground = foreground;
     }
 
     private void onConnectStatusChanged(ConnectEvent event, int status) {
@@ -248,7 +257,8 @@ public final class ArchManager implements IArchManager, Handler.Callback,
         return true;
     }
 
-    private void setFlags() {}
+    private void setFlags() {
+    }
 
     // 处理扫描事件
     private final class ScanEventDispatcher extends EventDispatcher {
