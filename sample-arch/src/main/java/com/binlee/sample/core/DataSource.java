@@ -6,12 +6,14 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.binlee.sample.event.AsyncEvent;
+import com.binlee.sample.model.ArchDevice;
 import com.binlee.sample.model.CacheEntry;
 import com.binlee.sample.model.Database;
 import com.binlee.sample.model.IDataSource;
 import com.binlee.sample.util.Glog;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -23,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public final class DataSource implements IDataSource {
 
-    private static final String TAG = "DataSource";
+    private static final String TAG = Glog.wrapTag("DataSource");
 
     private Database mDatabase;
     private final List<Record> mRecords = new CopyOnWriteArrayList<Record>() {
@@ -54,7 +56,7 @@ public final class DataSource implements IDataSource {
 
     public void init(Context context, InitCallback callback) {
         if (mDatabase != null) {
-            Glog.w(TAG, "init() aborted as init done");
+            Glog.w(TAG, "init() aborted as it has been initialized.");
             return;
         }
         mDatabase = new Database(context);
@@ -78,13 +80,26 @@ public final class DataSource implements IDataSource {
     }
 
     public void fetchCaches(Handler callback) {
-        Set<BluetoothDevice> devices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
-        if (devices == null || devices.size() == 0) return;
-        List<Device> list = new ArrayList<>();
-        for (final BluetoothDevice ble : devices) {
-            CacheEntry entry = getCache(ble.getAddress());
-            if (entry == null) continue;
-            list.add(new Device(ble));
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        Set<BluetoothDevice> devices = adapter == null ? null : adapter.getBondedDevices();
+        Glog.v(TAG, "fetchCaches() bonded devices: " + devices);
+        List<ArchDevice> list = new ArrayList<>();
+        if (devices == null || devices.size() == 0) {
+            // fake data 0B:1F:09:C3:3F:BC
+            list.add(new ArchDevice("0B:1F:09:C3:3F:BC"));
+            list.add(new ArchDevice("0B:1F:09:C3:3F:BD"));
+            list.add(new ArchDevice("0B:1F:09:C3:3F:BE"));
+            list.add(new ArchDevice("0B:1F:09:C3:3F:BF"));
+            list.add(new ArchDevice("0B:1F:09:C3:3F:C0"));
+            list.add(new ArchDevice("0B:1F:09:C3:3F:C1"));
+            list.add(new ArchDevice("0B:1F:09:C3:3F:C2"));
+            list.add(new ArchDevice("0B:1F:09:C3:3F:C3"));
+        } else {
+            for (final BluetoothDevice ble : devices) {
+                CacheEntry entry = getCache(ble.getAddress());
+                if (entry == null) continue;
+                list.add(new ArchDevice(ble));
+            }
         }
         if (callback != null) callback.obtainMessage(IWhat.CACHE_FETCHED, list).sendToTarget();
     }
@@ -103,7 +118,12 @@ public final class DataSource implements IDataSource {
 
     @Override
     public <T> List<T> queryAll(Class<T> clazz) {
-        return mDatabase.queryAll(clazz);
+        try {
+            return mDatabase.queryAll(clazz);
+        } catch (Throwable e) {
+            Glog.e(TAG, "queryAll() error.", e);
+        }
+        return Collections.emptyList();
     }
 
     @Override
@@ -118,24 +138,11 @@ public final class DataSource implements IDataSource {
 
     public static final class Record {
 
-        public final Device mDevice;
+        public final ArchDevice mDevice;
         public AsyncEvent mEvent;
 
-        public Record(Device device) {
+        public Record(ArchDevice device) {
             mDevice = device;
-        }
-    }
-
-    public static final class Device {
-
-        private final BluetoothDevice mTarget;
-
-        public Device(BluetoothDevice target) {
-            mTarget = target;
-        }
-
-        public BluetoothDevice target() {
-            return mTarget;
         }
     }
 }

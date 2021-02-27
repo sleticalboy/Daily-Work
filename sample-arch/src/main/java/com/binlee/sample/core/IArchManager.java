@@ -23,7 +23,7 @@ public interface IArchManager {
 
     void postEvent(IEvent event);
 
-    void attachView(IView view);
+    void attachView(IView view, boolean refresh);
 
-    void detachView(IView view);
+    void detachView(IView view, boolean abort);
 }

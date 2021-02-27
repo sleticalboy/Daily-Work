@@ -3,7 +3,7 @@ package com.binlee.sample.view;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.binlee.sample.core.DataSource;
+import com.binlee.sample.model.ArchDevice;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -34,6 +34,14 @@ public final class ViewProxy implements IView {
     }
 
     @Override
+    public void onDeviceChanged(ArchDevice device, boolean removed) {
+        if (mTargets.size() == 0) return;
+        MAIN_HANDLER.post(() -> {
+            for (final IView view : mTargets) view.onDeviceChanged(device, removed);
+        });
+    }
+
+    @Override
     public void onScanTimeout() {
         if (mTargets.size() == 0) return;
         MAIN_HANDLER.post(() -> {
@@ -50,7 +58,7 @@ public final class ViewProxy implements IView {
     }
 
     @Override
-    public void onClearInfo(DataSource.Device device, boolean remote) {
+    public void onClearInfo(ArchDevice device, boolean remote) {
         if (mTargets.size() == 0) return;
         MAIN_HANDLER.post(() -> {
             for (final IView view : mTargets) view.onClearInfo(device, remote);

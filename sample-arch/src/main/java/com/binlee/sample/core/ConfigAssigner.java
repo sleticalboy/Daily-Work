@@ -1,6 +1,6 @@
 package com.binlee.sample.core;
 
-import com.binlee.sample.core.DataSource;
+import com.binlee.sample.model.ArchDevice;
 
 /**
  * Created on 21-2-10.
@@ -13,7 +13,7 @@ public final class ConfigAssigner {
         //
     }
 
-    public boolean assign(DataSource.Device device) {
+    public boolean assign(ArchDevice device) {
         return false;
     }
 }

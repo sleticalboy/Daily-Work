@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.util.ArrayMap;
 import android.util.Pair;
 
@@ -32,7 +33,10 @@ public final class Database extends SQLiteOpenHelper {
     private static final String DB_NAME = "arch-settings.db";
     private static final Class<?>[] TABLE_CLASSES = {CacheEntry.class};
     private static final Map<Class<?>, TableInfo> TABLES = new ArrayMap<>();
-    static { parseTables(); }
+
+    static {
+        parseTables();
+    }
 
     private final List<CacheEntry> mEntries = new CopyOnWriteArrayList<CacheEntry>() {
         @Override
@@ -51,7 +55,11 @@ public final class Database extends SQLiteOpenHelper {
 
     private void init() {
         mEntries.clear();
-        mEntries.addAll(getCaches());
+        try {
+            mEntries.addAll(getCaches());
+        } catch (Exception e) {
+            Glog.e(TAG, "init() error.", e);
+        }
     }
 
     public List<CacheEntry> getCaches() {
@@ -125,20 +133,42 @@ public final class Database extends SQLiteOpenHelper {
         for (final Class<?> clazz : TABLE_CLASSES) {
             TableInfo info = TABLES.get(clazz);
             if (info != null) continue;
-            // Table table = clazz.getAnnotation(Table.class);
-            Table table = clazz.getDeclaredAnnotation(Table.class);
-            if (table == null) throw new IllegalArgumentException("has no @Table annotation");
+            Table table = getTable(clazz);
+            if (table == null) {
+                Glog.w(TAG, clazz.getName() + " has no @Table annotation.");
+                continue;
+            }
             final List<Pair<Field, Table.Column>> columns = new ArrayList<>();
             for (final Field field : clazz.getDeclaredFields()) {
-                Table.Column column = field.getDeclaredAnnotation(Table.Column.class);
-                if (column == null) continue;
+                Table.Column column = getColumn(field);
+                if (column == null) {
+                    Glog.w(TAG, field.getName() + " has no @Table.Column annotation.");
+                    continue;
+                }
                 columns.add(Pair.create(field, column));
             }
             TABLES.put(clazz, new TableInfo(table.name(), columns));
         }
+        Glog.d(TAG, "parseTables() " + TABLES);
+    }
+
+    private static Table.Column getColumn(Field field) {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                ? field.getDeclaredAnnotation(Table.Column.class)
+                : field.getAnnotation(Table.Column.class);
+    }
+
+    private static Table getTable(Class<?> clazz) {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                ? clazz.getDeclaredAnnotation(Table.class)
+                : clazz.getAnnotation(Table.class);
     }
 
     private static void createTables(SQLiteDatabase db) {
+        db.execSQL("create table if not exists cache_list(" +
+                "_id integer primary key autoincrement, " +
+                "_mac text, _pipe integer, _channels text" +
+                ");");
     }
 
     private static void dropTables(SQLiteDatabase db) {
@@ -195,6 +225,22 @@ public final class Database extends SQLiteOpenHelper {
         public TableInfo(String name, List<Pair<Field, Table.Column>> columns) {
             this.name = name;
             this.columns = columns;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder buffer = new StringBuilder();
+            buffer.append("TableInfo{").append("name='").append(name).append('\'');
+            buffer.append(", columns=");
+            if (columns == null || columns.size() == 0) {
+                buffer.append("{}");
+            } else {
+                for (final Pair<Field, Table.Column> p : columns) {
+                    buffer.append(p.first.getName()).append(":").append(p.second);
+                }
+            }
+            buffer.append('}');
+            return buffer.toString();
         }
     }
 }

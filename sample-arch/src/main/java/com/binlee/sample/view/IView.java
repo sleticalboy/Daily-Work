@@ -1,6 +1,6 @@
 package com.binlee.sample.view;
 
-import com.binlee.sample.core.DataSource;
+import com.binlee.sample.model.ArchDevice;
 
 /**
  * Created on 21-2-23.
@@ -9,9 +9,11 @@ import com.binlee.sample.core.DataSource;
  */
 public interface IView {
 
+    void onDeviceChanged(ArchDevice device, boolean removed);
+
     void onScanTimeout();
 
     void onConnectTimeout();
 
-    void onClearInfo(DataSource.Device device, boolean remote);
+    void onClearInfo(ArchDevice device, boolean remote);
 }

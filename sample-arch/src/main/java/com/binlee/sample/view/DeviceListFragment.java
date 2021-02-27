@@ -30,9 +30,9 @@ import java.util.List;
  *
  * @author binlee sleticalboy@gmail.com
  */
-public final class ListFragment extends Fragment implements ServiceConnection, IView {
+public final class DeviceListFragment extends Fragment implements ServiceConnection, IView {
 
-    private static final String TAG = Glog.wrapTag("ListFragment");
+    public static final String TAG = Glog.wrapTag("ListFragment");
     private static final String ARG_COLUMN_COUNT = "column-count";
 
     private final List<ArchDevice> mDevices;
@@ -44,12 +44,12 @@ public final class ListFragment extends Fragment implements ServiceConnection, I
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ListFragment() {
+    public DeviceListFragment() {
         mDevices = new ArrayList<>();
     }
 
-    public static ListFragment newInstance(int columnCount) {
-        ListFragment fragment = new ListFragment();
+    public static DeviceListFragment newInstance(int columnCount) {
+        DeviceListFragment fragment = new DeviceListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -59,7 +59,6 @@ public final class ListFragment extends Fragment implements ServiceConnection, I
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -93,14 +92,14 @@ public final class ListFragment extends Fragment implements ServiceConnection, I
     @Override
     public void onDetach() {
         super.onDetach();
-        if (mService != null) mService.detachView(this);
+        if (mService != null) mService.detachView(this, true);
         ArchService.unbind(getContext(), this);
     }
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         mService = ((ArchService.LocalBinder) service);
-        mService.attachView(this);
+        mService.attachView(this, true);
     }
 
     @Override
