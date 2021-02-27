@@ -71,8 +71,8 @@ public final class ArchCoreService extends Service {
             mService.attachView(view);
         }
 
-        public void detachView() {
-            mService.detachView();
+        public void detachView(IView view) {
+            mService.detachView(view);
         }
     }
 }
