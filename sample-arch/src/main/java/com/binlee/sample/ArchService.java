@@ -29,13 +29,13 @@ public final class ArchService extends Service {
 
     public static void onBootCompleted(Context context) {
         DataSource.get().init(context, hasCache -> {
-            // do stuff
             Glog.w(TAG, "onBootCompleted() hasCache: " + hasCache);
         });
 
         final Intent service = new Intent(context, ArchService.class)
                 .putExtra("_bootstrap", true);
         context.startService(service);
+        Glog.v(TAG, "onBootCompleted() " + context);
     }
 
     public ArchService() {

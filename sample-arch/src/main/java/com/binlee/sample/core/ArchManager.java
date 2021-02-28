@@ -39,8 +39,9 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     private final DataSource mSource;
     private Context mContext;
     // IComponents
+    private LifecycleDetector mDetector;
     private EventExecutor mEventExecutor;
-    private EventObserver mObserver;
+    private EventCenter mObserver;
     private NrfStateReader mStateReader;
     // other component
     private EventDispatcher mEventDispatcher;
@@ -52,8 +53,8 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     public ArchManager() {
         HandlerThread thread = new HandlerThread(TAG);
         thread.start();
-        mSource = DataSource.get();
         mWorker = new InjectableHandler(thread.getLooper(), this);
+        mSource = DataSource.get();
         mViewProxy = new ViewProxy();
     }
 
@@ -79,14 +80,18 @@ public final class ArchManager implements IArchManager, Handler.Callback,
 
     @Override
     public void onStart() {
+        mDetector.onStart();
         mObserver.onStart();
         mEventExecutor.onStart();
+        mStateReader.onStart();
     }
 
     @Override
     public void onDestroy() {
+        mDetector.onDestroy();
         mObserver.onDestroy();
         mEventExecutor.onDestroy();
+        mStateReader.onDestroy();
     }
 
     @Override
@@ -163,6 +168,7 @@ public final class ArchManager implements IArchManager, Handler.Callback,
 
     private void onLifecycleChanged(boolean foreground) {
         mForeground = foreground;
+        Glog.v(TAG, "onLifecycleChanged() foreground: " + foreground);
     }
 
     private void onConnectStatusChanged(ConnectEvent event, int status) {
@@ -240,8 +246,9 @@ public final class ArchManager implements IArchManager, Handler.Callback,
     }
 
     private void initComponents() {
+        mDetector = new LifecycleDetector(mContext, mWorker);
         mEventExecutor = new EventExecutor();
-        mObserver = new EventObserver(mContext, mWorker);
+        mObserver = new EventCenter(mContext, mWorker);
         mStateReader = new NrfStateReader(this);
     }
 

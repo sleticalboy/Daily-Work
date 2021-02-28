@@ -53,18 +53,19 @@ public final class BleScanner extends ScanCallback implements Handler.Callback {
             return;
         }
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (adapter == null) {
+            Glog.e(TAG, "start() aborted: Bluetooth binder is null.");
+            return;
+        }
+
         if (!adapter.isEnabled()) {
             IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
             mContext.registerReceiver(new StateReceiver(event), filter);
             adapter.enable();
             return;
         }
-        if (mScanner == null) {
-            mScanner = adapter.getBluetoothLeScanner();
-        }
-        if (mFilters.size() == 0) {
-            mFilters.add(new ScanFilter.Builder().build());
-        }
+        if (mScanner == null) mScanner = adapter.getBluetoothLeScanner();
+        if (mFilters.size() == 0) mFilters.add(new ScanFilter.Builder().build());
         if (mSettings == null) {
             mSettings = new ScanSettings.Builder()
                     .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
@@ -72,9 +73,7 @@ public final class BleScanner extends ScanCallback implements Handler.Callback {
         }
         mEvent = event;
         mRepetition++;
-        if (event.useUltra()) {
-            Glog.d(TAG, "start() send ultra before ble scan");
-        }
+        if (event.useUltra()) Glog.d(TAG, "start() send ultra before ble scan");
         if (event.duration() > 0) {
             mHandler.sendEmptyMessageDelayed(IWhat.STOP_SCAN, event.duration());
         }

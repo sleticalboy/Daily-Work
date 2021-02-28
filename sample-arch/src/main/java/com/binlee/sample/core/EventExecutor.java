@@ -27,9 +27,7 @@ public final class EventExecutor extends Thread implements IComponent {
 
     @Override
     public void onStart() {
-        if (!mReleased.getAndSet(false)) {
-            super.start();
-        }
+        if (!mReleased.getAndSet(false)) super.start();
     }
 
     @Override

@@ -12,12 +12,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.binlee.sample.util.Glog;
+
 /**
  * Created on 21-2-24.
  *
  * @author binlee sleticalboy@gmail.com
  */
 public final class LifecycleDetector implements IComponent, Application.ActivityLifecycleCallbacks {
+
+    private static final String TAG = Glog.wrapTag("LifecycleDetector");
 
     private final Application mApp;
     private final Handler mCallback;
@@ -44,25 +48,31 @@ public final class LifecycleDetector implements IComponent, Application.Activity
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+        Glog.v(TAG, "onActivityCreated() " + activity);
         if (!(activity instanceof FragmentActivity)) return;
         mCb = new FragmentManager.FragmentLifecycleCallbacks() {
             @Override
             public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
+                Glog.v(TAG, "onFragmentResumed() " + f);
                 mCallback.obtainMessage(IWhat.LIFECYCLE_CHANGE, 1, 0).sendToTarget();
             }
 
             @Override
             public void onFragmentPaused(@NonNull FragmentManager fm, @NonNull Fragment f) {
+                Glog.v(TAG, "onFragmentPaused() " + f);
                 mCallback.obtainMessage(IWhat.LIFECYCLE_CHANGE, 0, 0).sendToTarget();
             }
         };
+        Glog.v(TAG, "onActivityCreated() " + activity + ", registerFragmentLifecycleCallbacks");
         ((FragmentActivity) activity).getSupportFragmentManager()
                 .registerFragmentLifecycleCallbacks(mCb, false);
     }
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
+        Glog.v(TAG, "onActivityDestroyed() " + activity);
         if (mCb == null || !(activity instanceof FragmentActivity)) return;
+        Glog.v(TAG, "onActivityDestroyed() " + activity + ", unregisterFragmentLifecycleCallbacks");
         ((FragmentActivity) activity).getSupportFragmentManager()
                 .unregisterFragmentLifecycleCallbacks(mCb);
     }

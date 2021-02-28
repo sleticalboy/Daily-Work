@@ -56,7 +56,7 @@ public final class Database extends SQLiteOpenHelper {
     private void init() {
         mEntries.clear();
         try {
-            mEntries.addAll(getCaches());
+            mEntries.addAll(queryAll(CacheEntry.class));
         } catch (Exception e) {
             Glog.e(TAG, "init() error.", e);
         }
@@ -86,6 +86,7 @@ public final class Database extends SQLiteOpenHelper {
                     Glog.e(TAG, "queryAll() error.", e);
                 }
             }
+            Glog.v(TAG, "queryAll() list: " + list);
             return list;
         }
     }

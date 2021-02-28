@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.binlee.sample">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.binlee.sample"
+    android:sharedUserId="com.android.systemui">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".ArchApplication"
@@ -24,6 +27,8 @@
 
         <receiver
             android:name=".BootReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:directBootAware="true"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

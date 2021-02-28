@@ -11,19 +11,22 @@ import android.os.Message;
 
 import com.binlee.sample.core.IComponent;
 import com.binlee.sample.core.IWhat;
+import com.binlee.sample.util.Glog;
 
 /**
  * Created on 21-2-6.
  *
  * @author binlee sleticalboy@gmail.com
  */
-public final class EventObserver extends BroadcastReceiver implements IComponent {
+public final class EventCenter extends BroadcastReceiver implements IComponent {
+
+    private static final String TAG = Glog.wrapTag("EventObserver");
 
     private final Context mContext;
     private final Handler mCallback;
-    private Intent mIntent;
+    private boolean mStarted = false;
 
-    public EventObserver(Context context, Handler callback) {
+    public EventCenter(Context context, Handler callback) {
         mContext = context;
         mCallback = callback;
     }
@@ -52,15 +55,17 @@ public final class EventObserver extends BroadcastReceiver implements IComponent
     }
 
     private void startObserve() {
+        if (mStarted) return;
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.bluetooth.input.profile.action.CONNECTION_STATE_CHANGED");
         filter.addAction(Intent.ACTION_LOCALE_CHANGED);
-        mIntent = mContext.registerReceiver(this, filter);
+        mContext.registerReceiver(this, filter);
+        mStarted = true;
+        Glog.v(TAG, "startObserve() started: true");
     }
 
     private void stopObserve() {
-        if (mIntent != null) {
-            mContext.unregisterReceiver(this);
-        }
+        Glog.v(TAG, "stopObserve() started: " + mStarted);
+        if (mStarted) mContext.unregisterReceiver(this);
     }
 }
