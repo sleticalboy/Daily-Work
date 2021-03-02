@@ -52,6 +52,14 @@ public final class Glog {
         log(tag, msg, Log.WARN);
     }
 
+    public static void w(String tag, String msg, Throwable t) {
+        if (t != null) {
+            log(tag, msg + "\n" + Log.getStackTraceString(t), Log.WARN);
+        } else {
+            log(tag, msg, Log.WARN);
+        }
+    }
+
     public static void e(String tag, String msg) {
         log(tag, msg, Log.ERROR);
     }

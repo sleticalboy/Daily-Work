@@ -81,11 +81,10 @@ public final class DataSource implements IDataSource {
 
     public void fetchCaches(Handler callback) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        Set<BluetoothDevice> devices = adapter == null ? null : adapter.getBondedDevices();
-        Glog.v(TAG, "fetchCaches() bonded devices: " + devices);
         List<ArchDevice> list = new ArrayList<>();
-        if (devices == null || devices.size() == 0) {
-            // fake data 0B:1F:09:C3:3F:BC
+        if (adapter == null) {
+            // Bluetooth Binder is null
+            // use fake data 0B:1F:09:C3:3F:BC
             list.add(new ArchDevice("0B:1F:09:C3:3F:BC"));
             list.add(new ArchDevice("0B:1F:09:C3:3F:BD"));
             list.add(new ArchDevice("0B:1F:09:C3:3F:BE"));
@@ -94,6 +93,10 @@ public final class DataSource implements IDataSource {
             list.add(new ArchDevice("0B:1F:09:C3:3F:C1"));
             list.add(new ArchDevice("0B:1F:09:C3:3F:C2"));
             list.add(new ArchDevice("0B:1F:09:C3:3F:C3"));
+        }
+        Set<BluetoothDevice> devices = adapter == null ? null : adapter.getBondedDevices();
+        Glog.v(TAG, "fetchCaches() bonded devices: " + devices);
+        if (devices == null || devices.size() == 0) {
         } else {
             for (final BluetoothDevice ble : devices) {
                 CacheEntry entry = getCache(ble.getAddress());
@@ -112,8 +115,8 @@ public final class DataSource implements IDataSource {
     }
 
     @Override
-    public <T> T query(String key) {
-        return mDatabase.query(key);
+    public <T> T query(String key, Class<T> clazz) {
+        return mDatabase.query(clazz, key, null);
     }
 
     @Override

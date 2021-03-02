@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface IDataSource {
 
-    <T> T query(String key);
+    <T> T query(String key, Class<T> clazz);
 
     <T> List<T> queryAll(Class<T> clazz);
 

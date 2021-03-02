@@ -10,7 +10,7 @@ import com.binlee.sample.util.Glog;
  *
  * @author binlee sleticalboy@gmail.com
  */
-public final class ArchApplication extends Application {
+public final class ArchApp extends Application {
 
     static {
         Glog.setConfig(new Glog.Config(true, true, true));
