@@ -9,11 +9,15 @@ import java.util.List;
  */
 public interface IDataSource {
 
-    <T> T query(String key, Class<T> clazz);
+    <T> T query(Class<T> clazz, String selection, String[] args);
 
     <T> List<T> queryAll(Class<T> clazz);
 
     <T> void update(T obj);
 
+    <T> void updateBatch(List<T> list);
+
     <T> void delete(T obj);
+
+    <T> void deleteBatch(List<T> list);
 }

@@ -27,7 +27,7 @@ public final class DataSource implements IDataSource {
 
     private static final String TAG = Glog.wrapTag("DataSource");
 
-    private Database mDatabase;
+    private IDataSource mDataProxy;
     private final List<Record> mRecords = new CopyOnWriteArrayList<Record>() {
         @Override
         public boolean add(Record record) {
@@ -55,11 +55,11 @@ public final class DataSource implements IDataSource {
     }
 
     public void init(Context context, InitCallback callback) {
-        if (mDatabase != null) {
+        if (mDataProxy != null) {
             Glog.w(TAG, "init() aborted as it has been initialized.");
             return;
         }
-        mDatabase = new Database(context);
+        mDataProxy = new Database(context);
 
         if (callback != null) callback.onCompleted(getCaches().size() > 0);
     }
@@ -76,28 +76,27 @@ public final class DataSource implements IDataSource {
     }
 
     public List<CacheEntry> getCaches() {
-        return mDatabase.getCaches();
+        return mDataProxy.queryAll(CacheEntry.class);
     }
 
     public void fetchCaches(Handler callback) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        Set<BluetoothDevice> devices;
         List<ArchDevice> list = new ArrayList<>();
         if (adapter == null) {
-            // Bluetooth Binder is null
-            // use fake data 0B:1F:09:C3:3F:BC
+            // Bluetooth Binder is null, use fake data 0B:1F:09:C3:3F:BC
             list.add(new ArchDevice("0B:1F:09:C3:3F:BC"));
             list.add(new ArchDevice("0B:1F:09:C3:3F:BD"));
             list.add(new ArchDevice("0B:1F:09:C3:3F:BE"));
             list.add(new ArchDevice("0B:1F:09:C3:3F:BF"));
-            list.add(new ArchDevice("0B:1F:09:C3:3F:C0"));
-            list.add(new ArchDevice("0B:1F:09:C3:3F:C1"));
-            list.add(new ArchDevice("0B:1F:09:C3:3F:C2"));
-            list.add(new ArchDevice("0B:1F:09:C3:3F:C3"));
-        }
-        Set<BluetoothDevice> devices = adapter == null ? null : adapter.getBondedDevices();
-        Glog.v(TAG, "fetchCaches() bonded devices: " + devices);
-        if (devices == null || devices.size() == 0) {
+        } else if ((devices = adapter.getBondedDevices()) == null || devices.size() == 0) {
+            // Bluetooth Binder is null, use fake data 0B:1F:09:C3:3F:BC
+            list.add(new ArchDevice("0B:1F:09:C3:3F:E0"));
+            list.add(new ArchDevice("0B:1F:09:C3:3F:E1"));
+            list.add(new ArchDevice("0B:1F:09:C3:3F:E2"));
+            list.add(new ArchDevice("0B:1F:09:C3:3F:E3"));
         } else {
+            Glog.v(TAG, "fetchCaches() bonded devices: " + devices);
             for (final BluetoothDevice ble : devices) {
                 CacheEntry entry = getCache(ble.getAddress());
                 if (entry == null) continue;
@@ -115,14 +114,14 @@ public final class DataSource implements IDataSource {
     }
 
     @Override
-    public <T> T query(String key, Class<T> clazz) {
-        return mDatabase.query(clazz, key, null);
+    public <T> T query(Class<T> clazz, String selection, String[] args) {
+        return null;
     }
 
     @Override
     public <T> List<T> queryAll(Class<T> clazz) {
         try {
-            return mDatabase.queryAll(clazz);
+            return mDataProxy.queryAll(clazz);
         } catch (Throwable e) {
             Glog.e(TAG, "queryAll() error.", e);
         }
@@ -131,12 +130,22 @@ public final class DataSource implements IDataSource {
 
     @Override
     public <T> void update(T obj) {
-        mDatabase.update(obj);
+        mDataProxy.update(obj);
+    }
+
+    @Override
+    public <T> void updateBatch(List<T> list) {
+        mDataProxy.updateBatch(list);
     }
 
     @Override
     public <T> void delete(T obj) {
-        mDatabase.delete(obj);
+        mDataProxy.delete(obj);
+    }
+
+    @Override
+    public <T> void deleteBatch(List<T> list) {
+        mDataProxy.deleteBatch(list);
     }
 
     public static final class Record {

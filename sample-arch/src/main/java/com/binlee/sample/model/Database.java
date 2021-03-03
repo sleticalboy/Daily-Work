@@ -19,14 +19,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created on 21-2-26.
  *
  * @author binlee sleticalboy@gmail.com
  */
-public final class Database extends SQLiteOpenHelper {
+public final class Database extends SQLiteOpenHelper implements IDataSource {
 
     private static final String TAG = Glog.wrapTag("Database");
 
@@ -39,35 +38,11 @@ public final class Database extends SQLiteOpenHelper {
         parseTables();
     }
 
-    private final List<CacheEntry> mEntries = new CopyOnWriteArrayList<CacheEntry>() {
-        @Override
-        public boolean add(CacheEntry entry) {
-            int index = indexOf(entry);
-            if (index < 0) return super.add(entry);
-            set(index, entry);
-            return true;
-        }
-    };
-
     public Database(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
-        init();
     }
 
-    private void init() {
-        mEntries.clear();
-        try {
-            mEntries.addAll(queryAll(getReadableDatabase(), CacheEntry.class));
-        } catch (Exception e) {
-            Glog.e(TAG, "init() error.", e);
-        }
-    }
-
-    public List<CacheEntry> getCaches() {
-        if (mEntries.size() != 0) return mEntries;
-        return queryAll(getReadableDatabase(), CacheEntry.class);
-    }
-
+    @Override
     public <T> T query(Class<T> clazz, String selection, String[] args) {
         TableInfo info = TABLES.get(clazz);
         if (info == null) throw new IllegalStateException("tables are null");
@@ -77,15 +52,18 @@ public final class Database extends SQLiteOpenHelper {
         }
     }
 
+    @Override
     public <T> List<T> queryAll(Class<T> clazz) {
         return queryAll(getReadableDatabase(), clazz);
     }
 
+    @Override
     public <T> void update(T obj) {
         if (obj == null) return;
         updateBatch(Collections.singletonList(obj));
     }
 
+    @Override
     public <T> void updateBatch(List<T> list) {
         if (list == null || list.size() == 0) return;
         Class<?> clazz = list.get(0).getClass();
@@ -107,11 +85,13 @@ public final class Database extends SQLiteOpenHelper {
         }
     }
 
+    @Override
     public <T> void delete(T obj) {
         if (obj == null) return;
         deleteBatch(Collections.singletonList(obj));
     }
 
+    @Override
     public <T> void deleteBatch(List<T> list) {
         if (list == null || list.size() == 0) return;
         Class<?> clazz = list.get(0).getClass();

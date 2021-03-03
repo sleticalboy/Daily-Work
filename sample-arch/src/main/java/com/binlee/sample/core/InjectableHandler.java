@@ -23,6 +23,70 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class InjectableHandler extends android.os.Handler {
 
     private static final String TAG = "WorkerHandler";
+
+    private WrappedCallback mCallback;
+
+    public InjectableHandler(@NonNull Looper looper) {
+        this(looper, null);
+    }
+
+    public InjectableHandler(@NonNull Looper looper, @Nullable Callback callback) {
+        super(looper, new WrappedCallback(callback));
+        reflectCallback();
+    }
+
+    private void reflectCallback() {
+        try {
+            Field field = Handler.class.getDeclaredField("mCallback");
+            field.setAccessible(true);
+            mCallback = ((WrappedCallback) field.get(this));
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Glog.w(TAG, "reflectCallback() error.", e);
+        }
+    }
+
+    @NonNull
+    @Override
+    public final String getMessageName(@NonNull Message msg) {
+        return WHAT_ARRAY.get(msg.what, String.format("no name for(0x%02x)", msg.what));
+    }
+
+    public final void injectCallback(Callback callback) {
+        if (mCallback != null) mCallback.inject(callback);
+    }
+
+    private static final class WrappedCallback implements Callback {
+
+        private final List<Callback> mCallbacks = new CopyOnWriteArrayList<>();
+        private final Callback mOriginal;
+
+        public WrappedCallback(Object obj) {
+            mOriginal = obj instanceof Callback ? ((Callback) obj) : null;
+        }
+
+        public void inject(Callback callback) {
+            if (callback != null && !mCallbacks.contains(callback)) {
+                mCallbacks.add(callback);
+            }
+        }
+
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+
+            // 原有的 Callback 处理消息的优先级最高
+            if (mOriginal != null && mOriginal.handleMessage(msg)) {
+                return true;
+            }
+            // 倒序遍历，后添加的 Callback 优先处理消息
+            for (int i = mCallbacks.size() - 1; i >= 0; i--) {
+                if (mCallbacks.get(i).handleMessage(msg)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     private static final SparseArray<String> WHAT_ARRAY = new SparseArray<>();
 
     static {
@@ -43,72 +107,5 @@ public class InjectableHandler extends android.os.Handler {
             }
         }
         Glog.v(TAG, "parseIWhat() " + WHAT_ARRAY);
-    }
-
-    private final List<Callback> mCallbacks;
-    private Callback mTracer;
-
-    public InjectableHandler(@NonNull Looper looper) {
-        this(looper, null);
-    }
-
-    public InjectableHandler(@NonNull Looper looper, @Nullable Callback callback) {
-        super(looper, callback);
-        mCallbacks = new CopyOnWriteArrayList<>();
-        try {
-            // 第一次注入 Callback 时通过反射注入 mCallback
-            Field field = Handler.class.getDeclaredField("mCallback");
-            field.setAccessible(true);
-            field.set(this, new WrappedCallback(field.get(this)));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @NonNull
-    @Override
-    public final String getMessageName(@NonNull Message msg) {
-        return WHAT_ARRAY.get(msg.what, String.format("no name for(0x%02x)", msg.what));
-    }
-
-    public final void injectCallback(Callback callback) {
-
-        if (callback instanceof TimeTracer) {
-            mTracer = callback;
-            return;
-        }
-
-        if (callback != null && !mCallbacks.contains(callback)) {
-            mCallbacks.add(callback);
-        }
-    }
-
-    private final class WrappedCallback implements Callback {
-
-        private final Callback mOriginal;
-
-        public WrappedCallback(Object obj) {
-            mOriginal = obj instanceof Callback ? ((Callback) obj) : null;
-        }
-
-        @Override
-        public boolean handleMessage(@NonNull Message msg) {
-
-            if (mTracer != null && mTracer.handleMessage(msg)) {
-                throw new RuntimeException("TimeTracer#handleMessage() must return false!");
-            }
-
-            // 原有的 Callback 处理消息的优先级最高
-            if (mOriginal != null && mOriginal.handleMessage(msg)) {
-                return true;
-            }
-            // 倒序遍历，后添加的 Callback 优先处理消息
-            for (int i = mCallbacks.size() - 1; i >= 0; i--) {
-                if (mCallbacks.get(i).handleMessage(msg)) {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }
