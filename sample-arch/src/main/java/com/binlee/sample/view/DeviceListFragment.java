@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -33,7 +35,7 @@ import java.util.List;
 public final class DeviceListFragment extends Fragment implements ServiceConnection, IView {
 
     public static final String TAG = Glog.wrapTag("ListFragment");
-    private static final String ARG_COLUMN_COUNT = "column-count";
+    public static final String ARG_COLUMN_COUNT = "column-count";
 
     private final List<ArchDevice> mDevices;
     private ArchService.LocalBinder mService;
@@ -46,14 +48,6 @@ public final class DeviceListFragment extends Fragment implements ServiceConnect
      */
     public DeviceListFragment() {
         mDevices = new ArrayList<>();
-    }
-
-    public static DeviceListFragment newInstance(int columnCount) {
-        DeviceListFragment fragment = new DeviceListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -78,6 +72,12 @@ public final class DeviceListFragment extends Fragment implements ServiceConnect
                 recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), mColumnCount));
             }
             recyclerView.setAdapter(mAdapter = new ArchDeviceAdapter(mDevices));
+            recyclerView.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
+                @Override
+                public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent me) {
+
+                }
+            });
         }
         return view;
     }

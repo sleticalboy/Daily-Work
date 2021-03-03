@@ -19,17 +19,20 @@ public final class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // show Fragment
-        showFragment();
+        Bundle args = new Bundle();
+        args.putInt(DeviceListFragment.ARG_COLUMN_COUNT, 1);
+        showFragment(DeviceListFragment.class.getName(), args);
     }
 
-    private void showFragment() {
-        Glog.v(TAG, "showFragment() ");
+    private void showFragment(String clazz, Bundle args) {
+        Glog.v(TAG, "showFragment() " + clazz);
         FragmentManager mgr = getSupportFragmentManager();
-        Fragment fragment = mgr.findFragmentByTag(DeviceListFragment.TAG);
+        Fragment fragment = mgr.findFragmentByTag(clazz);
         FragmentTransaction transaction = mgr.beginTransaction();
         if (fragment == null) {
-            fragment = DeviceListFragment.newInstance(1);
-            transaction.add(R.id.fl_container, fragment, DeviceListFragment.TAG);
+            fragment = mgr.getFragmentFactory().instantiate(getClassLoader(), clazz);
+            fragment.setArguments(args);
+            transaction.add(R.id.fl_container, fragment, clazz);
         }
         transaction.show(fragment).commitNow();
     }
