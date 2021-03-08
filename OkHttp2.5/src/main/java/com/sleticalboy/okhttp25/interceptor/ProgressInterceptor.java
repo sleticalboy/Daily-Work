@@ -34,9 +34,7 @@ public final class ProgressInterceptor implements Interceptor {
     }
 
     public static void removeCallback(String tag) {
-        if (PROGRESS_CALLBACK_MAP.containsKey(tag)) {
-            PROGRESS_CALLBACK_MAP.remove(tag);
-        }
+        PROGRESS_CALLBACK_MAP.remove(tag);
     }
 
     public static void removeAll() {

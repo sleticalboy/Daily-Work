@@ -22,13 +22,13 @@ import okio.Source;
  */
 public final class ProgressResponseBody extends ResponseBody {
 
-    private final ResponseBody mResponseBody;
+    private final ResponseBody mRawBody;
     private final long mBreakPoint;
     private ProgressCallback mCallback;
     private BufferedSource mSource;
 
-    public ProgressResponseBody(String url, ResponseBody body, long breakPoint) throws IOException {
-        mResponseBody = body;
+    public ProgressResponseBody(String url, ResponseBody raw, long breakPoint) throws IOException {
+        mRawBody = raw;
         mCallback = ProgressInterceptor.getCallback(url);
         mBreakPoint = breakPoint;
         if (mCallback != null) {
@@ -40,34 +40,32 @@ public final class ProgressResponseBody extends ResponseBody {
 
     @Override
     public MediaType contentType() {
-        return mResponseBody.contentType();
+        return mRawBody.contentType();
     }
 
     @Override
     public long contentLength() throws IOException {
-        return mResponseBody.contentLength();
+        return mRawBody.contentLength();
     }
 
     @Override
     public BufferedSource source() throws IOException {
         if (mSource == null) {
-            mSource = Okio.buffer(new ProgressSource(mResponseBody.source(), mCallback, mBreakPoint, contentLength()));
+            mSource = Okio.buffer(new ProgressSource(mRawBody.source(), contentLength()));
         }
         return mSource;
     }
 
-    private static class ProgressSource extends ForwardingSource {
+    private final class ProgressSource extends ForwardingSource {
 
         final long mContentLength;
         long bytesTotalRead;
         float currentProgress;
-        ProgressCallback mCallback;
 
-        ProgressSource(Source delegate, ProgressCallback callback, long breakPoint, long remaining) {
+        ProgressSource(Source delegate, long remaining) {
             super(delegate);
-            bytesTotalRead = breakPoint;
-            mCallback = callback;
-            mContentLength = remaining + breakPoint;
+            bytesTotalRead = mBreakPoint;
+            mContentLength = remaining + mBreakPoint;
         }
 
         @Override
@@ -79,7 +77,8 @@ public final class ProgressResponseBody extends ResponseBody {
                 bytesTotalRead += bytesRead;
             }
             float progress = 100f * bytesTotalRead / mContentLength;
-//            Log.d("ProgressResponseBody", "progress is " + progress + ", total read is " + bytesTotalRead + ", total is " + contentLength);
+            // Log.d("ProgressResponseBody", "progress is " + progress + ", total read is "
+            //         + bytesTotalRead + ", total is " + mContentLength);
             if (mCallback != null && currentProgress != progress) {
                 mCallback.onProgress(progress, bytesTotalRead);
             }
