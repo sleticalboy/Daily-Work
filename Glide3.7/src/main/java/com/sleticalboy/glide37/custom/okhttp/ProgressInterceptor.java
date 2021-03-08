@@ -18,7 +18,6 @@ import okhttp3.ResponseBody;
  * Created on 18-6-17.
  *
  * @author leebin
- * @description
  */
 public class ProgressInterceptor implements Interceptor {
 

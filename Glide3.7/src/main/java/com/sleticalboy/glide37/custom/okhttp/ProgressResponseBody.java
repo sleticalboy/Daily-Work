@@ -20,7 +20,6 @@ import okio.Source;
  * Created on 18-6-17.
  *
  * @author leebin
- * @description
  */
 public class ProgressResponseBody extends ResponseBody {
 
@@ -47,9 +46,7 @@ public class ProgressResponseBody extends ResponseBody {
 
     @Override
     public BufferedSource source() {
-        if (mSource == null) {
-            mSource = Okio.buffer(new ProgressSource(mBody.source()));
-        }
+        if (mSource == null) mSource = Okio.buffer(new ProgressSource(mBody.source()));
         return mSource;
     }
 

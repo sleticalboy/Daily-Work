@@ -18,7 +18,6 @@ import okhttp3.ResponseBody;
  * Created on 18-6-17.
  *
  * @author leebin
- * @description
  */
 public class OkHttpFetcher implements DataFetcher<InputStream> {
 
@@ -44,9 +43,7 @@ public class OkHttpFetcher implements DataFetcher<InputStream> {
         // 自定义 header
         requestBuilder.addHeader("httplib", "OkHttp");
         Request request = requestBuilder.build();
-        if (isCancelled) {
-            return null;
-        }
+        if (isCancelled) return null;
         Response response = client.newCall(request).execute();
         responseBody = response.body();
         if (!response.isSuccessful() || responseBody == null) {
@@ -60,12 +57,8 @@ public class OkHttpFetcher implements DataFetcher<InputStream> {
     @Override
     public void cleanup() {
         try {
-            if (stream != null) {
-                stream.close();
-            }
-            if (responseBody != null) {
-                responseBody.close();
-            }
+            if (stream != null) stream.close();
+            if (responseBody != null) responseBody.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.cache.DiskCache;
+import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.GlideModule;
 import com.sleticalboy.glide37.custom.okhttp.OkHttpGlideUrlLoader;
@@ -18,7 +20,6 @@ import okhttp3.OkHttpClient;
  * Created on 18-6-17.
  *
  * @author leebin
- * @description
  */
 public class MyGlideModule implements GlideModule {
 
@@ -28,10 +29,10 @@ public class MyGlideModule implements GlideModule {
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
         // 自定义默认缓存目录以及默认缓存大小
-//        builder.setDiskCache(new ExternalCacheDiskCacheFactory(context,
-//                DISK_CACHE_DIR, DISK_CACHE_SIZE));
+       // builder.setDiskCache(new ExternalCacheDiskCacheFactory(context,
+       //         DISK_CACHE_DIR, DISK_CACHE_SIZE));
         // 自定义默认图片加载质量
-//        builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
+       // builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
     }
 
     @Override

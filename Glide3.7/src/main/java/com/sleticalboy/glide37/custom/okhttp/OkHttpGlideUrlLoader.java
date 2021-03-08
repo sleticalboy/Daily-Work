@@ -16,11 +16,10 @@ import okhttp3.OkHttpClient;
  * Created on 18-6-17.
  *
  * @author leebin
- * @description
  */
 public class OkHttpGlideUrlLoader implements ModelLoader<GlideUrl, InputStream> {
 
-    private OkHttpClient okHttpClient;
+    private final OkHttpClient okHttpClient;
 
     public static class Factory implements ModelLoaderFactory<GlideUrl, InputStream> {
 
@@ -34,14 +33,13 @@ public class OkHttpGlideUrlLoader implements ModelLoader<GlideUrl, InputStream> 
         }
 
         private synchronized OkHttpClient getOkHttpClient() {
-            if (client == null) {
-                client = new OkHttpClient();
-            }
+            if (client == null) client = new OkHttpClient();
             return client;
         }
 
         @Override
-        public ModelLoader<GlideUrl, InputStream> build(Context context, GenericLoaderFactory factories) {
+        public ModelLoader<GlideUrl, InputStream> build(Context context,
+                                                        GenericLoaderFactory factories) {
             return new OkHttpGlideUrlLoader(getOkHttpClient());
         }
 
