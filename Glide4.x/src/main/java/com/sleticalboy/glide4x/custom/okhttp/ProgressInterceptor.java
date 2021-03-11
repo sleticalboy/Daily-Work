@@ -18,7 +18,6 @@ import okhttp3.ResponseBody;
  * Created on 18-6-17.
  *
  * @author leebin
- * @description
  */
 public class ProgressInterceptor implements Interceptor {
 
@@ -30,9 +29,7 @@ public class ProgressInterceptor implements Interceptor {
     }
 
     public static void removeListener(String tag) {
-        if (PROCESS_INTERCEPTOR_MAP.containsKey(tag)) {
-            PROCESS_INTERCEPTOR_MAP.remove(tag);
-        }
+        PROCESS_INTERCEPTOR_MAP.remove(tag);
     }
 
     public static ProgressListener getListener(String tag) {
@@ -47,7 +44,7 @@ public class ProgressInterceptor implements Interceptor {
         Log.d("ProgressInterceptor", url);
         final ResponseBody body = response.body();
         return response.newBuilder()
-                .body(new ProgressResponseBody(url, body))
+                .body(new ProgressResponseBody(ProgressInterceptor.getListener(url), body))
                 .build();
     }
 }

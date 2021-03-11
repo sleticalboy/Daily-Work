@@ -1,14 +1,15 @@
 package com.sleticalboy.glide4x.custom.okhttp;
 
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.load.Options;
-import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
 import com.bumptech.glide.load.model.MultiModelLoaderFactory;
+import com.sleticalboy.glide4x.custom.MyGlideUrl;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -23,12 +24,12 @@ import okhttp3.OkHttpClient;
  *
  * @author leebin
  */
-public class OkHttpGlideUrlLoader implements ModelLoader<GlideUrl, InputStream> {
+public class OkHttpGlideUrlLoader implements ModelLoader<MyGlideUrl, InputStream> {
 
     private static final Set<String> SCHEMES =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList("http", "https")));
 
-    private OkHttpClient okHttpClient;
+    private final OkHttpClient okHttpClient;
 
     public OkHttpGlideUrlLoader(OkHttpClient client) {
         this.okHttpClient = client;
@@ -36,16 +37,17 @@ public class OkHttpGlideUrlLoader implements ModelLoader<GlideUrl, InputStream> 
 
     @Nullable
     @Override
-    public LoadData<InputStream> buildLoadData(@NonNull GlideUrl glideUrl, int width, int height, @NonNull Options options) {
+    public LoadData<InputStream> buildLoadData(@NonNull MyGlideUrl glideUrl, int width, int height,
+                                               @NonNull Options options) {
         return new LoadData<>(glideUrl, new OkHttpFetcher(okHttpClient, glideUrl));
     }
 
     @Override
-    public boolean handles(@NonNull GlideUrl glideUrl) {
+    public boolean handles(@NonNull MyGlideUrl glideUrl) {
         return SCHEMES.contains(Uri.parse(glideUrl.toStringUrl()).getScheme());
     }
 
-    public static class Factory implements ModelLoaderFactory<GlideUrl, InputStream> {
+    public static class Factory implements ModelLoaderFactory<MyGlideUrl, InputStream> {
 
         private final OkHttpClient client;
 
@@ -53,8 +55,9 @@ public class OkHttpGlideUrlLoader implements ModelLoader<GlideUrl, InputStream> 
             this.client = client;
         }
 
+        @NonNull
         @Override
-        public ModelLoader<GlideUrl, InputStream> build(@NonNull MultiModelLoaderFactory multiFactory) {
+        public ModelLoader<MyGlideUrl, InputStream> build(MultiModelLoaderFactory multiFactory) {
             return new OkHttpGlideUrlLoader(getOkHttpClient());
         }
 

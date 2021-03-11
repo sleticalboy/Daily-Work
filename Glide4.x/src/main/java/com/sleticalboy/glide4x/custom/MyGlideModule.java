@@ -41,7 +41,7 @@ public class MyGlideModule extends AppGlideModule {
     private static final String TAG = "MyGlideModule";
     
     private static final int DISK_CACHE_SIZE = DiskCache.Factory.DEFAULT_DISK_CACHE_SIZE;
-    private static final String DISK_CACHE_DIR = "sleticalboy_glide37";
+    private static final String DISK_CACHE_DIR = "sleticalboy_glide4x";
     
     @Override
     public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
@@ -61,6 +61,6 @@ public class MyGlideModule extends AppGlideModule {
         builder.addInterceptor(new HttpLoggerInterceptor().setLevel(HttpLoggerInterceptor.Level.BODY));
         builder.eventListener(new DefaultEventListener());
         final OkHttpClient client = builder.build();
-        registry.replace(GlideUrl.class, InputStream.class, new OkHttpGlideUrlLoader.Factory(client));
+        registry.replace(MyGlideUrl.class, InputStream.class, new OkHttpGlideUrlLoader.Factory(client));
     }
 }

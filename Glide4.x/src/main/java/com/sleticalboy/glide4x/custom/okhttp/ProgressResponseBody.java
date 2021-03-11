@@ -28,9 +28,9 @@ public class ProgressResponseBody extends ResponseBody {
     private BufferedSource mSource;
     private ProgressListener mListener;
 
-    public ProgressResponseBody(String url, ResponseBody body) {
+    public ProgressResponseBody(ProgressListener listener, ResponseBody body) {
         mBody = body;
-        mListener = ProgressInterceptor.getListener(url);
+        mListener = listener;
     }
 
     @Nullable
