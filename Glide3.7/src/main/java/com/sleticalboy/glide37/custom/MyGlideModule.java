@@ -8,6 +8,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.cache.DiskCache;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.stream.HttpUrlGlideUrlLoader;
 import com.bumptech.glide.module.GlideModule;
 import com.sleticalboy.glide37.custom.okhttp.OkHttpGlideUrlLoader;
 import com.sleticalboy.glide37.custom.okhttp.ProgressInterceptor;
@@ -41,7 +42,7 @@ public class MyGlideModule implements GlideModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(new ProgressInterceptor());
         final OkHttpClient client = builder.build();
-        /*glide.register(GlideUrl.class, InputStream.class, new OkHttpGlideUrlLoader.Factory());*/
-        glide.register(GlideUrl.class, InputStream.class, new OkHttpGlideUrlLoader.Factory(client));
+        // glide.register(GlideUrl.class, InputStream.class, new HttpUrlGlideUrlLoader.Factory());
+        glide.register(MyGlideUrl.class, InputStream.class, new OkHttpGlideUrlLoader.Factory(client));
     }
 }

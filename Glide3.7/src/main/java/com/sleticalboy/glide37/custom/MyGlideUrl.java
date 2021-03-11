@@ -19,21 +19,19 @@ public class MyGlideUrl extends GlideUrl {
 
     @Override
     public String getCacheKey() {
-        return mUrl.replace(findToken(), "");
+        return eraseToken(mUrl);
     }
 
-    private String findToken() {
-        String token = "";
-        int tokenIndex = mUrl.contains("?token=")
-                ? mUrl.indexOf("?token=") : mUrl.indexOf("&token=");
-        if (tokenIndex != -1) {
-            int nextAndIndex = mUrl.indexOf("&", tokenIndex + 1);
-            if (nextAndIndex != -1) {
-                token = mUrl.substring(tokenIndex + 1, nextAndIndex + 1);
-            } else {
-                token = mUrl.substring(tokenIndex);
-            }
+    private static String eraseToken(String url) {
+        int index = url.contains("?token=") ? url.indexOf("?token=") : url.indexOf("&token=");
+        if (index < 0) return url;
+        String token;
+        int nextAndIndex = url.indexOf("&", index + 1);
+        if (nextAndIndex != -1) {
+            token = url.substring(index + 1, nextAndIndex + 1);
+        } else {
+            token = url.substring(index);
         }
-        return token;
+        return url.replace(token, "");
     }
 }

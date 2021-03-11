@@ -7,6 +7,7 @@ import com.bumptech.glide.load.model.GenericLoaderFactory;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
+import com.sleticalboy.glide37.custom.MyGlideUrl;
 
 import java.io.InputStream;
 
@@ -17,11 +18,11 @@ import okhttp3.OkHttpClient;
  *
  * @author leebin
  */
-public class OkHttpGlideUrlLoader implements ModelLoader<GlideUrl, InputStream> {
+public class OkHttpGlideUrlLoader implements ModelLoader<MyGlideUrl, InputStream> {
 
     private final OkHttpClient okHttpClient;
 
-    public static class Factory implements ModelLoaderFactory<GlideUrl, InputStream> {
+    public static class Factory implements ModelLoaderFactory<MyGlideUrl, InputStream> {
 
         private OkHttpClient client;
 
@@ -38,7 +39,7 @@ public class OkHttpGlideUrlLoader implements ModelLoader<GlideUrl, InputStream> 
         }
 
         @Override
-        public ModelLoader<GlideUrl, InputStream> build(Context context,
+        public ModelLoader<MyGlideUrl, InputStream> build(Context context,
                                                         GenericLoaderFactory factories) {
             return new OkHttpGlideUrlLoader(getOkHttpClient());
         }
@@ -53,7 +54,7 @@ public class OkHttpGlideUrlLoader implements ModelLoader<GlideUrl, InputStream> 
     }
 
     @Override
-    public DataFetcher<InputStream> getResourceFetcher(GlideUrl model, int width, int height) {
+    public DataFetcher<InputStream> getResourceFetcher(MyGlideUrl model, int width, int height) {
         return new OkHttpFetcher(okHttpClient, model);
     }
 }
