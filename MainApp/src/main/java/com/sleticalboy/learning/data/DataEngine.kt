@@ -21,9 +21,7 @@ class DataEngine private constructor() {
 
         private var sDataEngine: DataEngine? = null
         fun get(): DataEngine {
-            if (sDataEngine == null) {
-                sDataEngine = DataEngine()
-            }
+            if (sDataEngine == null) sDataEngine = DataEngine()
             return sDataEngine as DataEngine
         }
     }

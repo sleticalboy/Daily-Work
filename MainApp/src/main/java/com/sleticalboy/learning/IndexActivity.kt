@@ -6,13 +6,16 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.sleticalboy.http.IDemo
+import com.sleticalboy.http.RetrofitClient
 import com.sleticalboy.learning.base.BaseActivity
 import com.sleticalboy.learning.bean.ModuleItem
 import com.sleticalboy.learning.data.DataEngine
 import com.sleticalboy.learning.data.Result
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_index.*
+import kotlin.concurrent.thread
 
 class IndexActivity : BaseActivity() {
 
@@ -23,7 +26,7 @@ class IndexActivity : BaseActivity() {
     override fun initView() {
         val adapter = DataAdapter()
         val start = System.currentTimeMillis()
-        DataEngine.get().indexModel().getModuleSource().observe(this, Observer {
+        DataEngine.get().indexModel().getModuleSource().observe(this, {
             when (it) {
                 is Result.Loading -> {
                     Log.d(logTag(), "initView() loading data: $it")
@@ -41,6 +44,16 @@ class IndexActivity : BaseActivity() {
             }
         })
         recyclerView.adapter = adapter
+    }
+
+    override fun initData() {
+        thread {
+            val demo = RetrofitClient.get().create(IDemo::class.java)
+            val result = demo.visit("text/html")
+                    .execute()
+                    .body()
+            Log.v(logTag(), "result: $result")
+        }
     }
 
     override fun logTag(): String = "IndexActivity"

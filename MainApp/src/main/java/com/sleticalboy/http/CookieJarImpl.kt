@@ -35,9 +35,7 @@ class CookieJarImpl(context: Context?) : CookieJar {
     }
 
     init {
-        if (context == null) {
-            throw NullPointerException("context == null")
-        }
+        if (context == null) throw NullPointerException("context == null")
         mPreferences = context.getSharedPreferences("cookie-jar", Context.MODE_PRIVATE)
     }
 }

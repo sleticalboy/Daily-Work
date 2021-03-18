@@ -36,6 +36,7 @@ public class ProgressInterceptor implements Interceptor {
         return PROCESS_INTERCEPTOR_MAP.get(tag);
     }
 
+    @NonNull
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         final Request request = chain.request();

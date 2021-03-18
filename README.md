@@ -9,8 +9,7 @@
 - Service
   - start
     - Android 8.0+ 前台服务
-      - `<uses-permission
-        android:name="android.permission.FOREGROUND_SERVICE" />`
+      - `<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />`
       - `Context.startForegroundService()`
       - Service#onCreate() `startForeground()`
   - bind
@@ -85,10 +84,8 @@
 
 ### 系统蓝牙
 - 经典蓝牙
-  - `<uses-permission
-    android:name="android.permission.ACCESS_COARSE_LOCATION" />`
-  - `<uses-permission
-    android:name="android.permission.ACCESS_FINE_LOCATION" />`
+  - `<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />`
+  - `<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />`
   - `BluetoothDevice.createBond()/removeBond()`
 - Bluetooth 低功耗（BLE）
   - GATT
@@ -96,8 +93,7 @@
   - Hid
 
 ### 系统工具
-- 打开 Settings 页面：`adb shell am start -n
-  com.android.settings/.Settings`
+- 打开 Settings 页面：`adb shell am start -n com.android.settings/.Settings`
 - 打开布局边界
 
 ### 自定义 View/ViewGroup
@@ -123,8 +119,7 @@
 
 ## gradle 编译系统
 - task
-  - 
-
+  -
     ```grovvy
     // 定义一个 task
     // group: 对任务进行分组(否则就出现在 other 分组中)

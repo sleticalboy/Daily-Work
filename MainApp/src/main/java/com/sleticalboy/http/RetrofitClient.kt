@@ -18,9 +18,7 @@ class RetrofitClient private constructor() {
     private val mRetrofit: Retrofit
 
     fun <T> create(service: Class<T>?): T {
-        if (service == null) {
-            throw RuntimeException("Api service is null")
-        }
+        if (service == null) throw RuntimeException("Api service is null")
         return mRetrofit.create(service)
     }
 
@@ -41,25 +39,24 @@ class RetrofitClient private constructor() {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                //                .cookieJar(new CookieJar() { // cookie 持久化[只是在内存中]
-                //                    private Map<String, List<Cookie>> mCookies = new HashMap<>();
+                // .cookieJar(object : CookieJar {
                 //
-                //                    @Override
-                //                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-                //                        mCookies.put(url.host(), cookies);
-                //                    }
+                //     private val mCookies = hashMapOf<String, List<Cookie>>()
                 //
-                //                    @Override
-                //                    public List<Cookie> loadForRequest(HttpUrl url) {
-                //                        final List<Cookie> cookies = mCookies.get(url.host());
-                //                        return cookies != null ? cookies : new ArrayList<>();
-                //                    }
-                //                })
-                //                .cookieJar(new CookieJarImpl(null)) // 本地持久化
+                //     override fun saveFromResponse(url: HttpUrl, cookies: MutableList<Cookie>) {
+                //         mCookies[url.toString()] = cookies
+                //     }
+                //
+                //     override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
+                //         val list = mCookies[url.toString()] ?: return arrayListOf()
+                //         return list as MutableList<Cookie>
+                //     }
+                // })
+                // .cookieJar(CookieJarImpl(null))
                 .build()
         mRetrofit = Retrofit.Builder()
-                .baseUrl(Constants.Companion.LIVE_HOST)
-                .addConverterFactory(StringConvertFactory.Companion.create())
+                .baseUrl(Constants.LIVE_HOST)
+                .addConverterFactory(StringConvertFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)
