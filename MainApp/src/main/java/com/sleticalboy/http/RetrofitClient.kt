@@ -32,9 +32,9 @@ class RetrofitClient private constructor() {
 
     init {
         val loggingInterceptor = HttpLogInterceptor()
-                .setLevel(HttpLogInterceptor.Level.BODY)
+                .setLevel(HttpLogInterceptor.Level.BASIC)
         okHttpClient = OkHttpClient.Builder()
-                .addNetworkInterceptor(loggingInterceptor) // 打印网络请求日志
+                .addInterceptor(loggingInterceptor) // 打印网络请求日志
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -59,6 +59,9 @@ class RetrofitClient private constructor() {
                 .addConverterFactory(StringConvertFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(ListCallAdapterFactory.create())
+                .addCallAdapterFactory(ByteArrayCallAdapterFactory.create())
+                .addCallAdapterFactory(WebPageCallAdapterFactory.create())
                 .client(okHttpClient)
                 .build()
     }

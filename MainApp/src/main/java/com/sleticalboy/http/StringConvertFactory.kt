@@ -17,13 +17,13 @@ class StringConvertFactory : Converter.Factory() {
 
     override fun responseBodyConverter(type: Type, annotations: Array<Annotation>,
                                        retrofit: Retrofit)
-            : Converter<ResponseBody, String>? {
+            : Converter<ResponseBody, String> {
         return Converter { value: ResponseBody -> value.string() }
     }
 
     override fun requestBodyConverter(type: Type, parameterAnnotations: Array<Annotation>,
                                       methodAnnotations: Array<Annotation>, retrofit: Retrofit)
-            : Converter<String, RequestBody>? {
+            : Converter<String, RequestBody> {
         return Converter { value: String? -> RequestBody.create(MediaType.parse(JSON), value) }
     }
 

@@ -52,7 +52,20 @@ class IndexActivity : BaseActivity() {
             val result = demo.visit("text/html")
                     .execute()
                     .body()
-            Log.v(logTag(), "result: $result")
+            Log.v(logTag(), "retrofit result: $result")
+
+            demo.visit().subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe {
+                        Log.v(logTag(), "rxjava result: $it")
+                    }
+
+            Log.v(logTag(), "list result: " + demo.list())
+            val array = demo.byteArray()
+            Log.v(logTag(), "byte array result: " + array.size + " " + String(array))
+
+            val webPage = demo.webPage()
+            Log.v(logTag(), "web page result: $webPage")
         }
     }
 
