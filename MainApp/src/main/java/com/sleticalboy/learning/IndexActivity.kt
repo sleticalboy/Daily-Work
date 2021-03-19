@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.sleticalboy.bean.Apis
 import com.sleticalboy.http.IDemo
 import com.sleticalboy.http.RetrofitClient
 import com.sleticalboy.learning.base.BaseActivity
@@ -15,6 +16,9 @@ import com.sleticalboy.learning.data.DataEngine
 import com.sleticalboy.learning.data.Result
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_index.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlin.concurrent.thread
 
 class IndexActivity : BaseActivity() {
@@ -47,6 +51,26 @@ class IndexActivity : BaseActivity() {
     }
 
     override fun initData() {
+        // baidu()
+        github()
+    }
+
+    private fun github() {
+        thread {
+            val service = RetrofitClient.get().create(IDemo::class.java)
+            service.listApis().enqueue(object : Callback<Apis> {
+                override fun onResponse(call: Call<Apis>, response: Response<Apis>) {
+                    Log.v(logTag(), "response: ${response.body()}")
+                }
+
+                override fun onFailure(call: Call<Apis>, t: Throwable) {
+                    Log.e(logTag(), "error: $t")
+                }
+            })
+        }
+    }
+
+    private fun baidu() {
         thread {
             val demo = RetrofitClient.get().create(IDemo::class.java)
             val result = demo.visit("text/html")
@@ -67,6 +91,7 @@ class IndexActivity : BaseActivity() {
             val webPage = demo.webPage()
             Log.v(logTag(), "web page result: $webPage")
         }
+
     }
 
     override fun logTag(): String = "IndexActivity"

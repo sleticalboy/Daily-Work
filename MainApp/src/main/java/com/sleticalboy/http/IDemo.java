@@ -1,12 +1,14 @@
 package com.sleticalboy.http;
 
+import com.sleticalboy.bean.Apis;
+
 import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Url;
+import retrofit2.http.Path;
 
 /**
  * Created on 21-3-18.
@@ -15,18 +17,32 @@ import retrofit2.http.Url;
  */
 public interface IDemo {
 
-    @GET(value = "/index.html")
+    @GET("/index.html")
     Call<String> visit(@Header(value = "Content-Type") String header);
 
-    @GET(value = "/")
+    @GET("/")
     Observable<String> visit();
 
-    @GET(value = "/")
+    @GET("/")
     List<String> list();
 
-    @GET(value = "/")
+    @GET("/")
     byte[] byteArray();
 
-    @GET(value = "/")
+    @GET("/")
     WebPage webPage();
+
+    /**
+     * 获取所有的 API
+     */
+    @GET("/")
+    Call<Apis> listApis();
+
+    /**
+     * 获取 user 的全部仓库
+     * @param user 用户名
+     * @return 该用户所有的仓库
+     */
+    @GET("/users/{user}/repos")
+    Call<List<?>> listRepos(@Path("user") String user);
 }
