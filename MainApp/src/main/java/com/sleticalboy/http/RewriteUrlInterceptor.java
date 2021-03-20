@@ -17,7 +17,52 @@ import okhttp3.Response;
  */
 public class RewriteUrlInterceptor implements Interceptor {
 
+    private static final String TAG = "RewriteUrl";
+
+    static {
+        Log.d(TAG, "first static init");
+    }
+
+    private static final Object sObj = new Object();
+    static {
+        Log.d(TAG, "sObj: " + sObj);
+    }
+
+    private static Object sObj2 = new Object();
+    static {
+        Log.d(TAG, "sObj2: " + sObj2);
+    }
+
+    private static int sCounter = 0;
+
     public RewriteUrlInterceptor() {
+        Log.d(TAG, "RewriteUrlInterceptor() called");
+        new Thread(() -> {
+            while (sCounter <= 100) {
+                synchronized (sObj) {
+                    Log.d(TAG, "Thread A -> produce A");
+                    sCounter++;
+                    waitOn();
+                }
+            }
+        }).start();
+        new Thread(() -> {
+            while (sCounter <= 100) {
+                synchronized (sObj) {
+                    Log.d(TAG, "Thread B -> produce B");
+                    sCounter++;
+                    sObj.notify();
+                }
+            }
+        }).start();
+    }
+
+    private void waitOn() {
+        try {
+            sObj.wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
