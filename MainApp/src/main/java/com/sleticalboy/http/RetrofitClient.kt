@@ -35,6 +35,7 @@ class RetrofitClient private constructor() {
                 .setLevel(HttpLogInterceptor.Level.BODY)
         okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor) // 打印网络请求日志
+                .addInterceptor(RewriteUrlInterceptor()) // 重写 url，替换 host
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -55,15 +56,14 @@ class RetrofitClient private constructor() {
                 // .cookieJar(CookieJarImpl(null))
                 .build()
         mRetrofit = Retrofit.Builder()
-                .baseUrl(Constants.LIVE_HOST)
-                // .addConverterFactory(StringConvertFactory.create())
+                .baseUrl(Constants.HOST_FAKE)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addCallAdapterFactory(ListCallAdapterFactory.create())
-                .addCallAdapterFactory(ByteArrayCallAdapterFactory.create())
-                .addCallAdapterFactory(WebPageCallAdapterFactory.create())
-                // .addCallAdapterFactory(GsonCallAdapterFactory.create())
                 .client(okHttpClient)
+                // .callFactory { request ->
+                //     // 可以考虑在这里动态替换 url，当然也可以在拦截器中替换
+                //     okHttpClient.newCall(request)
+                // }
                 .build()
     }
 }

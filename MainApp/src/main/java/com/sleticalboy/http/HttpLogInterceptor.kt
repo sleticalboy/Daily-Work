@@ -1,11 +1,11 @@
 package com.sleticalboy.http
 
+import android.util.Log
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.internal.http.HttpHeaders
-import okhttp3.internal.platform.Platform
 import okio.Buffer
 import java.io.EOFException
 import java.io.IOException
@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit
  * this class should not be considered stable and may change slightly between releases. If you need
  * a stable logging format, use your own interceptor.
  */
-class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = Logger.DEFAULT)
+class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = Logger.logger)
     : Interceptor {
 
     @Volatile
@@ -53,17 +53,13 @@ class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = 
     override fun intercept(chain: Interceptor.Chain): Response {
         val level = level
         val request = chain.request()
-        if (level == Level.NONE) {
-            return chain.proceed(request)
-        }
+        if (level == Level.NONE) return chain.proceed(request)
         val logBody = level == Level.BODY
         val logHeaders = logBody || level == Level.HEADERS
         val requestBody = request.body()
         val hasRequestBody = requestBody != null
         val connection = chain.connection()
-        var requestStartMessage = ("--> "
-                + request.method()
-                + ' ' + request.url()
+        var requestStartMessage = ("--> " + request.method() + ' ' + request.url()
                 + if (connection != null) " " + connection.protocol() else "")
         if (!logHeaders && hasRequestBody) {
             requestStartMessage += " (" + requestBody!!.contentLength() + "-byte body)"
@@ -100,10 +96,7 @@ class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = 
                 requestBody!!.writeTo(buffer)
                 var charset = UTF8
                 val contentType = requestBody.contentType()
-                if (contentType != null) {
-                    charset = contentType.charset(UTF8)
-                }
-                logger.log("")
+                if (contentType != null) charset = contentType.charset(UTF8)
                 if (isPlaintext(buffer)) {
                     logger.log(buffer.readString(charset))
                     logger.log("--> END " + request.method()
@@ -115,8 +108,7 @@ class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = 
             }
         }
         val startNs = System.nanoTime()
-        val response: Response
-        response = try {
+        val response: Response = try {
             chain.proceed(request)
         } catch (e: Exception) {
             logger.log("<-- HTTP FAILED: $e")
@@ -126,8 +118,7 @@ class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = 
         val responseBody = response.body()
         val contentLength = responseBody!!.contentLength()
         val bodySize = if (contentLength != -1L) "$contentLength-byte" else "unknown-length"
-        logger.log("<-- "
-                + response.code()
+        logger.log("<-- " + response.code()
                 + (if (response.message().isEmpty()) "" else ' '.toString() + response.message())
                 + ' ' + response.request().url()
                 + " (" + tookMs + "ms" + (if (!logHeaders) ", $bodySize body" else "") + ')')
@@ -149,16 +140,12 @@ class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = 
                 val buffer = source.buffer()
                 var charset = UTF8
                 val contentType = responseBody.contentType()
-                if (contentType != null) {
-                    charset = contentType.charset(UTF8)
-                }
+                if (contentType != null) charset = contentType.charset(UTF8)
                 if (!isPlaintext(buffer)) {
-                    logger.log("")
                     logger.log("<-- END HTTP (binary " + buffer.size() + "-byte body omitted)")
                     return response
                 }
                 if (contentLength != 0L) {
-                    logger.log("")
                     logger.log(buffer.clone().readString(charset))
                 }
                 logger.log("<-- END HTTP (" + buffer.size() + "-byte body)")
@@ -166,6 +153,29 @@ class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = 
         }
         return response
     }
+
+    /**
+     * Returns true if the body in question probably contains human readable text. Uses a small sample
+     * of code points to detect unicode control characters commonly used in binary file signatures.
+     */
+    private fun isPlaintext(buffer: Buffer): Boolean {
+        return try {
+            val prefix = Buffer()
+            val byteCount = if (buffer.size() < 64) buffer.size() else 64
+            buffer.copyTo(prefix, 0, byteCount)
+            for (i in 0..15) {
+                if (prefix.exhausted()) break
+                val codePoint = prefix.readUtf8CodePoint()
+                if (Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
+                    return false
+                }
+            }
+            true
+        } catch (e: EOFException) {
+            false // Truncated UTF-8 sequence.
+        }
+    }
+
 
     private fun bodyEncoded(headers: Headers): Boolean {
         val contentEncoding = headers["Content-Encoding"]
@@ -243,9 +253,9 @@ class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = 
             /**
              * A [HttpLogInterceptor.Logger] defaults output appropriate for the current platform.
              */
-            val DEFAULT: Logger = object : Logger {
+            val logger: Logger = object : Logger {
                 override fun log(message: String?) {
-                    Platform.get().log(Platform.INFO, message, null)
+                    Log.v("OkHttpLog", "" + message)
                 }
             }
         }
@@ -253,29 +263,5 @@ class HttpLogInterceptor @JvmOverloads constructor(private val logger: Logger = 
 
     companion object {
         private val UTF8 = StandardCharsets.UTF_8
-
-        /**
-         * Returns true if the body in question probably contains human readable text. Uses a small sample
-         * of code points to detect unicode control characters commonly used in binary file signatures.
-         */
-        fun isPlaintext(buffer: Buffer): Boolean {
-            return try {
-                val prefix = Buffer()
-                val byteCount = if (buffer.size() < 64) buffer.size() else 64
-                buffer.copyTo(prefix, 0, byteCount)
-                for (i in 0..15) {
-                    if (prefix.exhausted()) {
-                        break
-                    }
-                    val codePoint = prefix.readUtf8CodePoint()
-                    if (Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
-                        return false
-                    }
-                }
-                true
-            } catch (e: EOFException) {
-                false // Truncated UTF-8 sequence.
-            }
-        }
     }
 }

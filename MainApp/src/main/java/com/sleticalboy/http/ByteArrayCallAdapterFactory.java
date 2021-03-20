@@ -3,8 +3,8 @@ package com.sleticalboy.http;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
@@ -27,20 +27,20 @@ public class ByteArrayCallAdapterFactory extends CallAdapter.Factory {
     public CallAdapter<?, ?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
         Class<?> rawType = getRawType(returnType);
         if (rawType != byte[].class) return null;
-        return new CallAdapter<String, byte[]>() {
+        return new CallAdapter<ResponseBody, byte[]>() {
             @Override
             public Type responseType() {
                 return byte[].class;
             }
 
             @Override
-            public byte[] adapt(Call<String> call) {
+            public byte[] adapt(Call<ResponseBody> call) {
                 try {
-                    String body = call.execute().body();
-                    return body == null ? new byte[0] : body.getBytes(StandardCharsets.UTF_8);
+                    ResponseBody body = call.execute().body();
+                    if (body != null) body.bytes();
                 } catch (IOException e) {
-                    return new byte[0];
                 }
+                return new byte[0];
             }
         };
     }
