@@ -25,12 +25,12 @@ public class RewriteUrlInterceptor implements Interceptor {
 
     private static final Object sObj = new Object();
     static {
-        Log.d(TAG, "sObj: " + sObj);
+        Log.d(TAG, "second static init sObj: " + sObj);
     }
 
-    private static Object sObj2 = new Object();
+    private static final Object sObj2 = new Object();
     static {
-        Log.d(TAG, "sObj2: " + sObj2);
+        Log.d(TAG, "third static init sObj2: " + sObj2);
     }
 
     private static int sCounter = 0;
@@ -42,7 +42,7 @@ public class RewriteUrlInterceptor implements Interceptor {
                 synchronized (sObj) {
                     Log.d(TAG, "Thread A -> produce A");
                     sCounter++;
-                    waitOn();
+                    waitOn(sObj);
                 }
             }
         }).start();
@@ -57,9 +57,9 @@ public class RewriteUrlInterceptor implements Interceptor {
         }).start();
     }
 
-    private void waitOn() {
+    private static void waitOn(Object obj) {
         try {
-            sObj.wait();
+            obj.wait(100L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
