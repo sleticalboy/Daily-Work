@@ -44,12 +44,30 @@ public final class ObjConverterFactory extends Converter.Factory {
     }
 
     @Override
-    public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations,
+    public ResponseConverter<?> responseBodyConverter(Type type, Annotation[] annotations,
         Retrofit retrofit) {
-        return (Converter<ResponseBody, Object>) value -> {
+        return new ResponseConverter<>(mGson.getAdapter(TypeToken.get(type)));
+    }
+
+    @Override
+    public Converter<?, RequestBody> requestBodyConverter(Type type,
+        Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
+        return new RequestConverter<>(mGson.getAdapter(TypeToken.get(type)));
+    }
+
+    private final class ResponseConverter<T> implements Converter<ResponseBody, T> {
+
+        private final TypeAdapter<T> mAdapter;
+
+        public ResponseConverter(TypeAdapter<T> adapter) {
+            mAdapter = adapter;
+        }
+
+        @Override
+        public T convert(ResponseBody value) throws IOException {
             JsonReader reader = mGson.newJsonReader(value.charStream());
             try {
-                Object obj = mGson.getAdapter(TypeToken.get(type)).read(reader);
+                T obj = mAdapter.read(reader);
                 if (reader.peek() != JsonToken.END_DOCUMENT) {
                     throw new JsonIOException("JSON document was not fully consumed.");
                 }
@@ -57,20 +75,14 @@ public final class ObjConverterFactory extends Converter.Factory {
             } finally {
                 value.close();
             }
-        };
+        }
     }
 
-    @Override
-    public Converter<?, RequestBody> requestBodyConverter(Type type,
-        Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-        return new BodyConverter<>(mGson.getAdapter(TypeToken.get(type)));
-    }
-
-    private final class BodyConverter<T> implements Converter<T, RequestBody> {
+    private final class RequestConverter<T> implements Converter<T, RequestBody> {
 
         private final TypeAdapter<T> mAdapter;
 
-        public BodyConverter(TypeAdapter<T> adapter) {
+        public RequestConverter(TypeAdapter<T> adapter) {
             mAdapter = adapter;
         }
 
