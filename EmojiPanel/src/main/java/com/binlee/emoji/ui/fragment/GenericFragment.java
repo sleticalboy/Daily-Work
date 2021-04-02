@@ -1,5 +1,6 @@
 package com.binlee.emoji.ui.fragment;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -45,19 +46,80 @@ public final class GenericFragment extends Fragment {
     public GenericFragment() {
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Log.d(TAG, "onAttach() called ");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate() called ");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        LogHelper.debug(TAG, "onCreateView() -> $savedInstanceState");
+        LogHelper.debug(TAG, "onCreateView() called");
         return inflater.inflate(R.layout.fragment_generic, container, false);
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated() called ");
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        LogHelper.debug(TAG, "onViewCreated() -> savedInstanceState: " + savedInstanceState);
         // view.findViewById(R.id.run).setOnClickListener(v -> startRunning());
         mLogContent = view.findViewById(R.id.logContent);
         startRunning();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView() called");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG, "onDetach() called");
     }
 
     private void startRunning() {

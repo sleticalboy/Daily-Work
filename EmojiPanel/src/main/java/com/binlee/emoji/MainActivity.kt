@@ -12,9 +12,9 @@ import com.binlee.emoji.ui.fragment.MainActivityFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+private const val TAG = "MainActivity"
 
-    private val TAG = "MainActivity"
+class MainActivity : AppCompatActivity() {
 
     private val mHandler = ClientHandler(Looper.myLooper())
     private val mClientMessenger = Messenger(mHandler)
@@ -75,11 +75,16 @@ class MainActivity : AppCompatActivity() {
     private fun show(clazz: String) {
         val transaction = supportFragmentManager.beginTransaction()
         var fragment = supportFragmentManager.findFragmentByTag(clazz)
+        Log.d(TAG, "show() find $fragment for class: $clazz")
         if (fragment == null) {
             fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, clazz)
         }
         if (!fragment.isAdded) {
             transaction.add(R.id.flContainer, fragment, clazz)
+        }
+        supportFragmentManager.fragments.forEach {
+            Log.v(TAG, "show() forEach: $it visible: ${it.isVisible}")
+            if (it != fragment && it.isVisible) transaction.hide(it)
         }
         transaction.show(fragment)
         transaction.commitAllowingStateLoss()
@@ -115,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private inner class ClientHandler(looper: Looper? = Looper.getMainLooper()): Handler() {
+    private inner class ClientHandler(looper: Looper? = Looper.getMainLooper()) : Handler() {
 
         override fun handleMessage(msg: Message) {
             Log.d(TAG, "handleMessage() called with: what = ${msg.what}")

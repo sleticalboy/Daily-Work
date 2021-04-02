@@ -19,6 +19,9 @@ import kotlin.concurrent.thread
 /**
  * A placeholder fragment containing a simple view.
  */
+
+private const val TAG = "MainActivityFragment"
+
 class MainActivityFragment : Fragment() {
 
     private var request: HttpEngine.BaseRequest? = null
@@ -28,64 +31,64 @@ class MainActivityFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        LogHelper.debug("Fragment", "onAttach() -> $context")
+        LogHelper.debug(TAG, "onAttach() -> $context")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LogHelper.debug("Fragment", "onCreate() -> $savedInstanceState")
+        LogHelper.debug(TAG, "onCreate() ->")
         request = HttpEngine.BaseRequest.base(url, HttpEngine.GET)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        LogHelper.debug("Fragment", "onCreateView() -> $savedInstanceState")
+        LogHelper.debug(TAG, "onCreateView() ->")
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        LogHelper.debug("Fragment", "onActivityCreate() -> $savedInstanceState")
+        LogHelper.debug(TAG, "onActivityCreate() ->")
     }
 
     override fun onStart() {
         super.onStart()
-        LogHelper.debug("Fragment", "onStart() -> $activity")
+        LogHelper.debug(TAG, "onStart() ->")
     }
 
     override fun onResume() {
         super.onResume()
-        LogHelper.debug("Fragment", "onResume() -> $activity")
+        LogHelper.debug(TAG, "onResume() ->")
     }
 
     override fun onPause() {
         super.onPause()
-        LogHelper.debug("Fragment", "onPause() -> $activity")
+        LogHelper.debug(TAG, "onPause() ->")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        LogHelper.debug("Fragment", "onSaveInstanceState() -> $outState")
+        LogHelper.debug(TAG, "onSaveInstanceState() ->")
     }
 
     override fun onStop() {
         super.onStop()
-        LogHelper.debug("Fragment", "onStop() -> $activity")
+        LogHelper.debug(TAG, "onStop() ->")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        LogHelper.debug("Fragment", "onDestroyView() -> $activity")
+        LogHelper.debug(TAG, "onDestroyView() ->")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        LogHelper.debug("Fragment", "onDestroy() -> $activity")
+        LogHelper.debug(TAG, "onDestroy() ->")
     }
 
     override fun onDetach() {
         super.onDetach()
-        LogHelper.debug("Fragment", "onDetach() -> $activity")
+        LogHelper.debug(TAG, "onDetach() ->")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
