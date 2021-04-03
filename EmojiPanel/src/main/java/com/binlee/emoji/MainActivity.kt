@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate() called")
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -30,6 +31,31 @@ class MainActivity : AppCompatActivity() {
         }
 
         show(GenericFragment::class.java.name)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart() called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume() called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause() called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop() called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy() called")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -83,11 +109,18 @@ class MainActivity : AppCompatActivity() {
             transaction.add(R.id.flContainer, fragment, clazz)
         }
         supportFragmentManager.fragments.forEach {
-            Log.v(TAG, "show() forEach: $it visible: ${it.isVisible}")
+            Log.i(TAG, "before show() $it visible: ${it.isVisible}")
             if (it != fragment && it.isVisible) transaction.hide(it)
         }
         transaction.show(fragment)
+        // commit 是在 Handler 里执行的，因此不能马上得到 Fragment 是否显示的状态
         transaction.commitAllowingStateLoss()
+        // 通过 Handler#post() 可以准确得到状态
+        mHandler.post {
+            supportFragmentManager.fragments.forEach {
+                Log.i(TAG, "after show() $it visible: ${it.isVisible}")
+            }
+        }
     }
 
     private fun requestUpgrade() {
