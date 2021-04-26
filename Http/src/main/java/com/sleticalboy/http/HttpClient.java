@@ -34,7 +34,7 @@ import okhttp3.ResponseBody;
  */
 public final class HttpClient {
 
-    private static final boolean DBG = BuildConfig.DEBUG;
+    private static final boolean DBG = true;
     private final Handler mMainHandler;
     private OkHttpClient mOkHttpClient;
 
