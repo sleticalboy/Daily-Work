@@ -4,7 +4,6 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 
 /**
@@ -16,18 +15,16 @@ import android.util.Log;
 public class GoogleDetectListenerImpl implements Camera.FaceDetectionListener {
 
     private Handler mHandler;///用于向主线程发送信息
-    private Context mContext;
 
-    public GoogleDetectListenerImpl(Context mContext, Handler mHandler) {
+    public GoogleDetectListenerImpl(Handler mHandler) {
         this.mHandler = mHandler;
-        this.mContext = mContext;
     }
 
     @Override
     public void onFaceDetection(Camera.Face[] faces, Camera camera) {
         if (faces != null) {
             Message msg = mHandler.obtainMessage();
-            msg.what = CameraUtil.RECEIVE_FACE_MSG;
+            msg.what = CameraInstance.RECEIVE_FACE_MSG;
             msg.obj = faces;
             msg.sendToTarget();
         }

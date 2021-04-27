@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.example.camera.R;
@@ -57,7 +56,7 @@ public class FaceView extends ImageView {
         }
         if (mFaces != null) {
             Log.d("renlei", "onDraw" + mFaces.length);
-            int id = CameraUtil.getInstance().getCameraId();
+            int id = CameraInstance.get().getCameraId();
             mirror = (id == Camera.CameraInfo.CAMERA_FACING_FRONT);
             canvas.save();
             prepareMatrix();

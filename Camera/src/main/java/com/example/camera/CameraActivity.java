@@ -15,9 +15,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.camera.preview.MySurfacePreview;
-import com.example.camera.util.CameraUtil;
+import com.example.camera.util.CameraInstance;
 import com.example.camera.util.FaceView;
 import com.example.camera.util.GoogleDetectListenerImpl;
+
+import java.lang.ref.WeakReference;
 
 public class CameraActivity extends Activity {
 
@@ -28,8 +30,9 @@ public class CameraActivity extends Activity {
     private ImageView switchCameraIV;
     private RelativeLayout settingRl;
     private FaceView faceView;
-    int width;
-    int height;
+    private int width;
+    private int height;
+    private final MainHandler mainHandler = new MainHandler(this);
 
     /**
      * Called when the activity was first created.
@@ -43,10 +46,10 @@ public class CameraActivity extends Activity {
     }
 
     private void initView() {
-        mySurfacePreview = (MySurfacePreview) findViewById(R.id.my_surfaceview);
+        mySurfacePreview = findViewById(R.id.my_surfaceview);
         mySurfacePreview.setHandler(mainHandler);
-        takeBtn = (ImageButton) findViewById(R.id.take_btn);
-        focusLayout = (FrameLayout) findViewById(R.id.camera_focus_layout);
+        takeBtn = findViewById(R.id.take_btn);
+        focusLayout = findViewById(R.id.camera_focus_layout);
         int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         Log.d("showFocusIcon initview", "w " + w + " h " + h);
@@ -56,45 +59,25 @@ public class CameraActivity extends Activity {
         Log.d("showFocusIcon initview", "focusLayout.getMeasuredWidth()/2"
                 + focusLayout.getMeasuredWidth() / 2 + "focusLayout.getMeasuredHeight()/2"
                 + focusLayout.getMeasuredHeight() / 2);
-        changeFlashModeIV = (ImageView) findViewById(R.id.flash_iv);
-        switchCameraIV = (ImageView) findViewById(R.id.swich_camera_iv);
-        settingRl = (RelativeLayout) findViewById(R.id.setting_rl);
-        faceView = (FaceView) findViewById(R.id.face_view);
+        changeFlashModeIV = findViewById(R.id.flash_iv);
+        switchCameraIV = findViewById(R.id.swich_camera_iv);
+        settingRl = findViewById(R.id.setting_rl);
+        faceView = findViewById(R.id.face_view);
     }
 
     private void bindListeners() {
-        takeBtn.setOnClickListener(new TakeBtnClickListener());
-        mySurfacePreview.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (CameraUtil.getInstance().getCameraInfo().facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                    return gestureDetector.onTouchEvent(event);
-                } else {
-                    return false;
-                }
+        takeBtn.setOnClickListener(v -> CameraInstance.get().doTakePic());
+        mySurfacePreview.setOnTouchListener((v, event) -> {
+            if (CameraInstance.get().getCameraInfo().facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                return gestureDetector.onTouchEvent(event);
+            } else {
+                return false;
             }
         });
 
-        changeFlashModeIV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CameraUtil.getInstance().setFlashMode(changeFlashModeIV);
-            }
-        });
+        changeFlashModeIV.setOnClickListener(v -> CameraInstance.get().setFlashMode(changeFlashModeIV));
 
-        switchCameraIV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeCamera();
-            }
-        });
-    }
-
-    private class TakeBtnClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            CameraUtil.getInstance().doTakePic();
-        }
+        switchCameraIV.setOnClickListener(v -> changeCamera());
     }
 
     GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
@@ -107,19 +90,16 @@ public class CameraActivity extends Activity {
         @Override
         public boolean onSingleTapUp(final MotionEvent e) {
             Log.d("MyGestureDetector", "onSingleTapUp");
-            CameraUtil.getInstance().autoFocus(new Camera.AutoFocusCallback() {
-                @Override
-                public void onAutoFocus(boolean success, Camera camera) {
-                    if (success) {
-                        Log.d("renlei", "聚焦成功");
-                    } else {
-                        Log.d("renlei", "聚焦失败");
+            CameraInstance.get().autoFocus((success, camera) -> {
+                if (success) {
+                    Log.d("renlei", "聚焦成功");
+                } else {
+                    Log.d("renlei", "聚焦失败");
 
-                    }
-                    focusLayout.setVisibility(View.GONE);
                 }
+                focusLayout.setVisibility(View.GONE);
             });
-            CameraUtil.getInstance().setFocusArea(CameraActivity.this, e);
+            CameraInstance.get().setFocusArea(CameraActivity.this, e);
             showFocusIcon(e);
             return true;
         }
@@ -128,29 +108,20 @@ public class CameraActivity extends Activity {
     private void showFocusIcon(MotionEvent e) {
         int x = (int) e.getX();
         int y = (int) e.getY();
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) focusLayout.getLayoutParams();
-        params.leftMargin = (int) (x - width + 0.5);
-        params.topMargin = (int) (y - height + 0.5 + settingRl.getHeight());
-//        Log.d("showFocusIcon","focusLayout.getMeasuredWidth()/2"+focusLayout.getMeasuredWidth()/2
-// +"focusLayout.getMeasuredHeight()/2"+focusLayout.getMeasuredHeight()/2);
-//        Log.d("showFocusIcon","focusLayout.getWidth()/2"+focusLayout.getWidth()/2
-// +"focusLayout.getHeight()/2"+focusLayout.getHeight()/2);
-        Log.d("showFocusIcon", "x" + x + "y" + y + "params.width" + params.width
-                + "params.height" + params.height);
-//        focusLayout.setLayoutParams(params);
-        focusLayout.requestLayout();
-//        focusLayout.setLayoutParams(params);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) focusLayout.getLayoutParams();
+        lp.leftMargin = (int) (x - width + 0.5);
+        lp.topMargin = (int) (y - height + 0.5 + settingRl.getHeight());
+        Log.d("showFocusIcon", "x" + x + "y" + y + "params.width" + lp.width
+                + "params.height" + lp.height);
+        focusLayout.setLayoutParams(lp);
         focusLayout.setVisibility(View.VISIBLE);
-        RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) focusLayout.getLayoutParams();
-        Log.d("showFocusIcon", "x" + x + "y" + y + "params2.width" + params2.width
-                + "params2.height" + params2.height);
     }
 
     public void changeCamera() {
-        CameraUtil.getInstance().doStopPreview();
-        int newCameraId = (CameraUtil.getInstance().getCameraId() + 1) % 2;
-        CameraUtil.getInstance().doOpenCamera(newCameraId);
-        CameraUtil.getInstance().doStartPreview(mySurfacePreview.getHolder());
+        CameraInstance.get().doStopPreview();
+        int newCameraId = (CameraInstance.get().getCameraId() + 1) % 2;
+        CameraInstance.get().doOpenCamera(newCameraId);
+        CameraInstance.get().doStartPreview(mySurfacePreview.getHolder());
         if (newCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
             switchCameraIV.setImageResource(R.drawable.camera_setting_switch_back);
             changeFlashModeIV.setVisibility(View.VISIBLE);
@@ -160,44 +131,41 @@ public class CameraActivity extends Activity {
         }
     }
 
-    private MainHandler mainHandler = new MainHandler();
-
     private void startGoogleDetect() {
-        Camera.Parameters parameters = CameraUtil.getInstance().getCameraParameters();
-        Camera camera = CameraUtil.getInstance().getCamera();
+        Camera.Parameters parameters = CameraInstance.get().getCameraParameters();
+        Camera camera = CameraInstance.get().getCamera();
         if (parameters.getMaxNumDetectedFaces() > 0) {
             if (faceView != null) {
                 faceView.clearFaces();
                 faceView.setVisibility(View.VISIBLE);
             }
-            camera.setFaceDetectionListener(new GoogleDetectListenerImpl(CameraActivity.this, mainHandler));
+            camera.setFaceDetectionListener(new GoogleDetectListenerImpl(mainHandler));
             camera.startFaceDetection();
         }
     }
 
-    private class MainHandler extends Handler {
+    private static class MainHandler extends Handler {
+
+        private final WeakReference<CameraActivity> mHost;
+
+        MainHandler(CameraActivity host) {
+            mHost = new WeakReference<>(host);
+        }
 
         @Override
         public void handleMessage(final Message msg) {
-            int what = msg.what;
-            switch (what) {
-                case CameraUtil.PREVIEW_HAS_STARTED:
-                    startGoogleDetect();
+            CameraActivity host = mHost.get();
+            if (host == null) return;
+            switch (msg.what) {
+                case CameraInstance.PREVIEW_HAS_STARTED:
+                    host.startGoogleDetect();
                     Log.e("renlei110", "开启人脸识别");
                     break;
-                case CameraUtil.RECEIVE_FACE_MSG:
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Camera.Face[] faces = (Camera.Face[]) msg.obj;
-                            faceView.setFaces(faces);
-                            Log.e("renlei111", "收到人脸识别的信息");
-                        }
-                    });
-
+                case CameraInstance.RECEIVE_FACE_MSG:
+                    host.faceView.setFaces((Camera.Face[]) msg.obj);
+                    Log.e("renlei111", "收到人脸识别的信息");
                     break;
             }
-            super.handleMessage(msg);
         }
     }
 }

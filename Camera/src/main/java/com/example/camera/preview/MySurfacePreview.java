@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.example.camera.util.CameraUtil;
+import com.example.camera.util.CameraInstance;
 
 /**
  * Created by renlei
@@ -16,7 +16,8 @@ import com.example.camera.util.CameraUtil;
  * Time: 下午4:52
  */
 public class MySurfacePreview extends SurfaceView implements SurfaceHolder.Callback {
-    private SurfaceHolder surfaceHolder;
+
+    private final SurfaceHolder surfaceHolder;
     private Handler mHandler;
 
     public MySurfacePreview(Context context, AttributeSet attrs) {
@@ -29,25 +30,20 @@ public class MySurfacePreview extends SurfaceView implements SurfaceHolder.Callb
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        CameraUtil.getInstance().doOpenCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
+        CameraInstance.get().doOpenCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        CameraUtil.getInstance().doStartPreview(surfaceHolder);
+        CameraInstance.get().doStartPreview(surfaceHolder);
         if (mHandler != null) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mHandler.sendEmptyMessage(CameraUtil.PREVIEW_HAS_STARTED);
-                }
-            }, 1000);
+            mHandler.postDelayed(() -> mHandler.sendEmptyMessage(CameraInstance.PREVIEW_HAS_STARTED), 1000);
         }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        CameraUtil.getInstance().doStopPreview();
+        CameraInstance.get().doStopPreview();
     }
 
     public void setHandler(Handler handler) {

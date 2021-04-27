@@ -1,8 +1,6 @@
 package com.example.camera.util;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.hardware.Camera;
@@ -26,21 +24,18 @@ import java.util.List;
  * Time: 下午4:57
  * Email: lei.ren@renren-inc.com
  */
-public class CameraUtil {
+public class CameraInstance {
 
     private Camera mCamera;
-    private static CameraUtil mCameraUtil;
+    private static CameraInstance sCamera = new CameraInstance();
     private boolean isPreview;
     private int cameraId = -1; //0表示后置，1表示前置
-    private Camera.CameraInfo mCameraInfo = new Camera.CameraInfo();
+    private final Camera.CameraInfo mCameraInfo = new Camera.CameraInfo();
     public static final int PREVIEW_HAS_STARTED = 110;
     public static final int RECEIVE_FACE_MSG = 111;
 
-    public static synchronized CameraUtil getInstance() {
-        if (mCameraUtil == null) {
-            mCameraUtil = new CameraUtil();
-        }
-        return mCameraUtil;
+    public static CameraInstance get() {
+        return sCamera;
     }
 
     /**
@@ -129,7 +124,7 @@ public class CameraUtil {
      * 拍照时的动作
      * 默认会有咔嚓一声
      */
-    private class ShutCallBackImpl implements Camera.ShutterCallback {
+    private static class ShutCallBackImpl implements Camera.ShutterCallback {
         @Override
         public void onShutter() {
         }
@@ -142,21 +137,17 @@ public class CameraUtil {
         @Override
         public void onPictureTaken(final byte[] data, Camera camera) {
             isPreview = false;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    String filePath = ImageUtil.getSaveImgePath();
-                    File file = new File(filePath);
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(file, true);
-                        fos.write(data);
-                        ImageUtil.saveImage(file, data, filePath);
-                        fos.close();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            new Thread(() -> {
+                String filePath = ImageUtil.getSaveImgePath();
+                File file = new File(filePath);
+                FileOutputStream fos;
+                try {
+                    fos = new FileOutputStream(file, true);
+                    fos.write(data);
+                    ImageUtil.saveImage(file, data, filePath);
+                    fos.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }).start();
             //重新开启预览 ，不然不能继续拍照
@@ -223,9 +214,7 @@ public class CameraUtil {
      * @param event
      */
     public void setFocusArea(Context mContext, MotionEvent event) {
-        if (!CameraUtil.isSupportFocusArea() || mCamera == null) {
-            return;
-        }
+        if (!CameraInstance.isSupportFocusArea() || mCamera == null) return;
         Camera.Parameters parameters = mCamera.getParameters();
         int ax = (int) (2000f * event.getRawX() / mContext.getResources().getDisplayMetrics().widthPixels - 1000);
         int ay = (int) (2000f * event.getRawY() / mContext.getResources().getDisplayMetrics().heightPixels - 1000);
@@ -318,9 +307,7 @@ public class CameraUtil {
     }
 
     public Camera.Parameters getCameraParameters() {
-        if (mCamera != null) {
-            return mCamera.getParameters();
-        }
+        if (mCamera != null) return mCamera.getParameters();
         return null;
     }
 }
