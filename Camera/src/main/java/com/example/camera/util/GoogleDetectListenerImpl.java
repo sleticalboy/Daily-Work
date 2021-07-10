@@ -14,7 +14,7 @@ import android.os.Message;
  */
 public class GoogleDetectListenerImpl implements Camera.FaceDetectionListener {
 
-    private Handler mHandler;///用于向主线程发送信息
+    private final Handler mHandler;///用于向主线程发送信息
 
     public GoogleDetectListenerImpl(Handler mHandler) {
         this.mHandler = mHandler;
@@ -28,6 +28,5 @@ public class GoogleDetectListenerImpl implements Camera.FaceDetectionListener {
             msg.obj = faces;
             msg.sendToTarget();
         }
-
     }
 }
